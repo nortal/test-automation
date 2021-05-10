@@ -43,6 +43,7 @@ test-core:
   stage: test
   dependencies: [ ]
   script: |
+    chmod +x ./gradlew
     ./gradlew :test-automation-core:test
 
 publish-core:
