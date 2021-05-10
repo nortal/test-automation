@@ -28,6 +28,7 @@ workflow:
 
 stages:
   - build
+  - test
   - publish
   - release
 
@@ -36,9 +37,13 @@ build-core:
   dependencies: [ ]
   script: |
     chmod +x ./gradlew
-    ./gradlew :test-automation-core:build -x test
-#  rules:
-#    - if: '$CI_COMMIT_BRANCH == "master"'
+    ./gradlew :test-automation-core:clean :test-automation-core:build
+
+test-core:
+  stage: test
+  dependencies: [ ]
+  script: |
+    ./gradlew :test-automation-core:test
 
 publish-core:
   stage: publish
