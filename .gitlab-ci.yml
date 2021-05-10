@@ -37,8 +37,8 @@ build-core:
   script: |
     chmod +x ./gradlew
     ./gradlew :test-automation-core:build -x test
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
+#  rules:
+#    - if: '$CI_COMMIT_BRANCH == "master"'
 
 publish-core:
   stage: publish
