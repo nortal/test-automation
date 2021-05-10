@@ -1,0 +1,23 @@
+#macro(includeJira $element)
+
+    #set($jiraArray = [])
+    #foreach( $tag in $element.getTags())
+        #set($tagName = $tag.getName())
+        #if($tagName.startsWith("@Defect:") || $tagName.startsWith("@Story:"))
+            #set($jiraPair = $tagName.split(':'))
+            #if($jiraPair.size() > 1)
+                #if($jiraArray.add($jiraPair[1]))
+                #end
+            #end
+        #end
+    #end
+
+    #if($jiraArray.size() > 0)
+    <div class="indention"><b>JIRA Ticket:</b>
+        #foreach($ticket in $jiraArray)
+            <a href="https://jirasw.t-mobile.com/browse/$ticket" target="_blank">$ticket</a>
+        #end
+    </div>
+    #end
+
+#end

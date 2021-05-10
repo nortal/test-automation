@@ -1,0 +1,9 @@
+#macro(resolveUrl $absoluteUrl $suffix)
+    #if(!$absoluteUrl)
+        $suffix
+    #elseif($absoluteUrl.startsWith("data"))
+        $absoluteUrl
+    #else
+        $absoluteUrl/$suffix
+    #end
+#end

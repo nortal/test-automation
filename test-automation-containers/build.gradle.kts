@@ -1,0 +1,4 @@
+
+dependencies {
+    api(libs.testcontainers)
+}

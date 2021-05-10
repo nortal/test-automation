@@ -1,0 +1,284 @@
+include:
+  # Injects TMO Global Shared (handles certs, lists blacklisted files etc.)
+  - project: 'tmobile/templates'
+    ref: tmo/master
+    file: '/gitlab-ci/.tmo.global.common.gitlab-ci.yml'
+  - project: 'tmobile/templates'
+    ref: tmo/master
+    file: 'gitlab-ci/.tmo.function.mavenBuild.gitlab-ci.yml'
+  - project: 'tmobile/templates'
+    ref: tmo/master
+    file: 'gitlab-ci/.tmo.function.mavenTest.gitlab-ci.yml'
+  - project: 'tmobile/DCD/templates'
+    ref: master
+    file: '/.dcd-setup.job.gitlab-ci.yaml'
+  - project: 'tmobile/DCD/templates'
+    ref: master
+    file: '/.dcd-release.gitlab-ci.yml'
+
+variables:
+  DEPLOY_SERVER: "https://dcp-brt-deploy-api.dcp.corporate.t-mobile.com"
+  MAVEN_VERSION: "3.5-jdk-11"
+  MAVEN_SETTINGS_XML: "ci-settings.xml"
+  EMAIL_ENABLED: "true"
+  REPORT_MAIL_RECIPIENTS: "Radhakrishna.Pillai3@T-Mobile.com,Anilkumar.Sivanandan2@T-Mobile.com,shiva.abburi3@t-mobile.com,vaisakh.sreesylam1@t-mobile.com"
+  REPORT_MAIL_SENDER: "do-not-reply-gitlab@t-mobile.com"
+  ENVIRONMENT_LOCK_RUNNER_ARGS: "-DgoldenData.lock.key=$CI_JOB_NAME-$CI_PIPELINE_ID -DgoldenData.lock.mandatoryForAllTestCases=true -DgoldenData.lock.expirationInSeconds=30"
+  MAVEN_CLI_OPTS: " --log-file maven_build.log -U "
+
+stages:
+  - tmo #Inherited from tmo.global.common.
+  - before-release-task
+  - release-task
+  - check #Inherited from tmo.global.common.
+  - setup
+  - build
+  - publish
+  - data-import
+  - test #Note: required by gitlab SAST, sonar
+  - cleanup
+  - housekeeping
+
+############################################################### On-Commit build ##########################################################################
+build:
+  image: registry.gitlab.com/tmobile/dcd/templates/maven-3.6.3-jdk11:latest
+  rules:
+    - if: '$RELEASE_PIPELINE_ACTION == null'
+    - if: '$RELEASE_PIPELINE_ACTION == "test"'
+  extends: .maven-build
+  stage: build
+  script:
+    - printf '#!/bin/sh \necho $1' >> /bin/tmoLog && chmod +x /bin/tmoLog
+    - unzip -o deploy.zip && ls -l
+    - |
+      if [ -n "${MAVEN_NO_CACHE}" ]; then
+        if [ -d "$CI_PROJECT_DIR/.m2" ]; then rm -rf "$CI_PROJECT_DIR/.m2"; echo "[INFO] Removed .m2 directory."; fi; 
+      fi
+      # MAVEN_SETTINGS_XML sourced from the below shared function
+    - sourceMvnSettingsXml
+    - |
+      echo "----------------------------------------------------------------------------------------------"
+      echo "Maven Build Initiated with the below arguments"
+      tmoLog " - MAVEN_VERSION          : [ ${MAVEN_VERSION} ]" "debug"
+      tmoLog " - MAVEN_BUILD_ARGS       : [ ${MAVEN_BUILD_ARGS} ]" "debug"
+      tmoLog " - MAVEN_SETTINGS_XML     : [ ${MAVEN_SETTINGS_XML} ]" "debug"
+      tmoLog " - APP_VERSION            : [ ${APP_VERSION} ]" "debug"
+      tmoLog " - BUILD_NUMBER           : [ ${BUILD_NUMBER} ]" "debug"
+      tmoLog " - BUILD_ARTIFACTS        : [ ${BUILD_ARTIFACTS} ]" "debug"
+      tmoLog " - JACOCO_COVERAGE_REPORT : [ ${JACOCO_COVERAGE_REPORT} ]" "debug"
+      tmoLog " - MAVEN_CLI_OPTS         : [ ${MAVEN_CLI_OPTS} ]" "debug"
+      tmoLog " - MAVEN_OPTS             : [ ${MAVEN_OPTS} ]" "debug"
+      echo "----------------------------------------------------------------------------------------------"
+      echo "Note:- For the above arguments, def. values are utilized if not explicitly overridden !!!"
+      echo "----------------------------------------------------------------------------------------------"
+    - |
+      if [ "$SONATYPE_ACTIVE" = 'true' ]; then
+        echo "[INFO] Checking Sonatype IQ Server for existing application"
+        echo "[INFO] SONATYPE_REQUEST_BODY = $SONATYPE_REQUEST_BODY"
+        RESPONSE=`curl -X POST "$SONATYPE_SCAN_REQUEST_URL" -H "Content-Type:application/json" --data-binary "$SONATYPE_REQUEST_BODY"`
+        echo "[INFO] RESPONSE = $RESPONSE"
+        export SONATYPE_PUBLIC_ID=`echo $RESPONSE | grep -Po '"sca_public_id":"\K[^"]*'`
+        echo "[INFO] Attempting Sonatype evaluation for sca_public_id = $SONATYPE_PUBLIC_ID"
+        mvn $MAVEN_BUILD_ARGS $SONATYPE_ARGS -s $MAVEN_SETTINGS_XML $MAVEN_CLI_OPTS
+        echo "[INFO] If Sonatype evaluation succeeded, please allow 5-10 minutes for Gitlab issue creation"
+      else
+        mvn $MAVEN_BUILD_ARGS -s $MAVEN_SETTINGS_XML $MAVEN_CLI_OPTS
+      fi
+    - |
+      if [ $JACOCO_COVERAGE_REPORT = "yes" ] && grep -q jacoco-maven-plugin pom.xml; then
+        echo -e "\nJaCoCo Code Coverage\n"
+        cat ${BUILD_ARTIFACTS%/}/site/jacoco/index.html
+      fi
+  artifacts:
+    when: always
+    name: '$CI_COMMIT_REF_SLUG-$CI_PIPELINE_IID'
+    paths:
+      - dcp-test-automation-data/target
+      - 'maven_build.log'
+  cache:
+    key: maven
+    paths:
+      - .m2/repository
+  tags:
+    - west-2
+    - medium
+############################################################################################################################################################
+
+############################################################### Setupping test automation #######################################################
+setup-automation:
+  extends: .setup
+  stage: setup
+  script:
+    - echo "Setup placeholder."
+############################################################################################################################
+
+############################################################### Test Automation pipeline profiling #######################################################
+
+.gd-profile-populator: &gd-execution-profile-populator |
+  if [[ "$PROFILE" == *"e2e"* ]]
+  then
+    echo "Executing golden data import with e2e profile."
+    if [[ "$PROFILE" == *"e2e-delta"* ]]; then
+      RUN_MODE="--e2e-delta-import"
+    else
+      RUN_MODE="--e2e-import"
+    fi
+    ENVIRONMENT_LOCK_RUNNER_ARGS="-Dgolden-data.lock.featureEnabled=false"
+    CI_ENVIRONMENT_SLUG="$CI_ENVIRONMENT_SLUG,e2e"
+  fi
+  echo $RUN_MODE $RUNNER_ARGS
+  if [[ "$RUN_MODE" == "--delta-import" ]]
+  then
+     java -jar -Dspring.profiles.active=$CI_ENVIRONMENT_SLUG $ENVIRONMENT_LOCK_RUNNER_ARGS dcp-test-automation-data/target/dcp-test-automation-data-1.0.0-SNAPSHOT-executable.jar --disable-nongd-promotions
+  fi;
+  java -jar -Dspring.profiles.active=$CI_ENVIRONMENT_SLUG -Djenkins.build.url=$CI_PIPELINE_URL -DbuildUrl="$CI_PROJECT_URL/-/pipelines/$CI_PIPELINE_ID" -Dslack.token="$SLACK_TOKEN" $ENVIRONMENT_LOCK_RUNNER_ARGS dcp-test-automation-data/target/dcp-test-automation-data-1.0.0-SNAPSHOT-executable.jar $RUN_MODE $RUNNER_ARGS
+
+.test-profile-populator: &test-execution-profile-populator |
+  if [[ "$CI_ENVIRONMENT_SLUG" == "rel" ]]
+  then
+    export ADDITIONAL_MVN_OPTS=" ${ADDITIONAL_MVN_OPTS} -Dreport.mail.enabled=$EMAIL_ENABLED -Dreport.mail.from=$REPORT_MAIL_SENDER -Dmock.disableGatewayRoutesAfterSuite=true"
+  fi;
+  export TARGET_BUILD_NAME="V3-$CI_ENVIRONMENT_SLUG-integration-test-report$BUILD_NAME_SUFFIX"
+  if [[ "$PROFILE" == *"e2e"* ]]
+  then
+    echo "Executing tests with e2e profile."
+    if [[ "$PROFILE" == *"e2e-delta-release"* ]]; then
+      export ADDITIONAL_MVN_OPTS=" ${ADDITIONAL_MVN_OPTS} -Dscenario.domain=RELEASE -Dreport.includeGdHistory=false"
+    fi
+    export ADDITIONAL_MVN_OPTS=" ${ADDITIONAL_MVN_OPTS} -P$CI_ENVIRONMENT_SLUG,e2e -Djenkins.build.url=$CI_PIPELINE_URL -DbuildUrl=$CI_PIPELINE_URL -Dreport.mail.from=$REPORT_MAIL_SENDER -Dreport.mail.to=$REPORT_MAIL_RECIPIENTS -Dreport.buildName=$TARGET_BUILD_NAME -Dreport.buildNumber=$CI_PIPELINE_ID $ENVIRONMENT_LOCK_RUNNER_ARGS "
+    echo "$ADDITIONAL_MVN_OPTS"
+    export MAVEN_TEST_ARGS=$MAVEN_TEST_ARGS${ADDITIONAL_MVN_OPTS}
+    echo "$MAVEN_TEST_ARGS"
+  else
+    export ADDITIONAL_MVN_OPTS=" ${ADDITIONAL_MVN_OPTS} -P$CI_ENVIRONMENT_SLUG -Djenkins.build.url=$CI_PIPELINE_URL -Dreport.mail.from=$REPORT_MAIL_SENDER -Dreport.buildName=$TARGET_BUILD_NAME -Dreport.mail.to=$REPORT_MAIL_RECIPIENTS -Dreport.buildNumber=$CI_PIPELINE_ID -Dreport.mail.enabled=$EMAIL_ENABLED $ENVIRONMENT_LOCK_RUNNER_ARGS"
+    echo "Maven arguments: $ADDITIONAL_MVN_OPTS"
+    export MAVEN_TEST_ARGS=$MAVEN_TEST_ARGS${ADDITIONAL_MVN_OPTS}
+    echo "Maven test arguments: $MAVEN_TEST_ARGS"
+  fi;
+
+
+############################################################################################################################################################
+
+############################################################### Test Automation pipeline ###################################################################
+.golden-data:
+  image: maven:$MAVEN_VERSION
+  stage: data-import
+  script:
+    - echo "Target env [$CI_ENVIRONMENT_SLUG]"
+    - echo "Environment lock arguments used $ENVIRONMENT_LOCK_RUNNER_ARGS"
+    - *gd-execution-profile-populator
+  tags:
+    - west-2
+    - medium
+
+.test:
+  stage: test
+  extends: .maven-test
+  before_script:
+    - unzip -o deploy.zip && ls -l
+  after_script:
+    - echo "Test reports are available at https://$CI_ENVIRONMENT_SLUG.dcp.digital.t-mobile.com/v2/testsupport/automation/reports"
+    - echo "Test report URL:"
+    - echo "https://$CI_ENVIRONMENT_SLUG.dcp.digital.t-mobile.com/v2/testsupport/automation/reports/V3-$CI_ENVIRONMENT_SLUG-integration-test-report$BUILD_NAME_SUFFIX/$CI_PIPELINE_ID/overview-features.html"
+  script:
+    - *test-execution-profile-populator
+    - |
+      if [ -z "${MAVEN_SETTINGS_XML}" ]; then
+        echo -e "\n[INFO] Setting MAVEN_SETTINGS_XML to use CDP default settings_cdp.xml file\n"
+        curl -s --noproxy '*' -o settings_cdp.xml $CDP_SERVICE_URL/static/settings_cdp.xml > /dev/null
+        cat settings_cdp.xml
+        MAVEN_SETTINGS_XML="settings_cdp.xml"
+      else
+        echo -e "\n [INFO] If MAVEN_SETTINGS_XML variable has -s, removing it \n"
+        MAVEN_SETTINGS_XML="${MAVEN_SETTINGS_XML//-s /}"
+      fi
+      echo -e "\n[INFO] Maven Test Arguments, could be over-ridden through respective variables"
+      echo "[INFO] ----------------------------------------------------------------------------------------------"
+      echo "[INFO]  Parameter         |           Default Value            |            Comments                 "
+      echo "[INFO] ----------------------------------------------------------------------------------------------"
+      echo "[INFO] MAVEN_VERSION      | latest                             | Maven docker image version          "
+      echo "[INFO] MAVEN_TEST_ARGS    | clean test                         | Executes unit tests                 "
+      echo "[INFO] MAVEN_SETTINGS_XML | settings_cdp.xml                   | Gets deps from EDP Artifactory      "
+      echo "[INFO] TEST_ARTIFACTS     | target/surefire-reports/TEST-*.xml | Surefire test reports               "
+      echo -e "[INFO] ----------------------------------------------------------------------------------------------\n"
+    - |
+      if [ -z "${CUCUMBER_TAGS_FILTER}" ]; then
+        ARGS_ARRAY=()
+        mvn $MAVEN_TEST_ARGS -s $MAVEN_SETTINGS_XML $MAVEN_CLI_OPTS
+      else
+        ARGS_ARRAY=("${CUCUMBER_TAGS_FILTER}")
+        mvn --log-file maven_build.log $MAVEN_TEST_ARGS -Dcucumber.filter.tags="${ARGS_ARRAY[@]}" -s $MAVEN_SETTINGS_XML $MAVEN_CLI_OPTS
+        cat maven_build.log
+      fi
+  cache:
+    key: maven
+    paths:
+      - .m2/repository
+  artifacts:
+    when: always
+    name: 'Test Artifacts'
+    paths:
+      - '$TEST_ARTIFACTS'
+      - 'maven_build.log'
+    expire_in: 1 week
+  tags:
+    - west-2
+    - medium
+
+post-build-actions:
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^release\/.*/ && $RUN_MODE == "--delta-import" && $RELEASE_PIPELINE_ACTION == "test"'
+  image: maven:$MAVEN_VERSION
+  stage: cleanup
+  script:
+    - echo 'Running in release delta mode, triggering post build enabling of disabled promotions'
+    - echo "Environment lock arguments used $ENVIRONMENT_LOCK_RUNNER_ARGS"
+    - java -jar -Dspring.profiles.active=rel $ENVIRONMENT_LOCK_RUNNER_ARGS dcp-test-automation-data/target/dcp-test-automation-data-1.0.0-SNAPSHOT-executable.jar --enable-disabled-promotions
+  tags:
+    - west-2
+
+
+test-dev:
+  environment: dev
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ "/^feature\/.*$" && $RELEASE_PIPELINE_ACTION == "test" && $CI_ENVIRONMENT_SLUG == "dev" && $SKIP_TESTS != "true"'
+    - if: '$CI_COMMIT_REF_NAME == "gitlab" && $RELEASE_PIPELINE_ACTION == "test" && $CI_ENVIRONMENT_SLUG == "dev" && $SKIP_TESTS != "true"'
+    - if: '$CI_ENVIRONMENT_SLUG == "dev" && $RELEASE_PIPELINE_ACTION == "test" && $SKIP_TESTS != "true"'
+  extends: .test
+
+test-qat:
+  environment: qat
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "release/qat" && $RELEASE_PIPELINE_ACTION == "test" && $SKIP_TESTS != "true"'
+    - if: '$CI_ENVIRONMENT_SLUG == "qat" && $RELEASE_PIPELINE_ACTION == "test" && $SKIP_TESTS != "true"'
+  extends: .test
+
+test-rel:
+  environment: rel
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^release\/.*/ && $CI_ENVIRONMENT_SLUG == "rel" && $RELEASE_PIPELINE_ACTION == "test" && $SKIP_TESTS != "true"'
+  extends: .test
+
+golden-data-dev:
+  environment: dev
+  rules:
+    - if: '$RUN_MODE != "--no-import" && $CI_COMMIT_BRANCH =~ "/^feature\/.*$" && $RELEASE_PIPELINE_ACTION == "test" && $CI_ENVIRONMENT_SLUG == "dev"'
+    - if: '$RUN_MODE != "--no-import" && $CI_COMMIT_REF_NAME =~ /^release\/.*/ && $RELEASE_PIPELINE_ACTION == "test" && $CI_ENVIRONMENT_SLUG == "dev"'
+    - if: '$RUN_MODE != "--no-import" && $CI_COMMIT_REF_NAME == "gitlab" && $RELEASE_PIPELINE_ACTION == "test"'
+    - if: '$RUN_MODE != "--no-import" && $CI_ENVIRONMENT_SLUG == "dev" && $RELEASE_PIPELINE_ACTION == "test"'
+  extends: .golden-data
+
+golden-data-qat:
+  environment: qat
+  rules:
+    - if: '$RUN_MODE != "--no-import" && $CI_ENVIRONMENT_SLUG == "qat" && $CI_COMMIT_REF_NAME == "develop" && $RELEASE_PIPELINE_ACTION == "test"'
+    - if: '$RUN_MODE != "--no-import" && $CI_ENVIRONMENT_SLUG == "qat" && $RELEASE_PIPELINE_ACTION == "test" && $SKIP_TESTS != "true"'
+  extends: .golden-data
+
+golden-data-rel:
+  environment: rel
+  rules:
+    - if: '$RUN_MODE != "--no-import" && $CI_COMMIT_REF_NAME =~ /^release\/.*/ && $CI_ENVIRONMENT_SLUG == "rel" && $RELEASE_PIPELINE_ACTION == "test"'
+  extends: .golden-data
+
+############################################################################################################################################################
