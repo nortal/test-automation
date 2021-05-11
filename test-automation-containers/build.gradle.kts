@@ -10,3 +10,7 @@ dependencies {
 }
 
 description = "test-automation-containers"
+
+repositories {
+    mavenCentral()
+}
