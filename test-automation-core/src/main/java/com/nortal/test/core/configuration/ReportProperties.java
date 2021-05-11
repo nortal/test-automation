@@ -42,7 +42,7 @@ public class ReportProperties {
 	 * @return relative dir path
 	 */
 	public String getOutput() {
-		return output == null ? "test-output" : output;
+		return output == null ? "build/test-output" : output;
 	}
 
 	/**

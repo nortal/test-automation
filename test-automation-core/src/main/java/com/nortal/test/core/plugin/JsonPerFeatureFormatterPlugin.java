@@ -16,7 +16,7 @@ import io.cucumber.plugin.event.WriteEvent;
  * The main difference between this and standard json plugin is that this one will create a separate json file per feature.
  * <p>
  * Usage: plugin should be used as any other cucumber plugin by passing it to the runner.
- * <pre><code>plugin = { "com.nortal.test.commons.plugin.JsonPerFeatureFormatterPlugin:test-output/cucumber-report" }</code></pre>
+ * <pre><code>plugin = { "com.nortal.test.commons.plugin.JsonPerFeatureFormatterPlugin:buid/test-output/cucumber-report" }</code></pre>
  * </p>
  * Output folder should be provided by passing in a relative path as a parameter (the part after colon)
  */
