@@ -6,7 +6,7 @@ include(":test-automation-postman")
 include(":test-automation-arch-rules")
 include(":test-automation-dev")
 include("test-automation-containers")
-
+include("test-automation-report")
 
 plugins {
     id("io.freefair.lombok") version "6.0.0-m2" apply false
