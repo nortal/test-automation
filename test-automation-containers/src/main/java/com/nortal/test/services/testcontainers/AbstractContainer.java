@@ -1,10 +1,10 @@
-package com.nortal.test.core.services.testcontainers;
-
-import java.util.List;
+package com.nortal.test.services.testcontainers;
 
 import lombok.SneakyThrows;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
+
+import java.util.List;
 
 public abstract class AbstractContainer<T extends GenericContainer<T>> implements ContextContainer {
 

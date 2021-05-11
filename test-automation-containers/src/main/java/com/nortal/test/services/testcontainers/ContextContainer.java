@@ -1,4 +1,4 @@
-package com.nortal.test.core.services.testcontainers;
+package com.nortal.test.services.testcontainers;
 
 import org.testcontainers.containers.Network;
 

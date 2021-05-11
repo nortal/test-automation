@@ -1,7 +1,7 @@
 package com.nortal.test.core.cucumber.glue
 
-import org.junit.Assert
 import org.junit.jupiter.api.Test
+import org.testng.Assert
 
 internal class GherkinTableMapperTest {
 

@@ -1,8 +1,8 @@
 package org.testcontainers.containers;
 
-import java.util.concurrent.Future;
-
 import lombok.NonNull;
+
+import java.util.concurrent.Future;
 
 /**
  * Variant of {@link GenericContainer} that allows a fixed port on the docker host to be mapped to a container port.

@@ -1,11 +1,11 @@
-package com.nortal.test.core.services.testcontainers;
-
-import java.util.List;
+package com.nortal.test.services.testcontainers;
 
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.testcontainers.containers.GenericContainer;
+
+import java.util.List;
 
 @UtilityClass
 public class ContainerUtils {

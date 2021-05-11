@@ -1,6 +1,28 @@
-package com.nortal.test.core.services.testcontainers.images.builder;
+package com.nortal.test.services.testcontainers.images.builder;
 
-import static java.util.Optional.ofNullable;
+import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.BuildImageCmd;
+import com.github.dockerjava.api.command.BuildImageResultCallback;
+import com.github.dockerjava.api.model.BuildResponseItem;
+import lombok.Cleanup;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.testcontainers.DockerClientFactory;
+import org.testcontainers.images.ParsedDockerfile;
+import org.testcontainers.images.builder.Transferable;
+import org.testcontainers.images.builder.traits.BuildContextBuilderTrait;
+import org.testcontainers.images.builder.traits.ClasspathTrait;
+import org.testcontainers.images.builder.traits.DockerfileTrait;
+import org.testcontainers.images.builder.traits.FilesTrait;
+import org.testcontainers.images.builder.traits.StringsTrait;
+import org.testcontainers.shaded.org.apache.commons.lang.StringUtils;
+import org.testcontainers.utility.Base58;
+import org.testcontainers.utility.DockerLoggerFactory;
+import org.testcontainers.utility.LazyFuture;
+import org.testcontainers.utility.ResourceReaper;
 
 import java.io.IOException;
 import java.io.PipedInputStream;
@@ -13,29 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
-import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.command.BuildImageCmd;
-import com.github.dockerjava.api.command.BuildImageResultCallback;
-import com.github.dockerjava.api.model.BuildResponseItem;
-import lombok.Cleanup;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.testcontainers.DockerClientFactory;
-import org.testcontainers.images.ParsedDockerfile;
-import org.testcontainers.images.builder.Transferable;
-import org.testcontainers.images.builder.traits.BuildContextBuilderTrait;
-import org.testcontainers.images.builder.traits.ClasspathTrait;
-import org.testcontainers.images.builder.traits.DockerfileTrait;
-import org.testcontainers.images.builder.traits.FilesTrait;
-import org.testcontainers.images.builder.traits.StringsTrait;
-import org.testcontainers.utility.Base58;
-import org.testcontainers.utility.DockerLoggerFactory;
-import org.testcontainers.utility.LazyFuture;
-import org.testcontainers.utility.ResourceReaper;
+import static java.util.Optional.ofNullable;
 
 /**
  * A class that is a plain copy of {@link org.testcontainers.images.builder.ImageFromDockerfile} + majority PMDs fixed.

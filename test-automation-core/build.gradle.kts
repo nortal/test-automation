@@ -26,7 +26,6 @@ dependencies {
 
     api(libs.guava)
     api(libs.commons.codec)
-    api(libs.testcontainers)
 
     implementation(libs.swagger.request.validator.core)
     implementation(libs.cucumber.reporting)

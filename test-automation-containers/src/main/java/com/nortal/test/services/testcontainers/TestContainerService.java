@@ -1,13 +1,7 @@
-package com.nortal.test.core.services.testcontainers;
-
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+package com.nortal.test.services.testcontainers;
 
 import com.github.dockerjava.api.model.Container;
-import com.nortal.test.core.services.testcontainers.images.builder.ReusableImageFromDockerfile;
+import com.nortal.test.services.testcontainers.images.builder.ReusableImageFromDockerfile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
@@ -19,6 +13,12 @@ import org.testcontainers.containers.CustomFixedHostPortGenericContainer;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.utility.ResourceReaper;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * This service is responsible for initializing and maintaining the black box testing setup.
