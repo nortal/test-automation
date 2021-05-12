@@ -28,7 +28,6 @@
 #parse("/templates/macros/mail/mailReadyNavigation.vm")
 #parse("/templates/macros/mail/reportTableHeader.vm")
 #parse("/templates/macros/mail/resolveUrl.vm")
-#parse("/templates/macros/report/errorMessages.vm")
 #parse("/templates/macros/report/skippedScenarios.vm")
 #parse("/templates/macros/report/gdChanges.vm")
 #parse("/templates/macros/report/postmanData.vm")

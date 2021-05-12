@@ -31,7 +31,6 @@ public class ReportGenerator {
 	private final ReportUploader uploader;
 	private final ReportMailSender mailer;
 	private final FileHistoryService historyService;
-	private final FailureService failureService;
 	private final ScenarioSkipService skipService;
 	private final PostmanAutomationCollectionGenerator postmanAutomationCollectionGenerator;
 
@@ -46,7 +45,6 @@ public class ReportGenerator {
 
 		new TmoReportBuilder(getAllJsons(), configuration, getBaseUrl(),
 		                     reportProperties.getCapabilities(),
-		                     failureService.getEnvironmentFailures(),
 		                     skipService.getSkippedScenarios(),
 		                     historyService.getCommits(),
 		                     postmanAutomationCollectionGenerator.getDataReport()).generateReports();

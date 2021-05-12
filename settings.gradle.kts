@@ -15,7 +15,7 @@ plugins {
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            version("cucumber", "5.4.1") // 6.10.3
+            version("cucumber", "6.10.3")
             version("spring-boot", "2.4.5")
             version("retrofit", "2.9.0")
 

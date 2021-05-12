@@ -49,7 +49,7 @@ public class ReportFormatter implements InitializingBean {
 				.replace("{{TITLE}}", attachment.getTitle())
 				.replace("{{CONTENT}}", attachmentBody)
 				.getBytes();
-		scenarioContainer.getScenario().embed(bytes, "text/html", attachment.getName());
+		scenarioContainer.getScenario().attach(bytes, "text/html", attachment.getName());
 	}
 
 	@Override

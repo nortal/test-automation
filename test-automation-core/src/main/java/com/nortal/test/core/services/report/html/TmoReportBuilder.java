@@ -1,10 +1,10 @@
 package com.nortal.test.core.services.report.html;
 
-import java.util.List;
-
 import com.nortal.test.core.services.report.cucumber.SkippedScenarios;
 import net.masterthought.cucumber.Configuration;
 import net.masterthought.cucumber.Trends;
+
+import java.util.List;
 
 /**
  * This is customized report builder.
@@ -17,16 +17,14 @@ public class TmoReportBuilder extends ReportBuilder {
 	private final SkippedScenarios skippedScenarios;
 	private final ChangedFilesReport gdChanges;
 	private final PostmanDataReport postmanData;
-	private final List<ReportErrorMessage> errors;
 
 	public TmoReportBuilder(final List<String> jsonFiles, final Configuration configuration,
-	                        final String reportBaseUrl, final List<String> capabilities,
-	                        final List<ReportErrorMessage> errors, final SkippedScenarios skippedScenarios,
-	                        final ChangedFilesReport gdChanges, final PostmanDataReport postmanData) {
+			final String reportBaseUrl, final List<String> capabilities,
+			final SkippedScenarios skippedScenarios,
+			final ChangedFilesReport gdChanges, final PostmanDataReport postmanData) {
 		super(jsonFiles, configuration);
 		this.reportBaseUrl = reportBaseUrl;
 		this.capabilities = capabilities;
-		this.errors = errors;
 		this.skippedScenarios = skippedScenarios;
 		this.gdChanges = gdChanges;
 		this.postmanData = postmanData;
@@ -48,10 +46,12 @@ public class TmoReportBuilder extends ReportBuilder {
 
 	@Override
 	protected void generatePages(final Trends trends) {
-		new TmoFeaturesOverviewPage(reportResult, configuration, errors, skippedScenarios, gdChanges, postmanData).generatePage();
+		new TmoFeaturesOverviewPage(reportResult, configuration, skippedScenarios, gdChanges, postmanData).generatePage();
 
 		super.generatePages(trends);
 
-		new MailSummaryPage(reportResult, configuration, reportBaseUrl, capabilities, errors, skippedScenarios, gdChanges).generatePage();
+		new MailSummaryPage(reportResult, configuration, reportBaseUrl, capabilities, skippedScenarios,
+				gdChanges
+		).generatePage();
 	}
 }

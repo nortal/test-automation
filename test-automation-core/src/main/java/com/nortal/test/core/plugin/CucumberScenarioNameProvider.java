@@ -1,7 +1,7 @@
 package com.nortal.test.core.plugin;
 
 import com.nortal.test.postman.model.PostmanFeatureInfo;
-import io.cucumber.core.internal.gherkin.ast.Feature;
+import io.cucumber.messages.Messages;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -18,7 +18,7 @@ public class CucumberScenarioNameProvider {
 		return featureInfoThreadLocal.get();
 	}
 
-	public void setFeatureInfo(final Feature feature, final String featurePath) {
+	public void setFeatureInfo(final Messages.GherkinDocument.Feature feature, final String featurePath) {
 		if (feature == null) {
 			log.warn("Returned feature was null. Scenario name was not found.");
 			return;
