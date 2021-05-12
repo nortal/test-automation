@@ -21,7 +21,7 @@ dependencyResolutionManagement {
 
             alias("cucumber-java").to("io.cucumber", "cucumber-java").versionRef("cucumber")
             alias("cucumber-testng").to("io.cucumber", "cucumber-testng").versionRef("cucumber")
-            alias("cucumber-reporting").to("net.masterthought", "cucumber-reporting").version("4.11.2")
+            alias("cucumber-reporting").to("net.masterthought", "cucumber-reporting").version("5.5.3")
 
             alias("springboot-starter_").to("org.springframework.boot", "spring-boot-starter").versionRef("spring-boot")
             alias("springboot-starter-web").to("org.springframework.boot", "spring-boot-starter-web").versionRef("spring-boot")
