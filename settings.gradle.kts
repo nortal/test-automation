@@ -15,13 +15,13 @@ plugins {
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            version("cucumber", "5.4.1") // 6.10.3
+            version("cucumber", "6.10.3")
             version("spring-boot", "2.4.5")
             version("retrofit", "2.9.0")
 
             alias("cucumber-java").to("io.cucumber", "cucumber-java").versionRef("cucumber")
             alias("cucumber-testng").to("io.cucumber", "cucumber-testng").versionRef("cucumber")
-            alias("cucumber-reporting").to("net.masterthought", "cucumber-reporting").version("4.11.2")
+            alias("cucumber-reporting").to("net.masterthought", "cucumber-reporting").version("5.5.3")
 
             alias("springboot-starter_").to("org.springframework.boot", "spring-boot-starter").versionRef("spring-boot")
             alias("springboot-starter-web").to("org.springframework.boot", "spring-boot-starter-web").versionRef("spring-boot")

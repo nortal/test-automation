@@ -1,11 +1,6 @@
 package com.nortal.test.core.plugin;
 
-import io.cucumber.core.internal.gherkin.ast.Background;
-import io.cucumber.core.internal.gherkin.ast.Feature;
-import io.cucumber.core.internal.gherkin.ast.ScenarioDefinition;
-import io.cucumber.core.internal.gherkin.ast.Step;
-import io.cucumber.core.internal.gherkin.pickles.PickleCell;
-import io.cucumber.core.internal.gherkin.pickles.PickleRow;
+import io.cucumber.messages.Messages;
 import io.cucumber.plugin.event.DataTableArgument;
 import io.cucumber.plugin.event.DocStringArgument;
 import io.cucumber.plugin.event.PickleStepTestStep;
@@ -22,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This class helps with parsing cucumber feature files and creating json structure of the report.
@@ -48,23 +44,33 @@ public class FeatureSourcesHelper {
 
     public boolean isBackgroundStep(TestStepStarted step) {
         TestSourcesModel.AstNode astNode = testSources.getAstNode(step.getTestCase().getUri().toString(), ((PickleStepTestStep) step.getTestStep()).getStepLine());
-        return TestSourcesModel.isBackgroundStep(astNode);
+        return TestSourcesModel.isBackgroundStep(astNode.parent);
     }
 
     public Map<String, Object> createFeatureMap(TestCase testCase) {
         Map<String, Object> featureMap = new HashMap<>();
         featureMap.put("uri", testCase.getUri());
         featureMap.put("elements", new ArrayList<Map<String, Object>>());
-        Feature feature = testSources.getFeature(testCase.getUri().toString());
+        Messages.GherkinDocument.Feature feature = testSources.getFeature(testCase.getUri().toString());
         if (feature != null) {
             featureMap.put(KEYWORD, feature.getKeyword());
             featureMap.put("name", feature.getName());
             featureMap.put(DESCRIPTION, feature.getDescription() != null ? feature.getDescription() : "");
             featureMap.put("line", feature.getLocation().getLine());
             featureMap.put("id", TestSourcesModel.convertToId(feature.getName()));
-            featureMap.put("tags", feature.getTags());
+            featureMap.put("tags", transformTags(feature));
         }
         return featureMap;
+    }
+
+    private List<Map<String, Object>> transformTags(final Messages.GherkinDocument.Feature feature) {
+        return feature
+            .getTagsList()
+            .stream()
+            .map(tag -> Map.of("name", tag.getName(), "type", "Tag", "location",
+                Map.of("line", tag.getLocation().getLine(), "column", tag.getLocation().getColumn())
+            ))
+            .collect(Collectors.toList());
     }
 
     public Map<String, Object> createMatchMap(TestStep step, Result result) {
@@ -111,9 +117,12 @@ public class FeatureSourcesHelper {
         TestSourcesModel.AstNode astNode = testSources.getAstNode(testCase.getUri().toString(), testCase.getLine());
         if (astNode != null) {
             testCaseMap.put("id", TestSourcesModel.calculateId(astNode));
-            ScenarioDefinition scenarioDefinition = TestSourcesModel.getScenarioDefinition(astNode);
+            Messages.GherkinDocument.Feature.Scenario scenarioDefinition =
+                TestSourcesModel.getScenarioDefinition(astNode);
             testCaseMap.put(KEYWORD, scenarioDefinition.getKeyword());
-            testCaseMap.put(DESCRIPTION, scenarioDefinition.getDescription() != null ? scenarioDefinition.getDescription() : "");
+            testCaseMap.put(DESCRIPTION, scenarioDefinition.getDescription() != null
+                                         ? scenarioDefinition.getDescription()
+                                         : "");
         }
         testCaseMap.put(STEPS, new ArrayList<Map<String, Object>>());
         if (!testCase.getTags().isEmpty()) {
@@ -132,7 +141,7 @@ public class FeatureSourcesHelper {
         TestCase testCase = event.getTestCase();
         TestSourcesModel.AstNode astNode = testSources.getAstNode(testCase.getUri().toString(), testCase.getLine());
         if (astNode != null) {
-            Background background = TestSourcesModel.getBackgroundForTestCase(astNode);
+            Messages.GherkinDocument.Feature.Background background = TestSourcesModel.getBackgroundForTestCase(astNode);
             Map<String, Object> testCaseMap = new HashMap<>();
             testCaseMap.put("name", background.getName());
             testCaseMap.put("line", background.getLocation().getLine());
@@ -160,7 +169,7 @@ public class FeatureSourcesHelper {
             }
         }
         if (astNode != null) {
-            Step step = (Step) astNode.node;
+            Messages.GherkinDocument.Feature.Step step = (Messages.GherkinDocument.Feature.Step) astNode.node;
             stepMap.put(KEYWORD, step.getKeyword());
         }
 
@@ -185,14 +194,5 @@ public class FeatureSourcesHelper {
         }
         return rowList;
     }
-
-    private List<String> createCellList(PickleRow row) {
-        List<String> cells = new ArrayList<>();
-        for (PickleCell cell : row.getCells()) {
-            cells.add(cell.getValue());
-        }
-        return cells;
-    }
-
 
 }

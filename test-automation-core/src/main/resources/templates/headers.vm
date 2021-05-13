@@ -28,7 +28,6 @@
 #parse("/templates/macros/json/steps.vm")
 #parse("/templates/macros/json/stepName.vm")
 #parse("/templates/macros/json/tags.vm")
-#parse("/templates/macros/report/errorMessages.vm")
 #parse("/templates/macros/report/skippedScenarios.vm")
 #parse("/templates/macros/report/gdChanges.vm")
 #parse("/templates/macros/report/postmanData.vm")

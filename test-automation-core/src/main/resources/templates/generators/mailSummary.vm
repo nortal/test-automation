@@ -23,15 +23,6 @@
 
     #includeReportInfo(true)
 
-    #if(!$error_messages.isEmpty())
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-5 col-md-offset-1">
-                #includeMessages($error_messages)
-            </div>
-        </div>
-    </div>
-    #end
     #reportTableWithTitle("Capabilities" "Test run result grouped by capability" "Capability" $capabilityTags, 5)
     #reportTableWithTitle("Features" "Test run result grouped by feature" "Feature" $all_features, 8)
 

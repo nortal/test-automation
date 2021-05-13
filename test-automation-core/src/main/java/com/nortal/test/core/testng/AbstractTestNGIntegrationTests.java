@@ -1,28 +1,9 @@
 package com.nortal.test.core.testng;
 
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import com.nortal.test.core.plugin.CucumberScenarioNameProvider;
-import com.nortal.test.core.plugin.TestNgPluginInjectionHelper;
-import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
 import com.nortal.test.core.configuration.ScenarioProperties;
 import com.nortal.test.core.configuration.TestConfiguration;
 import com.nortal.test.core.model.Tags;
-import com.nortal.test.core.plugin.FailureInterceptingPlugin;
+import com.nortal.test.core.plugin.CucumberScenarioNameProvider;
 import com.nortal.test.core.plugin.TestSourcesModel;
 import com.nortal.test.core.services.hooks.AfterSuiteHook;
 import com.nortal.test.core.services.hooks.BeforeTestRunnerHook;
@@ -36,6 +17,23 @@ import io.cucumber.testng.FeatureWrapperImpl;
 import io.cucumber.testng.PickleWrapper;
 import io.cucumber.testng.TestNGCucumberRunner;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparingInt;
 
@@ -63,10 +61,6 @@ public abstract class AbstractTestNGIntegrationTests extends AbstractTestNGSprin
 	@Autowired(required = false)
 	private List<AfterSuiteHook> afterSuiteHooks = Collections.emptyList();
 
-
-	@Autowired
-	private FailureInterceptingPlugin failureInterceptingPlugin;
-
 	@Autowired
 	private ScenarioProperties scenarioProperties;
 
@@ -86,7 +80,6 @@ public abstract class AbstractTestNGIntegrationTests extends AbstractTestNGSprin
 		System.setProperty("cucumber.features", scenarioProperties.getDomain().getFeaturePath());
 		SingleExistingContextSpringFactory.CONTEXT_HOLDER = this;
 		testNGCucumberRunner = new TestNGCucumberRunner(this.getClass());
-		TestNgPluginInjectionHelper.inject(testNGCucumberRunner, failureInterceptingPlugin);
 
 		var hookContext = HookContext.builder()
 				.goldenDataLockIsMandatory(isGoldenDataLockMandatory() && ArrayUtils.isNotEmpty(scenarios()))
