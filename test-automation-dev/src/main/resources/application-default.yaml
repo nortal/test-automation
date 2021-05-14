@@ -1,30 +1,12 @@
 
 zuul:
   routes:
-    authentication:
-      path: /commerce/v3/tokens/**
-      url: http://localhost:9101/commerce/v3/tokens
-    carts:
-      path: /commerce/v3/carts/**
-      url: http://localhost:9102/commerce/v3/carts
-    checkouts:
-      path: /commerce/v3/checkouts/**
-      url: http://localhost:9103/commerce/v3/checkouts
-    profile:
-      path: /commerce/v3/profiles/**
-      url: http://localhost:9104/commerce/v3/profiles
-    order-v3:
-      path: /commerce/v3/orders/**
-      url: http://localhost:9105/commerce/v3/orders
-#    gateway:
-#      path: /v2/gateway/**
-#      url: http://localhost:9106/v2/gateway
-    products:
-      path: /commerce/v3/products/**
-      url: https://dev.dcp.digital.t-mobile.com/commerce/v3/products
+    test-api:
+      path: /test-api/**
+      url: http://localhost:9101/api
     default:
       path: /**
-      url: https://dev.dcp.digital.t-mobile.com
+      url: https://test-api.com
   host:
     connect-timeout-millis: 60000
     socket-timeout-millis: 60000

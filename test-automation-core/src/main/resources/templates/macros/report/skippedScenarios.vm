@@ -3,9 +3,6 @@
         #set($totalScenarioCount = $report_summary.getScenarios() + $skippedScenarios.getTotalScenarioCount())
     <h3>
         Skipped Scenarios - $skippedScenarios.getTotalScenarioCount() out of $totalScenarioCount
-        (<a href="https://tmobile.atlassian.net/wiki/spaces/DCP/pages/1164744955/Tagging+Defects">
-        <b>Why are some of the test cases skipped?</b>
-    </a>)
     </h3>
 
 
