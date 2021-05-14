@@ -30,6 +30,7 @@ public class RequestResponseReportFormatter {
 			.create();
 
 	private final ReportFormatter formatter;
+	private final RetrofitCallHelper retrofitCallHelper;
 
 	/**
 	 * Formats the request and response and adds it to the report.
@@ -77,7 +78,7 @@ public class RequestResponseReportFormatter {
 				appendHeader(curl, "content-type", mediaType.toString());
 			}
 
-			final String json = prettyPrintJson(RetrofitCallHelper.convertRequestBodyToString(request));
+			final String json = prettyPrintJson(retrofitCallHelper.convertRequestBodyToString(request));
 			curl.append("-d '").append(json).append('\'');
 		}
 		curl.append('\n');

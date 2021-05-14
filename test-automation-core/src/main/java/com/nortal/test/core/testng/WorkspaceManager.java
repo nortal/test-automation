@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 public class WorkspaceManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkspaceManager.class);
 
-    private static final String TEST_OUTPUT_DIR = "buid/test-output";
+    private static final String TEST_OUTPUT_DIR = "build/test-output";
 
     /**
      * Prepares the workspace by removing all json files from the test output directory.

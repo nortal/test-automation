@@ -1,6 +1,5 @@
 package com.nortal.test.core.services.report;
 
-import static com.nortal.test.core.rest.RetrofitCallHelper.safelyExecute;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +16,7 @@ import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import com.nortal.test.core.configuration.ReportProperties;
+import com.nortal.test.core.rest.RetrofitCallHelper;
 import com.nortal.test.core.rest.api.ReportUploaderApi;
 import com.nortal.test.core.rest.error.RestCallException;
 import lombok.extern.slf4j.Slf4j;
@@ -38,14 +38,16 @@ public class ReportUploader {
 
 	private final ReportUploaderApi uploaderApi;
 	private final ReportProperties reportProperties;
+	private final RetrofitCallHelper retrofitCallHelper;
 	@Value("${integration.hosts.report_upload:#{null}}")
 	private String uploadHost;
 
 	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 	public ReportUploader(final Optional<ReportUploaderApi> uploaderApi,
-						  final ReportProperties reportProperties) {
+			final ReportProperties reportProperties, RetrofitCallHelper retrofitCallHelper) {
 		this.uploaderApi = uploaderApi.orElse(null);
 		this.reportProperties = reportProperties;
+		this.retrofitCallHelper = retrofitCallHelper;
 	}
 
 	private static boolean shouldUpload(Path path) {
@@ -60,11 +62,11 @@ public class ReportUploader {
 	public void upload() {
 		if (!reportProperties.shouldReport()) {
 			log.info("Skipping report upload, in order to upload the report the following options have to be present and set:\n" +
-							 "report.enable={}\n" +
-							 "report.buildName={}\n" +
-							 "report.buildNumber={}\n" +
-							 "integration.hosts.report_upload={}", reportProperties.isEnabled(), reportProperties.getBuildName(),
-					 reportProperties.getBuildNumber(), uploadHost);
+							"report.enable={}\n" +
+							"report.buildName={}\n" +
+							"report.buildNumber={}\n" +
+							"integration.hosts.report_upload={}", reportProperties.isEnabled(), reportProperties.getBuildName(),
+					reportProperties.getBuildNumber(), uploadHost);
 			return;
 		}
 
@@ -91,10 +93,10 @@ public class ReportUploader {
 			final Path testReportFolder = Paths.get(reportProperties.getOutput()).resolve(Paths.get("cucumber-html-reports"));
 			log.info("Collecting files from path: {}", testReportFolder);
 			return Files.walk(testReportFolder)
-						.filter(Files::isRegularFile)
-						.filter(ReportUploader::shouldUpload)
-						.map(Path::toFile)
-						.collect(Collectors.toList());
+					.filter(Files::isRegularFile)
+					.filter(ReportUploader::shouldUpload)
+					.map(Path::toFile)
+					.collect(Collectors.toList());
 		} catch (IOException e) {
 			log.error("Failed to collect test report files to be uploaded", e);
 			return Collections.emptyList();
@@ -107,8 +109,8 @@ public class ReportUploader {
 		log.info("Uploading file {} with content-type {}", name, contentType);
 
 		try (final Buffer zippedFileBuffer = new Buffer();
-				final BufferedSource source = Okio.buffer(Okio.source(file));
-				final GzipSink gzipSink = new GzipSink(zippedFileBuffer)) {
+			 final BufferedSource source = Okio.buffer(Okio.source(file));
+			 final GzipSink gzipSink = new GzipSink(zippedFileBuffer)) {
 
 			//we transfer all the bytes of the file into the gzip sink
 			source.readAll(gzipSink);
@@ -119,7 +121,7 @@ public class ReportUploader {
 
 			final RequestBody requestBody = RequestBody.create(MediaType.parse(contentType), content);
 			final MultipartBody.Part body = MultipartBody.Part.createFormData("file", name, requestBody);
-			safelyExecute(uploaderApi.upload(reportProperties.getBuildName(), reportProperties.getBuildNumber(), body));
+			retrofitCallHelper.safelyExecute(uploaderApi.upload(reportProperties.getBuildName(), reportProperties.getBuildNumber(), body));
 		} catch (IOException | RestCallException e) {
 			log.warn("failed to upload file {}", name);
 			log.warn("", e);
