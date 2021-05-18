@@ -11,7 +11,7 @@ import lombok.Setter;
 
 @Component
 @EnableConfigurationProperties
-@ConfigurationProperties(prefix = "integration")
+ @ConfigurationProperties(prefix = "test-automation.integration")
 public class IntegrationHostsProperties implements PostmanHostAware {
 
 	@Setter

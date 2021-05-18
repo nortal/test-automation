@@ -117,7 +117,7 @@ public class PostmanAutomationCollectionGenerator {
 	}
 
 	private String getExecutionTitle() {
-		final String name = StringUtils.defaultString(reportProperties.getBuildName(), "DCD-V3-automation");
+		final String name = StringUtils.defaultString(reportProperties.getBuildName(), "test-automation");
 
 		return name + " " + DATE_TIME_FORMATTER.format(ZonedDateTime.now());
 	}

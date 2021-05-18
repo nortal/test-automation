@@ -31,13 +31,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RetrofitConfiguration {
 	private final ReportInterceptor reportFilter;
-	//	private final AuthInterceptor authFilter;
-//	private final EpIntegrationAuthInterceptor epIntegrationAuthFilter;
-//	private final TmoContextInterceptor tmoContextFilter;
 	private final LoggingInterceptor loggingFilter;
-	//	private final ActiveMQAuthInterceptor activeMqAuthFilter;
 	private final HeaderInterceptor headerInterceptor;
-	//	private final ConfigurationOverrideInterceptor configurationOverrideInterceptor;
 	private final PostmanRetrofitInterceptor postmanRetrofitInterceptor;
 	private final Integer httpTimeout;
 
@@ -46,7 +41,7 @@ public class RetrofitConfiguration {
 			final LoggingInterceptor loggingFilter,
 			final HeaderInterceptor headerInterceptor,
 			final PostmanRetrofitInterceptor postmanRetrofitInterceptor,
-			@Value("${integration.http.connection-time-out:30}") final Integer httpTimeout) {
+			@Value("${test-automation.integration.http.connection-time-out:30}") final Integer httpTimeout) {
 		this.reportFilter = reportFilter;
 		this.loggingFilter = loggingFilter;
 		this.headerInterceptor = headerInterceptor;

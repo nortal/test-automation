@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Component
 @Data
-@ConfigurationProperties(prefix = "scenario")
+@ConfigurationProperties(prefix = "test-automation.scenario")
 public class ScenarioProperties {
 
 	/**

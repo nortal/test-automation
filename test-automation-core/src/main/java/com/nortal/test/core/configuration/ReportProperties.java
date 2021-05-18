@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Component
 @Setter
-@ConfigurationProperties(prefix = "report")
+@ConfigurationProperties(prefix = "test-automation.report")
 public class ReportProperties {
 	private boolean enabled;
 	private String buildName;

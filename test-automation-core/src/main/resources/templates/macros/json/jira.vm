@@ -15,7 +15,7 @@
     #if($jiraArray.size() > 0)
     <div class="indention"><b>JIRA Ticket:</b>
         #foreach($ticket in $jiraArray)
-            <a href="https://jirasw.t-mobile.com/browse/$ticket" target="_blank">$ticket</a>
+            <a href="https://$jiraUrl/$ticket" target="_blank">$ticket</a>
         #end
     </div>
     #end

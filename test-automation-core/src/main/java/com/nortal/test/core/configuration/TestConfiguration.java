@@ -17,15 +17,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TestConfiguration {
 
-	/*
-	@Bean("triggerJMSQueue")
-	public TriggerJMSQueue triggerJMSQueue(
-		@Value("${ep.activemq.url}") final String url,
-		@Value("${ep.activemq.username}") final String username,
-		@Value("${ep.activemq.password}") final String password
-	) {
-		return new TriggerJMSQueue(url, username, password);
-	}*/
 	@Bean("apiObjectMapper")
 	public ObjectMapper apiObjectMapper() {
 		return new ObjectMapper()
