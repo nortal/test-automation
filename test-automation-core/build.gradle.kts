@@ -24,9 +24,8 @@ dependencies {
     api(libs.bundles.retrofit2)
     api(libs.bundles.cucumber)
 
-    //TODO configure versions
-    api("com.fasterxml.jackson.module:jackson-module-kotlin")
-    api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+    api(libs.jackson.module.kotlin)
+    api(libs.jackson.datatype.jsr310)
 
     api(libs.guava)
     api(libs.commons.codec)

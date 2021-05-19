@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    api(libs.testcontainers)
+    api(libs.testcontainers.core)
     api( "org.testcontainers:mockserver:1.15.3")
     api("org.mock-server:mockserver-client-java:5.11.2")
     api(libs.bundles.springboot)
