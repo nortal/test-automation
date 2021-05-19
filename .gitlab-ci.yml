@@ -55,6 +55,24 @@ publish-core:
   rules:
     - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_TAG'
 
+publish-containers:
+  stage: publish
+  dependencies: [ ]
+  script: |
+    chmod +x ./gradlew
+    ./gradlew :test-automation-containers:publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_TAG'
+
+publish-ams-int:
+  stage: publish
+  dependencies: [ ]
+  script: |
+    chmod +x ./gradlew
+    ./gradlew :ams-int-test-automation:publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_TAG'
+
 release-core:
   stage: release
   dependencies: [ ]
