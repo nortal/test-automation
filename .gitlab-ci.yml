@@ -69,7 +69,7 @@ publish-ams-int:
   dependencies: [ ]
   script: |
     chmod +x ./gradlew
-    ./gradlew :ams-int-test-automation:publish
+    ./gradlew :int-test-modules:ams-int-test-automation:publish
   rules:
     - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_TAG'
 
