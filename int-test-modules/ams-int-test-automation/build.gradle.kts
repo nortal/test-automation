@@ -5,6 +5,7 @@ plugins {
 dependencies {
     api(project(":test-automation-core"))
     api(project(":test-automation-containers"))
+    api(project(":test-automation-postman"))
 
     api(libs.testcontainers.postgresql)
 }
