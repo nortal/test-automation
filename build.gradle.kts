@@ -38,6 +38,7 @@ subprojects {
     plugin("org.jetbrains.kotlin.jvm")
     plugin("org.jetbrains.kotlin.plugin.spring")
     plugin("io.freefair.lombok")
+    plugin("com.nortal.test.java-conventions")
   }
 
   group = "com.nortal.test"
@@ -74,7 +75,6 @@ subprojects {
   val props = Properties()
   rootProject.file("gradle-local.properties").takeIf { it.exists() }?.inputStream()?.use { props.load(it) }
   val nexusUrl: String = System.getenv("GTCT_AMS_NEXUS_URL") ?: props.getProperty("nexusUrl")
-  val parentVersion: String = props.getProperty("version")
 
   repositories {
     mavenLocal()
@@ -97,7 +97,7 @@ subprojects {
       create<MavenPublication>("${project.name}") {
         groupId = "${project.group}"
         artifactId = "${project.name}"
-        version = parentVersion
+        version = version
         from(components["java"])
         artifact(sourcesJar)
       }
@@ -107,7 +107,7 @@ subprojects {
       val snapshotsRepoUrl = "https://$nexusUrl/repository/ams-maven-snapshots/"
       val releasesRepoUrl = "https://$nexusUrl/repository/ams-maven-releases/"
 
-      maven(if (parentVersion.endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl) {
+      maven(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl) {
         credentials {
           username = System.getenv("GTCT_AMS_NEXUS_USERNAME") ?: props.getProperty("nexusUsername")
           password = System.getenv("GTCT_AMS_NEXUS_PASSWORD") ?: props.getProperty("nexusPassword")
