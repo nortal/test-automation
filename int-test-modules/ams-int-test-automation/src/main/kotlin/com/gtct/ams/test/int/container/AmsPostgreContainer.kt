@@ -33,7 +33,7 @@ class AmsPostgreContainer<SELF : GenericContainer<SELF>> : ContextContainer {
 
   private fun configure(): GenericContainer<SELF> {
     val imageFromDockerfile = ReusableImageFromDockerfile()
-        .withDockerfile(File("../database/Docker/Dockerfile").toPath())
+        .withDockerfile(File("../database/docker/Dockerfile").toPath())
 
     return GenericContainer<SELF>(imageFromDockerfile)
         .withNetworkAliases(NETWORK_ALIAS)
