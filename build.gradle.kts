@@ -4,7 +4,6 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
-import java.util.UUID
 
 plugins {
   `java-library`
@@ -75,6 +74,7 @@ subprojects {
   val props = Properties()
   rootProject.file("gradle-local.properties").takeIf { it.exists() }?.inputStream()?.use { props.load(it) }
   val nexusUrl: String = System.getenv("GTCT_AMS_NEXUS_URL") ?: props.getProperty("nexusUrl")
+  val parentVersion: String = props.getProperty("version")
 
   repositories {
     mavenLocal()
@@ -97,6 +97,7 @@ subprojects {
       create<MavenPublication>("${project.name}") {
         groupId = "${project.group}"
         artifactId = "${project.name}"
+        version = parentVersion
         from(components["java"])
         artifact(sourcesJar)
       }
@@ -106,7 +107,7 @@ subprojects {
       val snapshotsRepoUrl = "https://$nexusUrl/repository/ams-maven-snapshots/"
       val releasesRepoUrl = "https://$nexusUrl/repository/ams-maven-releases/"
 
-      maven(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl) {
+      maven(if (parentVersion.endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl) {
         credentials {
           username = System.getenv("GTCT_AMS_NEXUS_USERNAME") ?: props.getProperty("nexusUsername")
           password = System.getenv("GTCT_AMS_NEXUS_PASSWORD") ?: props.getProperty("nexusPassword")
