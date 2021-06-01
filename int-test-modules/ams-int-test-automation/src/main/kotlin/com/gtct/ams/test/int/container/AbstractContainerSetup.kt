@@ -12,7 +12,7 @@ abstract class AbstractContainerSetup(
   open fun getTargetContainerEnvConfig(): Map<String, String?> {
     return mapOf(
         "LABEL" to "test",
-        "spring.profiles.active" to "test"
+        "spring.profiles.active" to "cucumber"
     )
   }
 
