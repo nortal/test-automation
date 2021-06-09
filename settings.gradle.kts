@@ -13,6 +13,7 @@ include("int-test-modules:ams-int-test-automation")
 
 plugins {
     id("io.freefair.lombok") version "6.0.0-m2" apply false
+    id("pl.allegro.tech.build.axion-release") version "1.13.2" apply false
 }
 
 dependencyResolutionManagement {
