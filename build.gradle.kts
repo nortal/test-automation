@@ -46,6 +46,7 @@ subprojects {
             prefix = "v"
             versionSeparator = ""
         })
+        checks.snapshotDependencies = false
     }
 
     group = "com.nortal.test"
