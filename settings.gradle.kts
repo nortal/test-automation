@@ -1,6 +1,7 @@
 enableFeaturePreview("VERSION_CATALOGS")
 
 rootProject.name = "test-automation"
+
 include(":test-automation-core")
 include(":test-automation-postman")
 include(":test-automation-arch-rules")
@@ -64,4 +65,3 @@ dependencyResolutionManagement {
         }
     }
 }
-include("ams-int-test-automation")

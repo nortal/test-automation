@@ -1,8 +1,3 @@
-plugins {
-    id("com.nortal.test.java-conventions")
-    id("io.freefair.lombok")
-}
-
 configurations {
     all {
         exclude("org.springframework.boot", "spring-boot-starter-logging")
@@ -29,7 +24,4 @@ dependencies {
     implementation(libs.org.eclipse.jgit)
 
     implementation(kotlin("stdlib-jdk8"))
-
 }
-
-description = "test-automation-core"
