@@ -15,6 +15,16 @@ plugins {
     id("pl.allegro.tech.build.axion-release")
 }
 
+scmVersion {
+    localOnly = true
+    tag(closureOf<TagNameSerializationConfig> {
+        prefix = "v"
+        versionSeparator = ""
+    })
+}
+
+version = scmVersion.version
+
 allprojects {
     val props = Properties()
     rootProject.file("gradle-local.properties").takeIf { it.exists() }?.inputStream()?.use { props.load(it) }
@@ -116,16 +126,6 @@ subprojects {
     }
 
 }
-
-scmVersion {
-    localOnly = true
-    tag(closureOf<TagNameSerializationConfig> {
-        prefix = "v"
-        versionSeparator = ""
-    })
-}
-
-version = scmVersion.version
 
 tasks.withType<Wrapper> {
     gradleVersion = "7.0.0"

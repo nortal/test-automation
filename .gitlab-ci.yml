@@ -32,57 +32,30 @@ stages:
   - publish
   - release
 
-build-core:
+build-modules:
   stage: build
   dependencies: [ ]
   script: |
     chmod +x ./gradlew
-    ./gradlew :test-automation-core:clean :test-automation-core:build
+    ./gradlew clean build
 
-test-core:
+execute-tests:
   stage: test
   dependencies: [ ]
   script: |
     chmod +x ./gradlew
-    ./gradlew :test-automation-core:test
+    ./gradlew test
 
-publish-core:
+publish-modules:
   stage: publish
   dependencies: [ ]
   script: |
     chmod +x ./gradlew
-    ./gradlew :test-automation-core:publish
+    ./gradlew publish
   rules:
     - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_TAG'
 
-publish-containers:
-  stage: publish
-  dependencies: [ ]
-  script: |
-    chmod +x ./gradlew
-    ./gradlew :test-automation-containers:publish
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_TAG'
-
-publish-ams-int:
-  stage: publish
-  dependencies: [ ]
-  script: |
-    chmod +x ./gradlew
-    ./gradlew :int-test-modules:ams-int-test-automation:publish
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_TAG'
-
-publish-postman:
-  stage: publish
-  dependencies: [ ]
-  script: |
-    chmod +x ./gradlew
-    ./gradlew :test-automation-postman:publish
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_TAG'
-
-release-core:
+release-version:
   stage: release
   dependencies: [ ]
   variables:
@@ -91,7 +64,7 @@ release-core:
   script: |
     git config user.name "Gitlab"
     git config user.email gitlab@gtcybertech.com
-    ./gradlew :test-automation-core:release --stacktrace
+    ./gradlew release
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: manual
