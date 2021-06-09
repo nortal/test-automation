@@ -37,20 +37,10 @@ subprojects {
         plugin("org.jetbrains.kotlin.jvm")
         plugin("org.jetbrains.kotlin.plugin.spring")
         plugin("io.freefair.lombok")
-        plugin("pl.allegro.tech.build.axion-release")
-    }
-
-    scmVersion {
-        localOnly = true
-        tag(closureOf<TagNameSerializationConfig> {
-            prefix = "v"
-            versionSeparator = ""
-        })
-        checks.snapshotDependencies = false
     }
 
     group = "com.nortal.test"
-    version = scmVersion.version
+    version = rootProject.version
 
     configure<JavaPluginExtension> {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -126,6 +116,16 @@ subprojects {
     }
 
 }
+
+scmVersion {
+    localOnly = true
+    tag(closureOf<TagNameSerializationConfig> {
+        prefix = "v"
+        versionSeparator = ""
+    })
+}
+
+version = scmVersion.version
 
 tasks.withType<Wrapper> {
     gradleVersion = "7.0.0"
