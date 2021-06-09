@@ -1,19 +1,16 @@
 package com.nortal.test.postman.generate;
 
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import com.nortal.test.postman.PostmanHostAware;
 import com.nortal.test.postman.PostmanScenarioRequestContext;
-import com.nortal.test.postman.util.PostmanVariableUtils;
-import org.springframework.stereotype.Component;
 import com.nortal.test.postman.api.model.URL;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class PostmanPlaceholderInjector {
-	private final PostmanHostAware postmanHostAware;
+//	private final PostmanHostAware postmanHostAware;
 
 	public void injectPlaceholdersAndScriptIfNecessary(final PostmanScenarioRequestContext requestContext, final URL url) {
 		injectHostPlaceholders(url);
@@ -42,14 +39,14 @@ public class PostmanPlaceholderInjector {
 	}
 
 	private void injectHostPlaceholders(final URL url) {
-		final Map.Entry<String, String> hostEntry = postmanHostAware.getHosts().entrySet().stream()
-				.filter(stringStringEntry -> stringStringEntry.getValue().equalsIgnoreCase(url.getHost()))
-				.findFirst().orElseThrow();
+//		final Map.Entry<String, String> hostEntry = postmanHostAware.getHosts().entrySet().stream()
+//				.filter(stringStringEntry -> stringStringEntry.getValue().equalsIgnoreCase(url.getHost()))
+//				.findFirst().orElseThrow();
 
-		final String hostPlaceholder = PostmanVariableUtils.asVariableKey(hostEntry.getKey());
-
-		url.setHost(hostPlaceholder);
-		url.setRaw(url.getRaw().replace(hostEntry.getValue(), hostPlaceholder));
+//		final String hostPlaceholder = PostmanVariableUtils.asVariableKey(hostEntry.getKey());
+//
+//		url.setHost(hostPlaceholder);
+//		url.setRaw(url.getRaw().replace(hostEntry.getValue(), hostPlaceholder));
 	}
 
 }
