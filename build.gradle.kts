@@ -12,7 +12,6 @@ plugins {
 }
 
 scmVersion {
-    localOnly = true
     tag(closureOf<pl.allegro.tech.build.axion.release.domain.TagNameSerializationConfig> {
         prefix = "v"
         versionSeparator = ""
