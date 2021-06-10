@@ -4,7 +4,6 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
-import pl.allegro.tech.build.axion.release.domain.TagNameSerializationConfig
 
 plugins {
     `java-library`
@@ -14,10 +13,14 @@ plugins {
 
 scmVersion {
     localOnly = true
-    tag(closureOf<TagNameSerializationConfig> {
+    tag(closureOf<pl.allegro.tech.build.axion.release.domain.TagNameSerializationConfig> {
         prefix = "v"
         versionSeparator = ""
     })
+    repository(closureOf<pl.allegro.tech.build.axion.release.domain.RepositoryConfig> {
+        pushTagsOnly = true
+    })
+
 }
 
 version = scmVersion.version
