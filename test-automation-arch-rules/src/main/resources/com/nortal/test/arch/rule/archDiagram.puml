@@ -1,0 +1,37 @@
+@startuml
+hide stereotype
+
+scale 1.0
+skinparam componentStyle uml2
+skinparam component {
+    BorderColor #grey
+    BackgroundColor #white
+}
+
+[steps]          <<com.nortal.test.glue..>>
+[services]       <<com.nortal.test.services..>>
+[mediators]      <<com.nortal.test.mediator..>>
+[core]           <<com.nortal.test.core..>>
+[data-external]  <<com.nortal.test.mock.external..>>
+[model]          <<com.nortal.api.model..>>
+
+
+[steps] -> [mediators]
+[steps] -> [services]
+[steps] -> [model]
+
+[mediators] -> [services]
+[mediators] -> [core]
+[mediators] -> [model]
+[mediators] -> [data-external]
+
+[services] -> [core]
+[services] -> [model]
+[services] -> [data-external]
+
+[core] -> [data-external]
+[core] -> [model]
+
+[data-external] --> [model]
+
+@enduml

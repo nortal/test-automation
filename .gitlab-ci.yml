@@ -1,0 +1,72 @@
+image: openjdk:11.0.9.1-jdk
+
+variables:
+  # Disable the Gradle daemon for Continuous Integration servers as correctness
+  # is usually a priority over speed in CI environments. Using a fresh
+  # runtime for each build is more reliable since the runtime is completely
+  # isolated from any previous builds.
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  # Tags are not fetched if GitLab shallow cloning is enabled (default).
+  # However, release plugin requires actual tags to be available.
+  GIT_FETCH_EXTRA_FLAGS: --tags
+
+cache: &global_cache
+  key: $CI_COMMIT_REF_NAME
+  paths:
+    - .gradle
+    - build
+  policy: pull
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_MESSAGE =~ /^chore\(release\):/ && $CI_COMMIT_BRANCH == "master"'
+      when: never
+    - when: always
+
+stages:
+  - build
+  - test
+  - publish
+  - release
+
+build-modules:
+  stage: build
+  dependencies: [ ]
+  script: |
+    chmod +x ./gradlew
+    ./gradlew clean build
+
+execute-tests:
+  stage: test
+  dependencies: [ ]
+  script: |
+    chmod +x ./gradlew
+    ./gradlew test
+
+publish-modules:
+  stage: publish
+  dependencies: [ ]
+  script: |
+    chmod +x ./gradlew
+    ./gradlew publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_TAG'
+
+release-version:
+  stage: release
+  dependencies: [ ]
+  variables:
+    GRGIT_USER: GitLab
+    GRGIT_PASS: "${GITLAB_TOKEN}"
+  script: |
+    git config user.name "Gitlab"
+    git config user.email gitlab@gtcybertech.com
+    ./gradlew release
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+      allow_failure: true
+    - when: never

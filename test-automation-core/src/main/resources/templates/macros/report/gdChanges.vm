@@ -1,0 +1,57 @@
+#macro(includeGdChanges $gdChanges)
+    #if($gdChanges.size() > 0)
+
+    <h3>
+        $gdChanges.getStats()
+    </h3>
+
+    <div class="element">
+        <table id="changesTable" class="stats-table table-hover">
+            <thead>
+            <tr class="header dont-sort">
+                <th class="">Author</th>
+                <th class="">Time</th>
+                <th class="">Message</th>
+                <th class="">Operation</th>
+                <th class="">Path</th>
+            </tr>
+            </thead>
+
+            <tbody>
+                #foreach($commit in $gdChanges.getCommits())
+                    #set($first = true)
+
+                    #set($diffs = $commit.getDiffs())
+
+                    #foreach($diff in $diffs)
+                    <tr>
+                        #if($first == true)
+                            <td class="" rowspan="$diffs.size()">
+                                <a href="https://bitbucket.corporate.t-mobile.com/projects/DCP/repos/dcp-test-automation/commits/$commit.getSha()">$commit.getAuthor()</a>
+                            </td>
+                            <td class="" rowspan="$diffs.size()">$commit.getAgo()</td>
+                            <td class="" rowspan="$diffs.size()">$commit.getMessage()</td>
+                            #set($first = false)
+                        #end
+
+
+                        #set($op = $diff.getOp())
+                        #if($op == "ADD")
+                            <td class="passed">$op</td>
+                        #elseif($op == "DELETE")
+                            <td class="failed">$op</td>
+                        #else
+                            <td class="pending">$op</td>
+                        #end
+
+                        <td class="">$diff.getPath()</td>
+
+                    </tr>
+
+                    #end
+                #end
+            </tbody>
+        </table>
+    </div>
+    #end
+#end

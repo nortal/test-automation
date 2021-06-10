@@ -1,0 +1,18 @@
+server:
+  contextPath: /
+  port: 9999
+  max-http-header-size: 40KB
+
+zuul:
+  add-proxy-headers: false
+  sensitive-headers: Cookie,Set-Cookie    #required to pass Authorization
+  sslHostnameValidationEnabled: false
+  host:
+    max-per-route-connections: 200
+    max-total-connections: 200
+    connect-timeout-millis: 60000
+    socket-timeout-millis: 60000
+
+ribbon:
+  okhttp:
+    enabled: true

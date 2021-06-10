@@ -1,0 +1,12 @@
+
+zuul:
+  routes:
+    test-api:
+      path: /test-api/**
+      url: http://localhost:9101/api
+    default:
+      path: /**
+      url: https://test-api.com
+  host:
+    connect-timeout-millis: 60000
+    socket-timeout-millis: 60000

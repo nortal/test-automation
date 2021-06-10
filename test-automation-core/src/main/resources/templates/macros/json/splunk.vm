@@ -1,0 +1,33 @@
+#macro(includeSplunk $element)
+
+    #set($rawPrefix = "SPLUNK_RAW:")
+    #set($dashPrefix = "SPLUNK_DASH:")
+
+    #set($rawLink = "")
+    #set($dashLink = "")
+
+    #foreach($hook in $element.getAfter())
+        #foreach($out in $hook.getOutputs())
+            #foreach($message in $out.getMessages())
+                #if($message.startsWith($rawPrefix))
+                    #set($rawLink = $message.substring($rawPrefix.length()))
+                #end
+                #if($message.startsWith($dashPrefix))
+                    #set($dashLink = $message.substring($dashPrefix.length()))
+                #end
+            #end
+        #end
+    #end
+
+    #if($rawLink != "" || $dashLink != "")
+    <div class="indention"><b>Logs:</b>
+        #if($rawLink != "")
+            <a href="$rawLink" target="_blank">raw </a>
+        #end
+        #if($dashLink != "")
+            <a href="$dashLink" target="_blank">dash</a>
+        #end
+    </div>
+    #end
+
+#end

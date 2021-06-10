@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    #parse("/templates/mail/mailHeaders.vm")
+    #includeTitle("Mail Summary")
+</head>
+
+<body>
+    #includeMailReadyNavigation("none",$absolutePrefix)
+
+    <div class="container-fluid">
+        <div class="col-md-10 col-md-offset-1">
+            <h4>
+                More details are available in the
+                <a href="#resolveUrl($absolutePrefix, "overview-features.html")">
+                    <b>Full Report</b>
+                </a>
+            </h4>
+        </div>
+    </div>
+
+
+
+    #includeReportInfo(true)
+
+    #reportTableWithTitle("Capabilities" "Test run result grouped by capability" "Capability" $capabilityTags, 5)
+    #reportTableWithTitle("Features" "Test run result grouped by feature" "Feature" $all_features, 8)
+
+<div class="container-fluid" id="report">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                #includeGdChanges($gdChanges)
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" id="report">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                #includeSkippedScenarios($skippedScenarios, $report_summary)
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+#macro(includeSkippedScenarios $skippedScenarios, $report_summary)
+    #if($skippedScenarios.getFeatureNames().size() > 0)
+        #set($totalScenarioCount = $report_summary.getScenarios() + $skippedScenarios.getTotalScenarioCount())
+    <h3>
+        Skipped Scenarios - $skippedScenarios.getTotalScenarioCount() out of $totalScenarioCount
+    </h3>
+
+
+    <div class="element">
+        <table id="messagesTable" class="stats-table table-hover">
+            <thead>
+            <tr class="header dont-sort">
+                <th class="">Feature</th>
+                <th class="">Jira</th>
+                <th class="">Scenario</th>
+                <th class="">Tags</th>
+            </tr>
+            </thead>
+
+            <tbody>
+                #foreach($featureName in $skippedScenarios.getFeatureNames())
+                    #set($scenarios = $skippedScenarios.getScenariosByReportableName($featureName))
+                    #set($first = true)
+
+                    #foreach($scenario in $scenarios)
+                    <tr>
+                        #if($first == true)
+                            <td class="" rowspan="$scenarios.size()">$featureName</td>
+                            #set($first = false)
+                        #end
+                        <td class="">
+                            #foreach( $tag in $scenario.getTags() )
+                                #if($tag.startsWith("@Defect:") || $tag.startsWith("@Story:"))
+                                    #set($jiraPair = $tag.split(':'))
+                                    #if($jiraPair.size() > 1)
+                                        #set($jiraId  = $jiraPair[1])
+                                        <a href="https://jirasw.t-mobile.com/browse/$jiraId">$jiraId</a>
+                                    #end
+                                #end
+                            #end
+                        </td>
+                        <td class="">$scenario.getName()</td>
+                        <td class="">
+                            #foreach($tag in $scenario.getTags())
+                                #if(!$tag.startsWith("@Defect:") && !$tag.startsWith("@Story:") && !$tag.startsWith("@Skip"))
+                                    $tag
+                                #end
+                            #end
+                        </td>
+                    </tr>
+                    #end
+                #end
+            </tbody>
+        </table>
+    </div>
+
+    #end
+#end
