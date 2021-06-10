@@ -9,9 +9,6 @@ import pl.allegro.tech.build.axion.release.domain.TagNameSerializationConfig
 plugins {
     `java-library`
     `maven-publish`
-    kotlin("jvm") version "1.4.31" apply false
-    kotlin("plugin.spring") version "1.4.31" apply false
-    id("org.springframework.boot") version "2.4.5" apply false //TODO is it needed?
     id("pl.allegro.tech.build.axion-release")
 }
 
@@ -128,7 +125,7 @@ subprojects {
 }
 
 tasks.withType<Wrapper> {
-    gradleVersion = "7.0.0"
+    gradleVersion = libs.versions.gradle.get()
     distributionType = Wrapper.DistributionType.BIN
 }
 

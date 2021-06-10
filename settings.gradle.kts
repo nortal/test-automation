@@ -8,10 +8,12 @@ include(":test-automation-arch-rules")
 include(":test-automation-dev")
 include("test-automation-containers")
 include("test-automation-report")
-
 include("int-test-modules:ams-int-test-automation")
 
 plugins {
+    val kotlinVersion = "1.5.10"
+    kotlin("jvm") version kotlinVersion apply false
+    kotlin("plugin.spring") version kotlinVersion apply false
     id("io.freefair.lombok") version "6.0.0-m2" apply false
     id("pl.allegro.tech.build.axion-release") version "1.13.2" apply false
 }
@@ -19,6 +21,8 @@ plugins {
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
+            version("gradle", "7.0.2")
+
             version("cucumber", "6.10.3")
             version("spring-boot", "2.4.5")
             version("retrofit", "2.9.0")
