@@ -19,6 +19,9 @@ scmVersion {
     repository(closureOf<pl.allegro.tech.build.axion.release.domain.RepositoryConfig> {
         pushTagsOnly = true
     })
+    checks(closureOf<pl.allegro.tech.build.axion.release.domain.ChecksConfig > {
+        aheadOfRemote = false
+    })
 
 }
 
