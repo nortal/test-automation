@@ -61,7 +61,7 @@ release-version:
   script: |
     git config user.name "ams.dev.service"
     git config user.email gitlab@gtcybertech.com
-    ./gradlew release -Prelease.customUsername=$GRGIT_USER -Prelease.customPassword=$GRGIT_PASS --stacktrace
+    ./gradlew release -Prelease.customUsername=ams.dev.service -Prelease.customPassword="${GITLAB_TOKEN}" --stacktrace
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
