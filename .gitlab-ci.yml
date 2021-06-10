@@ -56,10 +56,10 @@ release-version:
   stage: release
   dependencies: [ ]
   variables:
-    GRGIT_USER: ams.dev.service
+    GRGIT_USER: ams.dev.service@ex.c-lab.ee
     GRGIT_PASS: "${GITLAB_TOKEN}"
   script: |
-    git config user.name "ams.dev.service"
+    git config user.name "ams.dev.service@ex.c-lab.ee"
     git config user.email gitlab@gtcybertech.com
     ./gradlew release -Prelease.customUsername=$GRGIT_USER -Prelease.customPassword=$GRGIT_PASS --stacktrace
   rules:
