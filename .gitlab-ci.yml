@@ -64,6 +64,7 @@ release-version:
   script: |
     git config user.name "Gitlab"
     git config user.email gitlab@gtcybertech.com
+    chmod +x ./gradlew
     ./gradlew release
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
