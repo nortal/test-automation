@@ -128,7 +128,7 @@ subprojects {
 }
 
 tasks.withType<Wrapper> {
-    gradleVersion = "7.0.0"
+    gradleVersion = libs.versions.gradle.get()
     distributionType = Wrapper.DistributionType.BIN
 }
 
