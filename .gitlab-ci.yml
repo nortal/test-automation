@@ -39,13 +39,7 @@ build-modules:
     <<: *global_cache
     policy: pull-push
   script: |
-    ./gradlew clean build
-  artifacts:
-    paths:
-      - app-main/build/libs/*.jar
-    expire_in: 1 day
-    reports:
-      dotenv: deploy.env
+    ./gradlew clean build  -x test
 
 execute-tests:
   stage: test
