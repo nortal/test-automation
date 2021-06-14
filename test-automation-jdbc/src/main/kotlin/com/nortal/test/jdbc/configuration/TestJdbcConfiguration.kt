@@ -1,32 +1,25 @@
 package com.nortal.test.jdbc.configuration
 
+import com.nortal.test.jdbc.JdbcDataSourceProperties
 import com.nortal.test.jdbc.JdbcUrlProvider
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties
-import org.springframework.boot.autoconfigure.jdbc.JdbcProperties
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.jdbc.core.JdbcTemplate
 import javax.sql.DataSource
 
 @Configuration
+@EnableConfigurationProperties(JdbcDataSourceProperties::class)
+@ComponentScan("com.nortal.test.jdbc")
 class TestJdbcConfiguration {
-
-    @Bean
-    fun dataSourceProperties(): DataSourceProperties {
-        return DataSourceProperties()
-    }
-
-    @Bean
-    fun jdbcProperties(): JdbcProperties {
-        return JdbcProperties()
-    }
 
     @Bean
     @Primary
     fun primaryDataSource(
-        dataSourceProperties: DataSourceProperties,
+        dataSourceProperties: JdbcDataSourceProperties,
         jdbcUrlProvider: JdbcUrlProvider
     ): DataSource {
         return DataSourceBuilder.create()
@@ -39,14 +32,7 @@ class TestJdbcConfiguration {
 
     @Bean
     @Primary
-    fun jdbcTemplate(dataSource: DataSource, properties: JdbcProperties): JdbcTemplate {
-        val jdbcTemplate = JdbcTemplate(dataSource)
-        val template = properties.template
-        jdbcTemplate.fetchSize = template.fetchSize
-        jdbcTemplate.maxRows = template.maxRows
-        if (template.queryTimeout != null) {
-            jdbcTemplate.queryTimeout = template.queryTimeout.seconds.toInt()
-        }
-        return jdbcTemplate
+    fun jdbcTemplate(dataSource: DataSource): JdbcTemplate {
+        return JdbcTemplate(dataSource)
     }
 }
