@@ -8,6 +8,7 @@ include(":test-automation-arch-rules")
 include(":test-automation-dev")
 include("test-automation-containers")
 include("test-automation-report")
+include("test-automation-jdbc")
 include("int-test-modules:ams-int-test-automation")
 
 plugins {
@@ -35,6 +36,7 @@ dependencyResolutionManagement {
 
             alias("springboot-starter_").to("org.springframework.boot", "spring-boot-starter").versionRef("spring-boot")
             alias("springboot-starter-web").to("org.springframework.boot", "spring-boot-starter-web").versionRef("spring-boot")
+            alias("springboot-starter-jdbc").to("org.springframework.boot", "spring-boot-starter-jdbc").versionRef("spring-boot")
             alias("springboot-starter-test").to("org.springframework.boot", "spring-boot-starter-test").versionRef("spring-boot")
             alias("springboot-starter-log4j2").to("org.springframework.boot", "spring-boot-starter").versionRef("spring-boot")
             alias("springboot-starter-mail").to("org.springframework.boot", "spring-boot-starter-mail").versionRef("spring-boot")
@@ -58,12 +60,13 @@ dependencyResolutionManagement {
             alias("jackson-module-kotlin").to("com.fasterxml.jackson.module", "jackson-module-kotlin").versionRef("jackson")
             alias("jackson-datatype-jsr310").to("com.fasterxml.jackson.datatype", "jackson-datatype-jsr310").versionRef("jackson")
 
+            alias("postgresql").to("org.postgresql", "postgresql").version("42.2.21")
 
             bundle("cucumber", listOf("cucumber-java", "cucumber-testng"))
             bundle(
                 "springboot", listOf(
                     "springboot-starter_", "springboot-starter-web", "springboot-starter-test",
-                    "springboot-starter-log4j2", "springboot-starter-mail", "springboot-configuration-processor"
+                    "springboot-starter-log4j2", "springboot-starter-mail", "springboot-configuration-processor", "springboot-starter-jdbc"
                 )
             )
             bundle("retrofit2", listOf("retrofit2", "converter-gson", "converter-jackson", "converter-scalars"))

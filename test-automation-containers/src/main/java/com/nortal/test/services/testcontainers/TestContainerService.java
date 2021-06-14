@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.annotation.PostConstruct;
+
 import com.github.dockerjava.api.model.Container;
 import com.nortal.test.services.testcontainers.images.builder.ReusableImageFromDockerfile;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +49,7 @@ public class TestContainerService {
 	/**
 	 * Runs containers of context applications in parallel, also sets up db schema and redis.
 	 */
+	@PostConstruct
 	public void startContext() {
 		if (reuseContainers) {
 			final Optional<com.github.dockerjava.api.model.Network> reusableNetworkOptional = findExistingReusableNetwork();
@@ -79,7 +82,7 @@ public class TestContainerService {
 				.exec();
 		return networks
 				.stream()
-				.filter(network -> network.getName().equals(REUSABLE_NETWORK_NAME))
+				.filter(ntwk -> ntwk.getName().equals(REUSABLE_NETWORK_NAME))
 				.findAny();
 	}
 
