@@ -8,6 +8,7 @@ include(":test-automation-arch-rules")
 include(":test-automation-dev")
 include("test-automation-containers")
 include("test-automation-report")
+include("test-automation-jdbc")
 include("int-test-modules:ams-int-test-automation")
 
 plugins {
@@ -59,6 +60,7 @@ dependencyResolutionManagement {
             alias("jackson-module-kotlin").to("com.fasterxml.jackson.module", "jackson-module-kotlin").versionRef("jackson")
             alias("jackson-datatype-jsr310").to("com.fasterxml.jackson.datatype", "jackson-datatype-jsr310").versionRef("jackson")
 
+            alias("postgresql").to("org.postgresql", "postgresql").version("42.2.21")
 
             bundle("cucumber", listOf("cucumber-java", "cucumber-testng"))
             bundle(

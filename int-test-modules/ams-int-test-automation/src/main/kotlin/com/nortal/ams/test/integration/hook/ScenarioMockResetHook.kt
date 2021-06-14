@@ -1,6 +1,6 @@
-package com.gtct.ams.test.integration.hook
+package com.nortal.ams.test.integration.hook
 
-import com.nortal.test.container.MockServerContainer
+import com.nortal.ams.test.integration.container.MockServerContainer
 import com.nortal.test.core.services.ScenarioContainer
 import com.nortal.test.core.services.hooks.BeforeScenarioHook
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
