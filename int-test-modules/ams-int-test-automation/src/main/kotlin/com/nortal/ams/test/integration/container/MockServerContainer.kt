@@ -1,4 +1,4 @@
-package com.nortal.test.container
+package com.nortal.ams.test.integration.container
 
 import com.nortal.test.services.testcontainers.ContextContainer
 import org.mockserver.client.MockServerClient
