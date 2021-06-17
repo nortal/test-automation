@@ -9,15 +9,25 @@ abstract class AbstractContainerSetup(
     private val containerService: TestContainerService,
 ) : BeforeSuiteHook {
 
+    companion object {
+        const val DEFAULT_APP_DEBUG_PORT = 9000
+    }
+
+    /**
+     * Environmental settings for the target container.
+     */
     open fun getTargetContainerEnvConfig(): Map<String, String?> {
         return mapOf(
-            "LABEL" to "test",
+            "LABEL" to "cucumber-test",
             "spring.profiles.active" to "cucumber"
         )
     }
 
+    /**
+     * Defines ports that will be exposed to external access. Example: debug port.
+     */
     open fun getTargetContainerExposedPorts(): IntArray {
-        return intArrayOf()
+        return intArrayOf(DEFAULT_APP_DEBUG_PORT)
     }
 
     override fun beforeSuite() {

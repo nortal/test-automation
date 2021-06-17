@@ -13,6 +13,8 @@ plugins {
 
 scmVersion {
     localOnly = true
+    ignoreUncommittedChanges = false
+
     tag(closureOf<pl.allegro.tech.build.axion.release.domain.TagNameSerializationConfig> {
         prefix = "v"
         versionSeparator = ""
@@ -23,7 +25,6 @@ scmVersion {
     checks(closureOf<pl.allegro.tech.build.axion.release.domain.ChecksConfig > {
         aheadOfRemote = false
     })
-
 }
 
 version = scmVersion.version
