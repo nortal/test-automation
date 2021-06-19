@@ -5,29 +5,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import javax.annotation.PostConstruct;
 
 import com.github.dockerjava.api.model.Container;
-import com.nortal.test.services.testcontainers.images.builder.ReusableImageFromDockerfile;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.rules.ExternalResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.CustomFixedHostPortGenericContainer;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
+import org.testcontainers.images.builder.ImageFromDockerfile;
+import org.testcontainers.utility.MountableFile;
 import org.testcontainers.utility.ResourceReaper;
 
 /**
  * This service is responsible for initializing and maintaining the black box testing setup.
  */
 @Component
-@Slf4j
 public class TestContainerService {
+	private static final Logger log = LoggerFactory.getLogger(TestContainerService.class);
 
 	private static final int INTERNAL_HTTP_PORT = 8080;
 	private static final Duration TIMEOUT = Duration.ofSeconds(90);
@@ -92,7 +92,7 @@ public class TestContainerService {
 	 *
 	 * @param image of the application under test
 	 */
-	public void startApplicationUnderTest(final ReusableImageFromDockerfile image) {
+	public void startApplicationUnderTest(final ImageFromDockerfile image) {
 		startApplicationUnderTest(image, TIMEOUT);
 	}
 
@@ -104,7 +104,7 @@ public class TestContainerService {
 	 * @param timeout of the application under test
 	 */
 	@SuppressWarnings("PMD")
-	public void startApplicationUnderTest(final ReusableImageFromDockerfile image, final Duration timeout) {
+	public void startApplicationUnderTest(final ImageFromDockerfile image, final Duration timeout) {
 		final GenericContainer applicationContainer = new GenericContainer(image)
 				.withNetwork(network)
 				.withExposedPorts(INTERNAL_HTTP_PORT)
@@ -115,7 +115,7 @@ public class TestContainerService {
 	}
 
 	@SuppressWarnings("PMD.CloseResource")
-	public void startApplicationUnderTest(final ReusableImageFromDockerfile image,
+	public void startApplicationUnderTest(final ImageFromDockerfile image,
 			final int[] fixedExposedPort,
 			final Map<String, String> envConfig) {
 		final CustomFixedHostPortGenericContainer customFixedHostPortGenericContainer =
@@ -133,13 +133,19 @@ public class TestContainerService {
 						.withNetwork(network)
 						.withExposedPorts(allExposedPorts.toArray(new Integer[0]))
 						.withEnv(envConfig)
+						.withCopyFileToContainer(MountableFile.forClasspathResource("jacoco/org.jacoco.agent.jar"), "/jacocoagent.jar")
+						.withCommand(getJacocoPart())
 						.withStartupTimeout(TIMEOUT);
 
 		stopContainersOfOlderImage(image);
 		startContainer(applicationContainer);
 	}
 
-	private void stopContainersOfOlderImage(final ReusableImageFromDockerfile image) {
+	private String getJacocoPart() {
+		return String.format("-javaagent:/jacocoagent.jar=address=*,port=%d,output=tcpserver", 6300);
+	}
+
+	private void stopContainersOfOlderImage(final ImageFromDockerfile image) {
 		final String imageNameWithVersion = image.getDockerImageName();
 		if (imageNameWithVersion.contains(":")) {
 			final String[] split = imageNameWithVersion.split(":");
@@ -206,9 +212,12 @@ public class TestContainerService {
 		return exposedContainerPort;
 	}
 
-	@RequiredArgsConstructor
 	private static class ReusedNetwork extends ExternalResource implements Network {
 		private final String id;
+
+		private ReusedNetwork(String id) {
+			this.id = id;
+		}
 
 		@Override
 		public String getId() {
