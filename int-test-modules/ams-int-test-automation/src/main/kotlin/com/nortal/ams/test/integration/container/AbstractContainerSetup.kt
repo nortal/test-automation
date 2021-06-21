@@ -8,8 +8,12 @@ import org.springframework.stereotype.Component
 import org.testcontainers.images.builder.ImageFromDockerfile
 import org.testcontainers.images.builder.dockerfile.DockerfileBuilder
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 
+/**
+ * TODO: move to containers module.
+ */
 @Component
 abstract class AbstractContainerSetup : BeforeSuiteHook {
     @Autowired
@@ -27,7 +31,7 @@ abstract class AbstractContainerSetup : BeforeSuiteHook {
     /**
      * Environmental settings for the target container.
      */
-    open fun getTargetContainerEnvConfig(): Map<String, String?> {
+    fun getTargetContainerEnvConfig(): Map<String, String?> {
         return mapOf(
             "LABEL" to "cucumber-test",
             "spring.profiles.active" to testableContainerProperties.springProfilesToActivate
@@ -37,7 +41,7 @@ abstract class AbstractContainerSetup : BeforeSuiteHook {
     /**
      * Defines ports that will be exposed to external access. Example: debug port.
      */
-    open fun getTargetContainerExposedPorts(): IntArray {
+    fun getTargetContainerExposedPorts(): IntArray {
         return intArrayOf(
             testableContainerProperties.debugPort,
             testableContainerProperties.jacoco.port
@@ -53,13 +57,18 @@ abstract class AbstractContainerSetup : BeforeSuiteHook {
     }
 
     fun build(): ImageFromDockerfile {
-        val appJarPath = Files.find(Paths.get(testableContainerProperties.jarBuildDir ), 1, { t, _ -> t.fileName.toString().endsWith("jar") })
+        val appJarDir = Paths.get(testableContainerProperties.jarBuildDir)
+        val appJarPath = Files.find(appJarDir, 1, { t, _ -> isMatchingJarFile(t) })
             .findFirst().orElseThrow()
 
         return ImageFromDockerfile()
             .withFileFromPath(APP_JAR_PATH, appJarPath)
             .withFileFromClasspath(JACOCO_AGENT_JAR_PATH, JACOCO_CLASSPATH_PATH)
             .withDockerfileFromBuilder { builder -> configure(builder).build() }
+    }
+
+    private fun isMatchingJarFile(path: Path): Boolean {
+        return path.fileName.toString().matches(Regex("^.+-.+.*(?<!plain)\\.jar\$"));
     }
 
     private fun configure(builder: DockerfileBuilder): DockerfileBuilder {
