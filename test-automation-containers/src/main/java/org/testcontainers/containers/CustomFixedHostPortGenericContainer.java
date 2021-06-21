@@ -1,7 +1,5 @@
 package org.testcontainers.containers;
 
-import lombok.NonNull;
-
 import java.util.concurrent.Future;
 
 /**
@@ -17,7 +15,7 @@ import java.util.concurrent.Future;
 public class CustomFixedHostPortGenericContainer<SELF extends CustomFixedHostPortGenericContainer<SELF>>
     extends GenericContainer<SELF> {
 
-  public CustomFixedHostPortGenericContainer(@NonNull final Future<String> image) {
+  public CustomFixedHostPortGenericContainer(final Future<String> image) {
     super(image);
   }
 
