@@ -1,6 +1,5 @@
 package com.nortal.test.postman.api.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -12,28 +11,12 @@ import lombok.Data;
  */
 @Data
 public class Variable {
-	@lombok.Getter(onMethod_ = {@JsonProperty("description")})
-	@lombok.Setter(onMethod_ = {@JsonProperty("description")})
 	private Description description;
-	@lombok.Getter(onMethod_ = {@JsonProperty("disabled")})
-	@lombok.Setter(onMethod_ = {@JsonProperty("disabled")})
 	private Boolean disabled;
-	@lombok.Getter(onMethod_ = {@JsonProperty("id")})
-	@lombok.Setter(onMethod_ = {@JsonProperty("id")})
 	private String id;
-	@lombok.Getter(onMethod_ = {@JsonProperty("key")})
-	@lombok.Setter(onMethod_ = {@JsonProperty("key")})
 	private String key;
-	@lombok.Getter(onMethod_ = {@JsonProperty("name")})
-	@lombok.Setter(onMethod_ = {@JsonProperty("name")})
 	private String name;
-	@lombok.Getter(onMethod_ = {@JsonProperty("system")})
-	@lombok.Setter(onMethod_ = {@JsonProperty("system")})
 	private Boolean system;
-	@lombok.Getter(onMethod_ = {@JsonProperty("type")})
-	@lombok.Setter(onMethod_ = {@JsonProperty("type")})
 	private VariableType type;
-	@lombok.Getter(onMethod_ = {@JsonProperty("value")})
-	@lombok.Setter(onMethod_ = {@JsonProperty("value")})
 	private Object value;
 }

@@ -1,15 +1,26 @@
 package com.nortal.test.services.testcontainers.images.builder;
 
+import static java.util.Optional.ofNullable;
+
+import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.zip.GZIPOutputStream;
+
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.BuildImageCmd;
 import com.github.dockerjava.api.command.BuildImageResultCallback;
 import com.github.dockerjava.api.model.BuildResponseItem;
-import lombok.Cleanup;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.images.ParsedDockerfile;
 import org.testcontainers.images.builder.Transferable;
@@ -24,32 +35,18 @@ import org.testcontainers.utility.DockerLoggerFactory;
 import org.testcontainers.utility.LazyFuture;
 import org.testcontainers.utility.ResourceReaper;
 
-import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.nio.file.Path;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.zip.GZIPOutputStream;
-
-import static java.util.Optional.ofNullable;
-
 /**
  * A class that is a plain copy of {@link org.testcontainers.images.builder.ImageFromDockerfile} + majority PMDs fixed.
  * Created just in order to be able to reuse containers that are created from images that are built using this class.
  * */
 @SuppressWarnings("PMD.CloseResource")
-@Slf4j
-@Getter
 public class ReusableImageFromDockerfile extends LazyFuture<String> implements
     BuildContextBuilderTrait<ReusableImageFromDockerfile>,
     ClasspathTrait<ReusableImageFromDockerfile>,
     FilesTrait<ReusableImageFromDockerfile>,
     StringsTrait<ReusableImageFromDockerfile>,
     DockerfileTrait<ReusableImageFromDockerfile> {
+  private static final Logger log = LoggerFactory.getLogger(ReusableImageFromDockerfile.class);
 
   private final String dockerImageName;
   private final Map<String, Transferable> transferables = new HashMap<>();
@@ -113,52 +110,52 @@ public class ReusableImageFromDockerfile extends LazyFuture<String> implements
       };
 
       // We have to use pipes to avoid high memory consumption since users might want to build really big images
-      @Cleanup final PipedInputStream in = new PipedInputStream();
-      @Cleanup final PipedOutputStream out = new PipedOutputStream(in);
+       try(final PipedInputStream in = new PipedInputStream();
+       final PipedOutputStream out = new PipedOutputStream(in);
 
-      final BuildImageCmd buildImageCmd = dockerClient.buildImageCmd(in);
-      configure(buildImageCmd);
-      final Map<String, String> labels = new HashMap<>();
-      if (buildImageCmd.getLabels() != null) {
-        labels.putAll(buildImageCmd.getLabels());
-      }
-      labels.putAll(
-          this.reusableContainer
-          ? removeSessionIdLabel(DockerClientFactory.DEFAULT_LABELS)
-          : DockerClientFactory.DEFAULT_LABELS
-      );
-      buildImageCmd.withLabels(labels);
+      final BuildImageCmd buildImageCmd = dockerClient.buildImageCmd(in);) {
+         configure(buildImageCmd);
+         final Map<String, String> labels = new HashMap<>();
+         if (buildImageCmd.getLabels() != null) {
+           labels.putAll(buildImageCmd.getLabels());
+         }
+         labels.putAll(
+                 this.reusableContainer
+                         ? removeSessionIdLabel(DockerClientFactory.DEFAULT_LABELS)
+                         : DockerClientFactory.DEFAULT_LABELS
+         );
+         buildImageCmd.withLabels(labels);
 
-      prePullDependencyImages(dependencyImageNames);
+         prePullDependencyImages(dependencyImageNames);
 
-      final BuildImageResultCallback exec = buildImageCmd.exec(resultCallback);
+         final BuildImageResultCallback exec = buildImageCmd.exec(resultCallback);
 
-      long bytesToDockerDaemon = 0;
+         long bytesToDockerDaemon = 0;
 
-      // To build an image, we have to send the context to Docker in TAR archive format
-      try (TarArchiveOutputStream tarArchive = new TarArchiveOutputStream(new GZIPOutputStream(out))) {
-        tarArchive.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
+         // To build an image, we have to send the context to Docker in TAR archive format
+         try (TarArchiveOutputStream tarArchive = new TarArchiveOutputStream(new GZIPOutputStream(out))) {
+           tarArchive.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
 
-        for (final Map.Entry<String, Transferable> entry : transferables.entrySet()) {
-          final Transferable transferable = entry.getValue();
-          final String destination = entry.getKey();
-          transferable.transferTo(tarArchive, destination);
-          bytesToDockerDaemon += transferable.getSize();
-        }
-        tarArchive.finish();
-      }
+           for (final Map.Entry<String, Transferable> entry : transferables.entrySet()) {
+             final Transferable transferable = entry.getValue();
+             final String destination = entry.getKey();
+             transferable.transferTo(tarArchive, destination);
+             bytesToDockerDaemon += transferable.getSize();
+           }
+           tarArchive.finish();
+         }
 
-      log.info("Transferred {} to Docker daemon", FileUtils.byteCountToDisplaySize(bytesToDockerDaemon));
-      if (bytesToDockerDaemon > FileUtils.ONE_MB * 50) // warn if >50MB sent to docker daemon
-      {
-        log.warn(
-            "A large amount of data was sent to the Docker daemon ({}). Consider using a .dockerignore file for better performance.",
-            FileUtils.byteCountToDisplaySize(bytesToDockerDaemon)
-        );
-      }
+         log.info("Transferred {} to Docker daemon", FileUtils.byteCountToDisplaySize(bytesToDockerDaemon));
+         if (bytesToDockerDaemon > FileUtils.ONE_MB * 50) // warn if >50MB sent to docker daemon
+         {
+           log.warn(
+                   "A large amount of data was sent to the Docker daemon ({}). Consider using a .dockerignore file for better performance.",
+                   FileUtils.byteCountToDisplaySize(bytesToDockerDaemon)
+           );
+         }
 
-      exec.awaitImageId();
-
+         exec.awaitImageId();
+       }
       return dockerImageName;
     } catch (IOException e) {
       throw new IllegalStateException("Can't close DockerClient", e);
@@ -242,4 +239,7 @@ public class ReusableImageFromDockerfile extends LazyFuture<String> implements
     return this;
   }
 
+  public String getDockerImageName() {
+    return dockerImageName;
+  }
 }

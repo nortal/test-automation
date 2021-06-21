@@ -64,7 +64,7 @@ release-version:
   script: |
     git config user.name "GitLab"
     git config user.email gitlab@gtcybertech.com
-    ./gradlew release --stacktrace
+    ./gradlew release -Prelease.ignoreUncommittedChanges=true --stacktrace
     git push "https://$GRGIT_USER:$GRGIT_PASS@${CI_REPOSITORY_URL#*@}" --tags
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
