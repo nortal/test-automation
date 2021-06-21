@@ -15,6 +15,7 @@ plugins {
     val kotlinVersion = "1.5.10"
     kotlin("jvm") version kotlinVersion apply false
     kotlin("plugin.spring") version kotlinVersion apply false
+    kotlin("kapt") version kotlinVersion apply false
     id("io.freefair.lombok") version "6.0.0-m2" apply false
     id("pl.allegro.tech.build.axion-release") version "1.13.2" apply false
 }
@@ -62,14 +63,18 @@ dependencyResolutionManagement {
 
             alias("postgresql").to("org.postgresql", "postgresql").version("42.2.21")
 
+            alias("jacoco-core").to("org.jacoco", "org.jacoco.core").version("0.8.7")
+            alias("jacoco-report").to("org.jacoco", "org.jacoco.report").version("0.8.7")
+
             bundle("cucumber", listOf("cucumber-java", "cucumber-testng"))
             bundle(
                 "springboot", listOf(
                     "springboot-starter_", "springboot-starter-web", "springboot-starter-test",
-                    "springboot-starter-log4j2", "springboot-starter-mail", "springboot-configuration-processor", "springboot-starter-jdbc"
+                    "springboot-starter-log4j2", "springboot-starter-mail", "springboot-starter-jdbc"
                 )
             )
             bundle("retrofit2", listOf("retrofit2", "converter-gson", "converter-jackson", "converter-scalars"))
+            bundle("jacoco", listOf("jacoco-core", "jacoco-report"))
         }
     }
 }
