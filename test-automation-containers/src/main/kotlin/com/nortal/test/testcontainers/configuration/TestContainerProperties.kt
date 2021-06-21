@@ -24,6 +24,10 @@ class TestableContainerProperties(
      */
     val jarBuildDir: String,
     /**
+     * jar matcher regex pattern. Should be changes if build generates more than one jar.
+     */
+    val jarRegexMatcher: String = "^.+-.+.*(?<!plain)\\.jar\$",
+    /**
      * Debug port for container debugging
      */
     var debugPort: Int = 9000,
@@ -31,7 +35,13 @@ class TestableContainerProperties(
      * Should container wait before debugger is attached?
      */
     val waitForDebugger: Boolean = false,
+    /**
+     * Spring profiles that will be activated for target application.
+     */
     val springProfilesToActivate: String = "cucumber",
+    /**
+     * Jacoco test coverage configuration.
+     */
     val jacoco: TestableContainerJacocoProperties,
 )
 

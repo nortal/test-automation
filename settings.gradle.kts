@@ -26,9 +26,9 @@ dependencyResolutionManagement {
             version("gradle", "7.0.2")
 
             version("cucumber", "6.10.3")
-            version("spring-boot", "2.4.5")
+            version("spring-boot", "2.5.1")
             version("retrofit", "2.9.0")
-            version("jackson", "2.12.2")
+            version("jackson", "2.12.3")
             version("testcontainers", "1.15.3")
 
             alias("cucumber-java").to("io.cucumber", "cucumber-java").versionRef("cucumber")
