@@ -1,6 +1,6 @@
 package com.nortal.test.core.rest
 
-class ProxyRetrofitQueryMap(m: MutableMap<String?, MutableList<String?>>) : HashMap<String, Any>(m) {
+class ProxyRetrofitQueryMap(m: Map<String?, List<String?>>) : HashMap<String, Any>(m) {
     override val entries: MutableSet<MutableMap.MutableEntry<String, Any>>
         get() {
             val originSet: Set<Map.Entry<String?, Any?>> = super.entries
