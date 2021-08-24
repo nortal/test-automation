@@ -15,6 +15,8 @@ import java.time.Duration
 @Component
 @ConditionalOnProperty(value = ["test-automation.containers.postgre.enabled"], havingValue = "true")
 class AmsPostgreContainer : ContextContainer, JdbcUrlProvider {
+    private var usingDefaultBridgeNetwork: Boolean = false
+
     val container: GenericContainer<*> = configure()
 
     companion object {
@@ -23,8 +25,15 @@ class AmsPostgreContainer : ContextContainer, JdbcUrlProvider {
     }
 
     override fun start(network: Network?) {
-        container.withNetwork(network)
-            .start()
+        if (network != null) {
+            container
+                .withNetwork(network)
+                .withNetworkAliases(NETWORK_ALIAS)
+                .start()
+        } else {
+            usingDefaultBridgeNetwork = true
+            container.start()
+        }
     }
 
     private fun verifyRunning() {
@@ -40,7 +49,6 @@ class AmsPostgreContainer : ContextContainer, JdbcUrlProvider {
             .withDockerfile(File("../database/docker/Dockerfile").toPath())
 
         return KGenericContainer(imageFromDockerfile)
-            .withNetworkAliases(NETWORK_ALIAS)
             .withExposedPorts(POSTGRE_INTERNAL_PORT)
             .withEnv("POSTGRES_HOST_AUTH_METHOD", "trust")
             .withEnv("POSTGRES_PASSWORD", "postgres")
@@ -50,13 +58,23 @@ class AmsPostgreContainer : ContextContainer, JdbcUrlProvider {
 
     override fun getInternalJdbcUrl(): String {
         verifyRunning()
-        return ("jdbc:postgresql://" + NETWORK_ALIAS + ":" + PostgreSQLContainer.POSTGRESQL_PORT
-                + "/project_api_db")
+        return String.format(
+            "jdbc:postgresql://%s:%d/project_api_db",
+            if (usingDefaultBridgeNetwork) {
+                this.container.containerInfo.networkSettings.networks["bridge"]?.ipAddress
+            } else {
+                NETWORK_ALIAS
+            },
+            PostgreSQLContainer.POSTGRESQL_PORT
+        )
     }
 
     override fun getJdbcUrl(): String {
         verifyRunning()
-        return ("jdbc:postgresql://" + container.host + ":" + container.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT)
-                + "/project_api_db")
+        return String.format(
+            "jdbc:postgresql://%s:%d/project_api_db",
+            container.host,
+            container.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT)
+        )
     }
 }
