@@ -32,6 +32,11 @@ stages:
   - publish
   - release
 
+variables-export:
+  stage: build
+  script:
+    - export
+
 build-modules:
   stage: build
   dependencies: [ ]
