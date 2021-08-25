@@ -41,8 +41,8 @@ public class TestContainerService {
 
 	public TestContainerService(
 			final List<ContextContainer> contextContainers,
-			@Value("${test-automation.reuse-containers:false}") final boolean reuseContainers,
-			@Value("${test-automation.use-default-bridge-network:false}") final boolean useDefaultBridgeNetwork
+			@Value("${test-automation.settings.reuse-containers:false}") final boolean reuseContainers,
+			@Value("${test-automation.settings.use-default-bridge-network:false}") final boolean useDefaultBridgeNetwork
 	) {
 		this.contextContainers = contextContainers;
 		this.reuseContainers = reuseContainers;
