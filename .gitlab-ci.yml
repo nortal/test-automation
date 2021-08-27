@@ -60,7 +60,7 @@ release-version:
   dependencies: [ ]
   variables:
     GRGIT_USER: GitLab
-    GRGIT_PASS: "${GITLAB_TOKEN}"
+    GRGIT_PASS: "${RELEASE_TOKEN}"
   script: |
     git config user.name "GitLab"
     git config user.email gitlab@gtcybertech.com
