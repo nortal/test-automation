@@ -65,8 +65,7 @@ release-version:
     git config user.name "GitLab"
     git config user.email gitlab@gtcybertech.com
     ./gradlew release -Prelease.ignoreUncommittedChanges=true --stacktrace
-    URL=${CI_REPOSITORY_URL#*@}
-    git push --repo=git@${URL/\//:} --tags
+    git push "https://$GRGIT_USER:$GRGIT_PASS@${CI_REPOSITORY_URL#*@}" --tags
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always

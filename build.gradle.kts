@@ -1,6 +1,4 @@
-import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
-import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
-import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
+import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
@@ -22,20 +20,51 @@ scmVersion {
     repository(closureOf<pl.allegro.tech.build.axion.release.domain.RepositoryConfig> {
         pushTagsOnly = true
     })
-    checks(closureOf<pl.allegro.tech.build.axion.release.domain.ChecksConfig > {
+    checks(closureOf<pl.allegro.tech.build.axion.release.domain.ChecksConfig> {
         aheadOfRemote = false
     })
 }
 
 version = scmVersion.version
 
-allprojects {
-    val props = Properties()
-    rootProject.file("gradle-local.properties").takeIf { it.exists() }?.inputStream()?.use { props.load(it) }
+class MissingRequiredPropertyException(envVarName: String, propName: String) : GradleException(
+    "No '$envVarName' environment variable nor '$propName' in 'gradle-local.properties' are configured"
+)
 
+fun Properties.getRequiredProperty(envVarName: String, propName: String) =
+    System.getenv(envVarName).takeUnless { it.isNullOrBlank() }
+        ?: this.getProperty(propName).takeUnless { it.isNullOrBlank() }
+        ?: throw MissingRequiredPropertyException(envVarName, propName)
+
+val props = Properties()
+rootProject.file("gradle-local.properties").takeIf { it.exists() }?.inputStream()?.use { props.load(it) }
+
+allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
+        maven(props.getRequiredProperty("MAVEN_MIRROR_REPOSITORY_URL", "mirrorRepositoryUrl")) {
+            credentials {
+                username = props.getRequiredProperty("MAVEN_MIRROR_REPOSITORY_USERNAME", "mirrorRepositoryUsername")
+                password = props.getRequiredProperty("MAVEN_MIRROR_REPOSITORY_PASSWORD", "mirrorRepositoryPassword")
+            }
+        }
+        maven {
+            url = uri(props.getRequiredProperty("MAVEN_RELEASES_REPOSITORY_URL", "releasesRepoUrl"))
+            authentication { create<HttpHeaderAuthentication>("") }
+            credentials(HttpHeaderCredentials::class) {
+                name = System.getenv("CI_JOB_TOKEN")?.let { "Job-Token" } ?: "Private-Token"
+                value = props.getRequiredProperty("CI_JOB_TOKEN", "personalAccessToken")
+            }
+        }
+        maven {
+            url = uri(props.getRequiredProperty("MAVEN_SNAPSHOTS_REPOSITORY_URL", "snapshotsRepoUrl"))
+            authentication { create<HttpHeaderAuthentication>("") }
+            credentials(HttpHeaderCredentials::class) {
+                name = System.getenv("CI_JOB_TOKEN")?.let { "Job-Token" } ?: "Private-Token"
+                value = props.getRequiredProperty("CI_JOB_TOKEN", "personalAccessToken")
+            }
+        }
     }
 
     configurations.all {
@@ -87,18 +116,6 @@ subprojects {
 
     val props = Properties()
     rootProject.file("gradle-local.properties").takeIf { it.exists() }?.inputStream()?.use { props.load(it) }
-    val nexusUrl: String = System.getenv("GTCT_AMS_NEXUS_URL") ?: props.getProperty("nexusUrl")
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven("https://$nexusUrl/repository/ams-maven/") {
-            credentials {
-                username = System.getenv("GTCT_AMS_NEXUS_USERNAME") ?: props.getProperty("nexusUsername")
-                password = System.getenv("GTCT_AMS_NEXUS_PASSWORD") ?: props.getProperty("nexusPassword")
-            }
-        }
-    }
 
     val sourcesJar by tasks.creating(org.gradle.api.tasks.bundling.Jar::class) {
         archiveClassifier.set("sources")
@@ -117,13 +134,16 @@ subprojects {
         }
 
         repositories {
-            val snapshotsRepoUrl = "https://$nexusUrl/repository/ams-maven-snapshots/"
-            val releasesRepoUrl = "https://$nexusUrl/repository/ams-maven-releases/"
-
-            maven(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl) {
-                credentials {
-                    username = System.getenv("GTCT_AMS_NEXUS_USERNAME") ?: props.getProperty("nexusUsername")
-                    password = System.getenv("GTCT_AMS_NEXUS_PASSWORD") ?: props.getProperty("nexusPassword")
+            maven {
+                url = if (version.toString().endsWith("SNAPSHOT")) {
+                    uri(props.getRequiredProperty("MAVEN_SNAPSHOTS_REPOSITORY_URL", "snapshotsRepoUrl"))
+                } else {
+                    uri(props.getRequiredProperty("MAVEN_RELEASES_REPOSITORY_URL", "releasesRepoUrl"))
+                }
+                authentication { create<HttpHeaderAuthentication>("") }
+                credentials(HttpHeaderCredentials::class) {
+                    name = System.getenv("CI_JOB_TOKEN")?.let { "Job-Token" } ?: "Private-Token"
+                    value = props.getRequiredProperty("CI_JOB_TOKEN", "personalAccessToken")
                 }
             }
         }
