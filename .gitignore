@@ -6,7 +6,6 @@ target/
 .settings/
 *.iml
 .idea
-.run
 **/*.orig
 .DS_Store
 
