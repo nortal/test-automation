@@ -1,12 +1,5 @@
 package com.nortal.test.services.testcontainers;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import javax.annotation.PostConstruct;
-
 import com.github.dockerjava.api.model.Container;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.rules.ExternalResource;
@@ -22,6 +15,13 @@ import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.utility.MountableFile;
 import org.testcontainers.utility.ResourceReaper;
 
+import javax.annotation.PostConstruct;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 /**
  * This service is responsible for initializing and maintaining the black box testing setup.
  */
@@ -35,15 +35,18 @@ public class TestContainerService {
 
 	private final List<ContextContainer> contextContainers;
 	private final boolean reuseContainers;
+	private final boolean useDefaultBridgeNetwork;
 	private Network network;
 	private int exposedContainerPort = -1;
 
 	public TestContainerService(
 			final List<ContextContainer> contextContainers,
-			@Value("${context.reuse-containers:false}") final boolean reuseContainers
+			@Value("${test-automation.settings.reuse-containers:false}") final boolean reuseContainers,
+			@Value("${test-automation.settings.use-default-bridge-network:false}") final boolean useDefaultBridgeNetwork
 	) {
 		this.contextContainers = contextContainers;
 		this.reuseContainers = reuseContainers;
+		this.useDefaultBridgeNetwork = useDefaultBridgeNetwork;
 	}
 
 	/**
@@ -59,7 +62,7 @@ public class TestContainerService {
 				network = new ReusedNetwork(reusableNetworkOptional.get().getId());
 			}
 		} else {
-			network = Network.newNetwork();
+			network = useDefaultBridgeNetwork ? null : Network.newNetwork();
 		}
 
 		log.info("Starting context containers");

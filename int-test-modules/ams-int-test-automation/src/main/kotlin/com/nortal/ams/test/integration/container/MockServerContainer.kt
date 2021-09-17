@@ -14,14 +14,20 @@ import org.testcontainers.utility.DockerImageName
 class MockServerContainer(
     @Value("test-automation.containers.mock-server.aliases") private val aliases: Array<String>
 ) : ContextContainer {
+  private var usingDefaultBridgeNetwork: Boolean = false
   private val mockServer: MockServerContainer = configure()
   private lateinit var mockServerClient: MockServerClient
 
   override fun start(network: Network?) {
-    mockServer
+    if (network != null) {
+      mockServer
         .withNetworkAliases(*aliases)
         .withNetwork(network)
         .start()
+    } else {
+      usingDefaultBridgeNetwork = true
+      mockServer.start()
+    }
 
     mockServerClient = createClient()
   }
@@ -43,7 +49,15 @@ class MockServerContainer(
    * @param index corresponds to alias in configuration
    */
   fun getInternalEndpoint(index: Int): String? {
-    return String.format("http://%s:%d", aliases[index], MockServerContainer.PORT)
+    return String.format(
+      "http://%s:%d",
+      if (usingDefaultBridgeNetwork) {
+        mockServer.containerInfo.networkSettings.networks["bridge"]?.ipAddress
+      } else {
+        aliases[index]
+      },
+      MockServerContainer.PORT
+    )
   }
 
   private fun configure(): MockServerContainer {
