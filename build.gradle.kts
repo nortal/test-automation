@@ -134,7 +134,7 @@ subprojects {
         }
 
         repositories {
-           /* maven {
+            maven {
                 url = if (version.toString().endsWith("SNAPSHOT")) {
                     uri(props.getRequiredProperty("MAVEN_SNAPSHOTS_REPOSITORY_URL", "snapshotsRepoUrl"))
                 } else {
@@ -145,7 +145,7 @@ subprojects {
                     name = System.getenv("CI_JOB_TOKEN")?.let { "Job-Token" } ?: "Private-Token"
                     value = props.getRequiredProperty("CI_JOB_TOKEN", "personalAccessToken")
                 }
-            }*/
+            }
         }
     }
 
