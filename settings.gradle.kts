@@ -3,7 +3,7 @@ enableFeaturePreview("VERSION_CATALOGS")
 rootProject.name = "test-automation"
 
 include(":test-automation-core")
-include(":test-automation-postman")
+//include(":test-automation-postman")
 include(":test-automation-arch-rules")
 include(":test-automation-dev")
 include("test-automation-containers")
@@ -12,11 +12,11 @@ include("test-automation-jdbc")
 include("int-test-modules:ams-int-test-automation")
 
 plugins {
-    val kotlinVersion = "1.5.10"
+    val kotlinVersion = "1.6.0"
     kotlin("jvm") version kotlinVersion apply false
     kotlin("plugin.spring") version kotlinVersion apply false
     kotlin("kapt") version kotlinVersion apply false
-    id("io.freefair.lombok") version "6.0.0-m2" apply false
+    id("io.freefair.lombok") version "6.3.0" apply false
     id("pl.allegro.tech.build.axion-release") version "1.13.2" apply false
 }
 

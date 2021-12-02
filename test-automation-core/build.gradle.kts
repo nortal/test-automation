@@ -6,7 +6,7 @@ configurations {
 }
 
 dependencies {
-    implementation(project(":test-automation-postman"))
+//    implementation(project(":test-automation-postman"))
 
     api(libs.bundles.springboot)
     api(libs.bundles.retrofit2)

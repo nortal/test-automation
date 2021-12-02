@@ -1,5 +1,13 @@
 package com.nortal.test.core.testng;
 
+import static java.util.Comparator.comparingInt;
+
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.nortal.test.core.configuration.ScenarioProperties;
 import com.nortal.test.core.configuration.TestConfiguration;
 import com.nortal.test.core.model.Tags;
@@ -8,7 +16,6 @@ import com.nortal.test.core.plugin.TestSourcesModel;
 import com.nortal.test.core.services.hooks.AfterSuiteHook;
 import com.nortal.test.core.services.hooks.BeforeTestRunnerHook;
 import com.nortal.test.core.services.hooks.HookContext;
-import com.nortal.test.core.services.report.PostmanAutomationCollectionGenerator;
 import com.nortal.test.core.services.report.ReportGenerator;
 import com.nortal.test.core.services.report.ScenarioSkipService;
 import io.cucumber.plugin.event.TestSourceRead;
@@ -29,14 +36,6 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.Comparator.comparingInt;
-
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = {TestConfiguration.class})
 public abstract class AbstractTestNGIntegrationTests extends AbstractTestNGSpringContextTests implements SpringContextHolder {
@@ -51,9 +50,6 @@ public abstract class AbstractTestNGIntegrationTests extends AbstractTestNGSprin
 
 	@Autowired
 	private ReportGenerator reportGenerator;
-
-	@Autowired
-	private PostmanAutomationCollectionGenerator postmanAutomationCollectionGenerator;
 
 	@Autowired(required = false)
 	private List<BeforeTestRunnerHook> beforeTestRunnerHooks = Collections.emptyList();
@@ -180,7 +176,6 @@ public abstract class AbstractTestNGIntegrationTests extends AbstractTestNGSprin
 		workspaceManager.cleanupWorkspace();
 
 		try {
-			postmanAutomationCollectionGenerator.generate();
 			reportGenerator.generate();
 		} catch (Exception e) {
 			log.error("Error while generating report", e);

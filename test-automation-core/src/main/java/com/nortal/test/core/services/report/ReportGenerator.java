@@ -32,7 +32,7 @@ public class ReportGenerator {
 	private final ReportMailSender mailer;
 	private final FileHistoryService historyService;
 	private final ScenarioSkipService skipService;
-	private final PostmanAutomationCollectionGenerator postmanAutomationCollectionGenerator;
+//	private final PostmanAutomationCollectionGenerator postmanAutomationCollectionGenerator;
 
 	@Value("${integration.hosts.report_upload:#{null}}")
 	private String uploadHost;
@@ -46,8 +46,7 @@ public class ReportGenerator {
 		new TmoReportBuilder(getAllJsons(), configuration, getBaseUrl(),
 		                     reportProperties.getCapabilities(),
 		                     skipService.getSkippedScenarios(),
-		                     historyService.getCommits(),
-		                     postmanAutomationCollectionGenerator.getDataReport()).generateReports();
+		                     historyService.getCommits()).generateReports();
 
 		uploader.upload();
 		mailer.mail();

@@ -1,7 +1,6 @@
 package com.nortal.test.core.services;
 
 import com.nortal.test.core.model.ScenarioContext;
-import com.nortal.test.postman.PostmanScenarioRequestContextProvider;
 import io.cucumber.java.Scenario;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class ScenarioContainer implements PostmanScenarioRequestContextProvider {
+public class ScenarioContainer {
 
 	private final ThreadLocal<Scenario> scenario = new ThreadLocal<>();
 	private final ThreadLocal<ScenarioContext> scenarioContext = new ThreadLocal<>();
@@ -36,7 +35,6 @@ public class ScenarioContainer implements PostmanScenarioRequestContextProvider 
 		return scenario.get();
 	}
 
-	@Override
 	public ScenarioContext get() {
 		return scenarioContext.get();
 	}

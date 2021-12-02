@@ -18,7 +18,6 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.nortal.test.core.rest.interceptors.HeaderInterceptor;
 import com.nortal.test.core.rest.interceptors.LoggingInterceptor;
-import com.nortal.test.core.rest.interceptors.PostmanRetrofitInterceptor;
 import com.nortal.test.core.rest.interceptors.ReportInterceptor;
 import lombok.SneakyThrows;
 import okhttp3.Interceptor;
@@ -33,19 +32,16 @@ public class RetrofitConfiguration {
 	private final ReportInterceptor reportFilter;
 	private final LoggingInterceptor loggingFilter;
 	private final HeaderInterceptor headerInterceptor;
-	private final PostmanRetrofitInterceptor postmanRetrofitInterceptor;
 	private final Integer httpTimeout;
 
 
 	public RetrofitConfiguration(final ReportInterceptor reportFilter,
 			final LoggingInterceptor loggingFilter,
 			final HeaderInterceptor headerInterceptor,
-			final PostmanRetrofitInterceptor postmanRetrofitInterceptor,
 			@Value("${test-automation.integration.http.connection-time-out:30}") final Integer httpTimeout) {
 		this.reportFilter = reportFilter;
 		this.loggingFilter = loggingFilter;
 		this.headerInterceptor = headerInterceptor;
-		this.postmanRetrofitInterceptor = postmanRetrofitInterceptor;
 		this.httpTimeout = httpTimeout;
 	}
 
@@ -55,8 +51,7 @@ public class RetrofitConfiguration {
 		return httpClientWithInterceptors(asList(
 				headerInterceptor,
 				loggingFilter,
-				reportFilter,
-				postmanRetrofitInterceptor))
+				reportFilter))
 				.build();
 	}
 

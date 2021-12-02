@@ -9,16 +9,13 @@ public class TmoFeaturesOverviewPage extends FeaturesOverviewPage {
 
 	private final SkippedScenarios skippedScenarios;
 	private final ChangedFilesReport gdChanges;
-	private final PostmanDataReport postmanData;
 
 	public TmoFeaturesOverviewPage(final ReportResult reportResult, final Configuration configuration,
 			final SkippedScenarios skippedScenarios,
-			final ChangedFilesReport gdChanges,
-			final PostmanDataReport postmanData) {
+			final ChangedFilesReport gdChanges) {
 		super(reportResult, configuration);
 		this.skippedScenarios = skippedScenarios;
 		this.gdChanges = gdChanges;
-		this.postmanData = postmanData;
 	}
 
 	@Override
@@ -26,6 +23,5 @@ public class TmoFeaturesOverviewPage extends FeaturesOverviewPage {
 		super.prepareReport();
 		context.put("skippedScenarios", skippedScenarios);
 		context.put("gdChanges", gdChanges);
-		context.put("postmanData", postmanData);
 	}
 }

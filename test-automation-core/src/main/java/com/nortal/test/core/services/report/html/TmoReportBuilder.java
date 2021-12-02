@@ -16,18 +16,16 @@ public class TmoReportBuilder extends ReportBuilder {
 	private final List<String> capabilities;
 	private final SkippedScenarios skippedScenarios;
 	private final ChangedFilesReport gdChanges;
-	private final PostmanDataReport postmanData;
 
 	public TmoReportBuilder(final List<String> jsonFiles, final Configuration configuration,
 			final String reportBaseUrl, final List<String> capabilities,
 			final SkippedScenarios skippedScenarios,
-			final ChangedFilesReport gdChanges, final PostmanDataReport postmanData) {
+			final ChangedFilesReport gdChanges) {
 		super(jsonFiles, configuration);
 		this.reportBaseUrl = reportBaseUrl;
 		this.capabilities = capabilities;
 		this.skippedScenarios = skippedScenarios;
 		this.gdChanges = gdChanges;
-		this.postmanData = postmanData;
 	}
 
 	@Override
@@ -46,7 +44,7 @@ public class TmoReportBuilder extends ReportBuilder {
 
 	@Override
 	protected void generatePages(final Trends trends) {
-		new TmoFeaturesOverviewPage(reportResult, configuration, skippedScenarios, gdChanges, postmanData).generatePage();
+		new TmoFeaturesOverviewPage(reportResult, configuration, skippedScenarios, gdChanges).generatePage();
 
 		super.generatePages(trends);
 

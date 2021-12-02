@@ -2,7 +2,6 @@ package com.nortal.test.core.rest
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.nortal.test.core.rest.error.RestCallException
-import com.nortal.test.core.rest.interceptors.PostmanRetrofitInterceptor
 import okhttp3.Request
 import okio.Buffer
 import org.slf4j.LoggerFactory
@@ -117,16 +116,12 @@ class RetrofitCallHelper(@Qualifier("apiObjectMapper") private val apiObjectMapp
 
     private fun <T> executeRequest(apiCall: Call<T>, addToCollection: Boolean): Response<T> {
         return try {
-            if (addToCollection) {
-                PostmanRetrofitInterceptor.enable()
-            }
+
             apiCall.execute()
         } catch (e: IOException) {
             throw RestCallException.newException(e)
         } finally {
-            if (addToCollection) {
-                PostmanRetrofitInterceptor.disable()
-            }
+
         }
     }
 

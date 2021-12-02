@@ -6,24 +6,17 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.nortal.test.core.rest.HttpResponse;
-import com.nortal.test.postman.PostmanScenarioRequestContext;
 import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
 @ToString
-public class ScenarioContext implements PostmanScenarioRequestContext {
+public class ScenarioContext {
 	private final String scenarioId = UUID.randomUUID().toString();
 	private final OffsetDateTime scenarioStartTime = OffsetDateTime.now();
 
 	private final ScenarioCommonContext common = new ScenarioCommonContext();
-//	private final QueryCache queryCache = new QueryCache();
-
-	@Override
-	public String getJwtToken() {
-		return null;
-	}
 
 	@Data
 	public static class ScenarioCommonContext {
@@ -35,8 +28,6 @@ public class ScenarioContext implements PostmanScenarioRequestContext {
 			headers.put(key, value);
 		}
 	}
-
-
 
 
 }
