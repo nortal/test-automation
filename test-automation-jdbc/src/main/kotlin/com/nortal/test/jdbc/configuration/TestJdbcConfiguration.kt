@@ -14,11 +14,11 @@ import javax.sql.DataSource
 @Configuration
 @EnableConfigurationProperties(JdbcDataSourceProperties::class)
 @ComponentScan("com.nortal.test.jdbc")
-class TestJdbcConfiguration {
+open class TestJdbcConfiguration {
 
     @Bean
     @Primary
-    fun primaryDataSource(
+    open fun primaryDataSource(
         dataSourceProperties: JdbcDataSourceProperties,
         jdbcUrlProvider: JdbcUrlProvider
     ): DataSource {
@@ -32,7 +32,7 @@ class TestJdbcConfiguration {
 
     @Bean
     @Primary
-    fun jdbcTemplate(dataSource: DataSource): JdbcTemplate {
+    open fun jdbcTemplate(dataSource: DataSource): JdbcTemplate {
         return JdbcTemplate(dataSource)
     }
 }

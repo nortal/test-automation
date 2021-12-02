@@ -1,4 +1,4 @@
-image: openjdk:11.0.9.1-jdk
+image: openjdk:17-jdk-slim
 
 variables:
   # Disable the Gradle daemon for Continuous Integration servers as correctness
