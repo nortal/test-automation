@@ -23,7 +23,7 @@ plugins {
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            version("gradle", "7.0.2")
+            version("gradle", "7.3.0")
 
             version("cucumber", "6.10.3")
             version("spring-boot", "2.5.1")
