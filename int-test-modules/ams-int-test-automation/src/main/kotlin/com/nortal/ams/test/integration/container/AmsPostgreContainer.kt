@@ -1,7 +1,7 @@
 package com.nortal.ams.test.integration.container
 
 import com.nortal.test.jdbc.JdbcUrlProvider
-import com.nortal.test.services.testcontainers.ContextContainer
+import com.nortal.test.testcontainers.ContextualContainer
 import com.nortal.test.services.testcontainers.images.builder.ReusableImageFromDockerfile
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
@@ -14,7 +14,7 @@ import java.time.Duration
 
 @Component
 @ConditionalOnProperty(value = ["test-automation.containers.postgre.enabled"], havingValue = "true")
-class AmsPostgreContainer : ContextContainer, JdbcUrlProvider {
+class AmsPostgreContainer : ContextualContainer, JdbcUrlProvider {
     private var usingDefaultBridgeNetwork: Boolean = false
 
     val container: GenericContainer<*> = configure()

@@ -3,37 +3,50 @@ enableFeaturePreview("VERSION_CATALOGS")
 rootProject.name = "test-automation"
 
 include(":test-automation-core")
+//include(":test-automation-core-old")
 //include(":test-automation-postman")
-include(":test-automation-arch-rules")
-include(":test-automation-dev")
+//include(":test-automation-arch-rules")
+//include(":test-automation-dev")
 include("test-automation-containers")
-include("test-automation-report")
-include("test-automation-jdbc")
-include("int-test-modules:ams-int-test-automation")
+//include("test-automation-report")
+//include("test-automation-jdbc")
+include("test-automation-restassured")
+include("test-automation-plugin-allure")
+//include("int-test-modules:ams-int-test-automation")
+//include("int-test-modules:emr-int-test-automation")
+//include("demos:system-test-demo")
+
 
 plugins {
-    val kotlinVersion = "1.6.0"
+    val kotlinVersion = "1.6.10"
     kotlin("jvm") version kotlinVersion apply false
     kotlin("plugin.spring") version kotlinVersion apply false
     kotlin("kapt") version kotlinVersion apply false
     id("io.freefair.lombok") version "6.3.0" apply false
     id("pl.allegro.tech.build.axion-release") version "1.13.2" apply false
+    id("io.qameta.allure") version "2.9.6" apply false
 }
 
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
+            version("kotlin", "1.6.10")
             version("gradle", "7.3.0")
 
-            version("cucumber", "6.10.3")
-            version("spring-boot", "2.5.1")
+            version("cucumber", "7.1.0")
+            version("spring-boot", "2.6.1")
             version("retrofit", "2.9.0")
             version("jackson", "2.12.3")
-            version("testcontainers", "1.15.3")
+            version("testcontainers", "1.16.2")
 
+            alias("kotlin-stdlib-jdk8").to("org.jetbrains.kotlin","kotlin-stdlib-jdk8").versionRef("kotlin")
+            alias("kotlin-reflect").to("org.jetbrains.kotlin","kotlin-reflect").versionRef("kotlin")
             alias("cucumber-java").to("io.cucumber", "cucumber-java").versionRef("cucumber")
-            alias("cucumber-testng").to("io.cucumber", "cucumber-testng").versionRef("cucumber")
+            alias("cucumber-junit-platform-engine").to("io.cucumber", "cucumber-junit-platform-engine").versionRef("cucumber")
+            alias("cucumber-spring").to("io.cucumber", "cucumber-spring").versionRef("cucumber")
             alias("cucumber-reporting").to("net.masterthought", "cucumber-reporting").version("5.5.3")
+            alias("junit-platform-suite").to("org.junit.platform", "junit-platform-suite").version("1.8.2")
+
 
             alias("springboot-starter_").to("org.springframework.boot", "spring-boot-starter").versionRef("spring-boot")
             alias("springboot-starter-web").to("org.springframework.boot", "spring-boot-starter-web").versionRef("spring-boot")
@@ -52,6 +65,8 @@ dependencyResolutionManagement {
             alias("tika-core").to("org.apache.tika", "tika-core").version("1.26")
             alias("guava").to("com.google.guava", "guava").version("30.1.1-jre")
             alias("commons-codec").to("commons-codec", "commons-codec").version("1.15")
+            alias("commons-io").to("commons-io", "commons-io").version("2.11.0")
+
             alias("swagger_request_validator_core").to("com.atlassian.oai", "swagger-request-validator-core").version("2.18.0")
             alias("org.eclipse.jgit").to("org.eclipse.jgit", "org.eclipse.jgit").version("5.11.0.202103091610-r")
 
@@ -66,7 +81,16 @@ dependencyResolutionManagement {
             alias("jacoco-core").to("org.jacoco", "org.jacoco.core").version("0.8.7")
             alias("jacoco-report").to("org.jacoco", "org.jacoco.report").version("0.8.7")
 
-            bundle("cucumber", listOf("cucumber-java", "cucumber-testng"))
+            alias("allure-cucumber").to("io.qameta.allure", "allure-cucumber7-jvm").version("2.17.1")
+
+            bundle(
+                "cucumber", listOf(
+                    "cucumber-java",
+                    "cucumber-spring",
+                    "cucumber-junit-platform-engine",
+                    "junit-platform-suite"
+                )
+            )
             bundle(
                 "springboot", listOf(
                     "springboot-starter_", "springboot-starter-web", "springboot-starter-test",
@@ -78,3 +102,4 @@ dependencyResolutionManagement {
         }
     }
 }
+include("test-automation-core")

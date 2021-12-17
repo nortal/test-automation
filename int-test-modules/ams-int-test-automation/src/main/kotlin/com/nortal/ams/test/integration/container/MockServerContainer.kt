@@ -1,6 +1,6 @@
 package com.nortal.ams.test.integration.container
 
-import com.nortal.test.services.testcontainers.ContextContainer
+import com.nortal.test.testcontainers.ContextualContainer
 import org.mockserver.client.MockServerClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -13,7 +13,7 @@ import org.testcontainers.utility.DockerImageName
 @ConditionalOnProperty(value = ["test-automation.containers.mock-server.enabled"], havingValue = "true")
 class MockServerContainer(
     @Value("test-automation.containers.mock-server.aliases") private val aliases: Array<String>
-) : ContextContainer {
+) : ContextualContainer {
   private var usingDefaultBridgeNetwork: Boolean = false
   private val mockServer: MockServerContainer = configure()
   private lateinit var mockServerClient: MockServerClient

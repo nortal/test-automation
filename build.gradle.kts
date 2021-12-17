@@ -86,8 +86,8 @@ subprojects {
     version = rootProject.version
 
     configure<JavaPluginExtension> {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     tasks.withType<Jar> {
@@ -109,8 +109,12 @@ subprojects {
 
     tasks.withType<KotlinCompile> {
         kotlinOptions {
-            freeCompilerArgs = listOf("-Xjsr305=strict")
-            jvmTarget = JavaVersion.VERSION_17.majorVersion
+            freeCompilerArgs = listOf(
+                "-Xjsr305=strict",
+                "-Xjvm-default=all",
+                "-Xemit-jvm-type-annotations"
+            )
+            jvmTarget = JavaVersion.VERSION_11.majorVersion
         }
     }
 

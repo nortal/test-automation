@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @EnableConfigurationProperties(
-    TestContainerProperties::class,
+    ContainerProperties::class,
     TestableContainerProperties::class,
     TestableContainerJacocoProperties::class
 )

@@ -7,8 +7,7 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import com.nortal.test.core.services.hooks.BeforeSuiteHook;
-import com.nortal.test.testcontainers.configuration.TestContainerProperties;
+import com.nortal.test.testcontainers.configuration.ContainerProperties;
 import org.jacoco.core.analysis.Analyzer;
 import org.jacoco.core.analysis.CoverageBuilder;
 import org.jacoco.core.analysis.IBundleCoverage;
@@ -24,17 +23,17 @@ import org.jacoco.report.xml.XMLFormatter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JacocoCoverageReportGenerator implements BeforeSuiteHook {
-
+public class JacocoCoverageReportGenerator /*implements BeforeSuiteHook*/ {
+//TODO enable hook
 	private static final String DESTDIR = "build/jacoco/";
 	private static final String DESTFILE = DESTDIR + "system-tests.exec";
 	private static final String DESTFILE_XML = "build/jacoco/system-tests.xml";
 	private static final String ADDRESS = "localhost";
 
-	private final TestContainerProperties testContainerProperties;
+	private final ContainerProperties containerProperties;
 
-	public JacocoCoverageReportGenerator(TestContainerProperties testContainerProperties) {
-		this.testContainerProperties = testContainerProperties;
+	public JacocoCoverageReportGenerator(ContainerProperties containerProperties) {
+		this.containerProperties = containerProperties;
 	}
 
 	@SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
@@ -120,7 +119,7 @@ public class JacocoCoverageReportGenerator implements BeforeSuiteHook {
 	private void transferExecutionData() throws IOException {
 		createTargetDir();
 
-		try (var socket = new Socket(InetAddress.getByName(ADDRESS), testContainerProperties.getTestableContainer().getJacoco().getPort());
+		try (var socket = new Socket(InetAddress.getByName(ADDRESS), containerProperties.getTestableContainer().getJacoco().getPort());
 			 var localFile = Files.newOutputStream(Paths.get(DESTFILE))) {
 			final var localWriter = new ExecutionDataWriter(localFile);
 
@@ -144,9 +143,9 @@ public class JacocoCoverageReportGenerator implements BeforeSuiteHook {
 		}
 	}
 
-	@Override
+	//@Override
 	public void beforeSuite() {
-		if (testContainerProperties.getTestableContainer().getJacoco().getEnabled()) {
+		if (containerProperties.getTestableContainer().getJacoco().getEnabled()) {
 			Runtime.getRuntime().addShutdownHook(new Thread(this::generate));
 		}
 	}

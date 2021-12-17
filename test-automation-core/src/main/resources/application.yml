@@ -1,0 +1,11 @@
+spring:
+  main:
+    web-application-type: none
+
+logging:
+  level:
+    ROOT: INFO
+    cucumber: TRACE
+    com.nortal.test: INFO
+    org.springframework: INFO
+    org.springframework.jdbc: DEBUG
