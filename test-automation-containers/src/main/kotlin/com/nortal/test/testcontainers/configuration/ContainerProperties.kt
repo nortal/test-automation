@@ -31,11 +31,16 @@ class TestableContainerProperties(
     /**
      * directory where testable jar will be created. Picks first jar in dir.
      */
-    val jarBuildDir: String,
+    val jarBuildDir: String = "",
     /**
      * jar matcher regex pattern. Should be changes if build generates more than one jar.
      */
     val jarRegexMatcher: String = "^.+-.+.*(?<!plain)\\.jar\$",
+
+    /**
+     * If enabled exposes [debugPort] as remote debug port.
+     */
+    val jarDebugEnabled: Boolean = true,
     /**
      * Debug port for container debugging
      */
@@ -70,6 +75,26 @@ class TestableContainerJacocoProperties(
      * TCP communication port.
      */
     val port: Int = 3600,
+    /**
+     * TCP communication host.
+     */
+    val host: String = "localhost",
+    /**
+     * Root destination dir for jacoco content.
+     */
+    val destDir: String = "build/jacoco/",
+    /**
+     * HTML report directory.
+     */
+    val destReportDir: String = "build/reports/system-tests",
+    /**
+     * Regex to find java classes.
+     */
+    val structureAnalysisRegex: String = ".+build.classes.+[\\\\,/]main",
+    /**
+     * Regex to find java/kotlin source.
+     */
+    val sourceCodeLookupRegex: String = ".+src[\\\\,/]main[\\\\,/](kotlin|java)"
 )
 
 @ConstructorBinding

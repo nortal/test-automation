@@ -15,7 +15,6 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.BuildImageCmd;
 import com.github.dockerjava.api.command.BuildImageResultCallback;
 import com.github.dockerjava.api.model.BuildResponseItem;
-import lombok.Cleanup;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -83,7 +82,9 @@ public class ImageFromDockerfile extends LazyFuture<String>
 
 		DockerClient dockerClient = DockerClientFactory.instance().client();
 
-		try {
+		try (PipedInputStream in = new PipedInputStream();
+			 PipedOutputStream out = new PipedOutputStream(in)) {
+
 			if (deleteOnExit) {
 				ResourceReaper.instance().registerImageForCleanup(dockerImageName);
 			}
@@ -102,8 +103,7 @@ public class ImageFromDockerfile extends LazyFuture<String>
 			};
 
 			// We have to use pipes to avoid high memory consumption since users might want to build really big images
-			@Cleanup PipedInputStream in = new PipedInputStream();
-			@Cleanup PipedOutputStream out = new PipedOutputStream(in);
+
 
 			BuildImageCmd buildImageCmd = dockerClient.buildImageCmd(in);
 			configure(buildImageCmd);

@@ -54,15 +54,19 @@ abstract class AbstractTestableContainerSetup : BeforeSuiteHook {
      * Defines ports that will be exposed to external access. Example: debug port.
      */
     open fun getTargetContainerExposedPorts(): IntArray {
-        return intArrayOf(
-            testableContainerProperties.debugPort,
-            testableContainerProperties.jacoco.port
-        )
+        val ports: MutableList<Int> = mutableListOf()
+        if (testableContainerProperties.jacoco.enabled) {
+            ports.add(testableContainerProperties.jacoco.port)
+        }
+        if (testableContainerProperties.jarDebugEnabled) {
+            ports.add(testableContainerProperties.debugPort)
+        }
+        return ports.toIntArray()
     }
 
     abstract fun onContainerStartupInitiated()
 
-    private fun build(): ImageFromDockerfile {
+    protected open fun build(): ImageFromDockerfile {
         val appJarDir = Paths.get(testableContainerProperties.jarBuildDir)
         val appJarPath = Files.find(appJarDir, 1, { t, _ -> isMatchingJarFile(t) })
             .findFirst().orElseThrow()
@@ -130,7 +134,9 @@ abstract class AbstractTestableContainerSetup : BeforeSuiteHook {
         commandParts.add("-jar")
         commandParts.add(getMaxMemoryPart())
         commandParts.addAll(additionalCommandParts())
-        commandParts.addAll(getDebugPart())
+        if (testableContainerProperties.jarDebugEnabled) {
+            commandParts.addAll(getDebugPart())
+        }
         if (testableContainerProperties.jacoco.enabled) {
             commandParts.add(getJacocoPart())
         }

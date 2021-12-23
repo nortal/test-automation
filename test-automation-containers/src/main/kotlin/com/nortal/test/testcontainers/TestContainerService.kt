@@ -33,28 +33,12 @@ open class TestContainerService(
         private const val INTERNAL_HTTP_PORT = 8080
     }
 
-
-    /**
-     * Starts the provided application image in a container.
-     * Note: server.port must be set to 8080 for the correct port to be exposed.
-     *
-     * @param image   of the application under test
-     * @param timeout of the application under test
-     */
     @JvmOverloads
-    fun startApplicationUnderTest(image: ImageFromDockerfile, timeout: Duration = TIMEOUT) {
-        val applicationContainer: GenericContainer<*> =
-            KGenericContainer(image).withNetwork(testContainerNetworkProvider.network).withExposedPorts(INTERNAL_HTTP_PORT)
-                .withStartupTimeout(timeout)
-        stopContainersOfOlderImage(image)
-        startContainer(applicationContainer)
-    }
-
     fun startApplicationUnderTest(
-        image: ImageFromDockerfile, fixedExposedPort: IntArray, envConfig: Map<String, String>
+        image: ImageFromDockerfile, fixedExposedPort: IntArray = IntArray(0), envConfig: Map<String, String> = mapOf()
     ) {
         val customFixedHostPortGenericContainer = CustomFixedHostPortGenericContainer(image)
-        val allExposedPorts: MutableList<Int?> = ArrayList()
+        val allExposedPorts: MutableList<Int> = ArrayList()
         allExposedPorts.add(INTERNAL_HTTP_PORT)
         for (fixedPort in fixedExposedPort) {
             customFixedHostPortGenericContainer.withFixedExposedPort(fixedPort, fixedPort)
@@ -64,8 +48,14 @@ open class TestContainerService(
             customFixedHostPortGenericContainer.withNetwork(testContainerNetworkProvider.network)
                 .withExposedPorts(*allExposedPorts.toTypedArray())
                 .withEnv(envConfig)
-                .withCopyFileToContainer(MountableFile.forClasspathResource("jacoco/org.jacoco.agent.jar"), "/jacocoagent.jar")
-                .withCommand(getJacocoPort()).withStartupTimeout(TIMEOUT)
+                .withStartupTimeout(TIMEOUT)
+
+        if (containerProperties.testableContainer.jacoco.enabled) {
+            val mountableFile = MountableFile.forClasspathResource("jacoco/org.jacoco.agent.jar")
+            applicationContainer
+                .withCommand(getJacocoPort())
+                .withCopyFileToContainer(mountableFile, "/jacocoagent.jar")
+        }
 
         stopContainersOfOlderImage(image)
         startContainer(applicationContainer)

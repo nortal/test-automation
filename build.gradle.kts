@@ -27,6 +27,8 @@ scmVersion {
 
 version = scmVersion.version
 
+val targetJavaVersion = JavaVersion.VERSION_1_8
+
 class MissingRequiredPropertyException(envVarName: String, propName: String) : GradleException(
     "No '$envVarName' environment variable nor '$propName' in 'gradle-local.properties' are configured"
 )
@@ -79,15 +81,14 @@ subprojects {
         plugin("maven-publish")
         plugin("org.jetbrains.kotlin.jvm")
         plugin("org.jetbrains.kotlin.plugin.spring")
-        plugin("io.freefair.lombok")
     }
 
     group = "com.nortal.test"
     version = rootProject.version
 
     configure<JavaPluginExtension> {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = targetJavaVersion
+        targetCompatibility = targetJavaVersion
     }
 
     tasks.withType<Jar> {
@@ -114,7 +115,7 @@ subprojects {
                 "-Xjvm-default=all",
                 "-Xemit-jvm-type-annotations"
             )
-            jvmTarget = JavaVersion.VERSION_11.majorVersion
+            jvmTarget = targetJavaVersion.toString()
         }
     }
 
@@ -154,9 +155,3 @@ subprojects {
     }
 
 }
-
-tasks.withType<Wrapper> {
-    gradleVersion = libs.versions.gradle.get()
-    distributionType = Wrapper.DistributionType.BIN
-}
-

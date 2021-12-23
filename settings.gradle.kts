@@ -3,15 +3,17 @@ enableFeaturePreview("VERSION_CATALOGS")
 rootProject.name = "test-automation"
 
 include(":test-automation-core")
+include(":test-automation-assert")
 //include(":test-automation-core-old")
 //include(":test-automation-postman")
 //include(":test-automation-arch-rules")
 //include(":test-automation-dev")
 include("test-automation-containers")
 //include("test-automation-report")
-//include("test-automation-jdbc")
+include("test-automation-jdbc")
 include("test-automation-restassured")
-include("test-automation-plugin-allure")
+include("test-automation-feign")
+include("test-automation-allure")
 //include("int-test-modules:ams-int-test-automation")
 //include("int-test-modules:emr-int-test-automation")
 //include("demos:system-test-demo")
@@ -22,7 +24,6 @@ plugins {
     kotlin("jvm") version kotlinVersion apply false
     kotlin("plugin.spring") version kotlinVersion apply false
     kotlin("kapt") version kotlinVersion apply false
-    id("io.freefair.lombok") version "6.3.0" apply false
     id("pl.allegro.tech.build.axion-release") version "1.13.2" apply false
     id("io.qameta.allure") version "2.9.6" apply false
 }
@@ -31,13 +32,13 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
             version("kotlin", "1.6.10")
-            version("gradle", "7.3.0")
 
             version("cucumber", "7.1.0")
             version("spring-boot", "2.6.1")
-            version("retrofit", "2.9.0")
+            version("spring-cloud", "3.1.0")
             version("jackson", "2.12.3")
             version("testcontainers", "1.16.2")
+            version("rest-assured", "4.4.0")
 
             alias("kotlin-stdlib-jdk8").to("org.jetbrains.kotlin","kotlin-stdlib-jdk8").versionRef("kotlin")
             alias("kotlin-reflect").to("org.jetbrains.kotlin","kotlin-reflect").versionRef("kotlin")
@@ -47,7 +48,7 @@ dependencyResolutionManagement {
             alias("cucumber-reporting").to("net.masterthought", "cucumber-reporting").version("5.5.3")
             alias("junit-platform-suite").to("org.junit.platform", "junit-platform-suite").version("1.8.2")
 
-
+            //Spring Boot
             alias("springboot-starter_").to("org.springframework.boot", "spring-boot-starter").versionRef("spring-boot")
             alias("springboot-starter-web").to("org.springframework.boot", "spring-boot-starter-web").versionRef("spring-boot")
             alias("springboot-starter-jdbc").to("org.springframework.boot", "spring-boot-starter-jdbc").versionRef("spring-boot")
@@ -56,11 +57,14 @@ dependencyResolutionManagement {
             alias("springboot-starter-mail").to("org.springframework.boot", "spring-boot-starter-mail").versionRef("spring-boot")
             alias("springboot-configuration-processor").to("org.springframework.boot", "spring-boot-configuration-processor")
                 .versionRef("spring-boot")
+            //Spring Boot cloud
+            alias("springcloud-openfeign").to("org.springframework.cloud","spring-cloud-starter-openfeign").versionRef("spring-cloud")
 
-            alias("retrofit2").to("com.squareup.retrofit2", "retrofit").versionRef("retrofit")
-            alias("converter-gson").to("com.squareup.retrofit2", "converter-gson").versionRef("retrofit")
-            alias("converter-jackson").to("com.squareup.retrofit2", "converter-jackson").versionRef("retrofit")
-            alias("converter-scalars").to("com.squareup.retrofit2", "converter-scalars").versionRef("retrofit")
+            alias("restassured").to("io.rest-assured", "rest-assured").versionRef("rest-assured")
+            alias("restassured-jsonpath").to("io.rest-assured", "json-path").versionRef("rest-assured")
+
+//            alias("converter-jackson").to("com.squareup.retrofit2", "converter-jackson").versionRef("retrofit")
+//            alias("converter-scalars").to("com.squareup.retrofit2", "converter-scalars").versionRef("retrofit")
 
             alias("tika-core").to("org.apache.tika", "tika-core").version("1.26")
             alias("guava").to("com.google.guava", "guava").version("30.1.1-jre")
@@ -97,9 +101,8 @@ dependencyResolutionManagement {
                     "springboot-starter-log4j2", "springboot-starter-mail", "springboot-starter-jdbc"
                 )
             )
-            bundle("retrofit2", listOf("retrofit2", "converter-gson", "converter-jackson", "converter-scalars"))
+            bundle("restassured", listOf("restassured", "restassured-jsonpath"))
             bundle("jacoco", listOf("jacoco-core", "jacoco-report"))
         }
     }
 }
-include("test-automation-core")

@@ -1,6 +1,5 @@
 package com.nortal.test.jdbc.configuration
 
-import com.nortal.test.jdbc.JdbcDataSourceProperties
 import com.nortal.test.jdbc.JdbcUrlProvider
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.jdbc.DataSourceBuilder
@@ -9,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import javax.sql.DataSource
 
 @Configuration
@@ -31,8 +31,12 @@ open class TestJdbcConfiguration {
     }
 
     @Bean
-    @Primary
-    open fun jdbcTemplate(dataSource: DataSource): JdbcTemplate {
+    open fun defaultJdbcTemplate(dataSource: DataSource): JdbcTemplate {
         return JdbcTemplate(dataSource)
+    }
+
+    @Bean
+    open fun defaultNamedParameterJdbcTemplate(dataSource: DataSource): NamedParameterJdbcTemplate {
+        return NamedParameterJdbcTemplate(dataSource)
     }
 }
