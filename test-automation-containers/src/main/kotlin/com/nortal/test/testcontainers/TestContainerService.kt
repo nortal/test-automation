@@ -1,8 +1,9 @@
 package com.nortal.test.testcontainers
 
 import com.github.dockerjava.api.model.Container
-import com.nortal.test.core.services.TestableApplicationPortProvider
+import com.nortal.test.core.services.TestableApplicationInfoProvider
 import com.nortal.test.testcontainers.configuration.ContainerProperties
+import com.nortal.test.testcontainers.images.builder.ImageFromDockerfile
 import org.apache.commons.lang3.time.StopWatch
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -10,8 +11,6 @@ import org.springframework.stereotype.Service
 import org.testcontainers.DockerClientFactory
 import org.testcontainers.containers.CustomFixedHostPortGenericContainer
 import org.testcontainers.containers.GenericContainer
-import org.testcontainers.containers.KGenericContainer
-import com.nortal.test.testcontainers.images.builder.ImageFromDockerfile
 import org.testcontainers.utility.MountableFile
 import java.time.Duration
 import java.util.*
@@ -23,9 +22,10 @@ import java.util.*
 open class TestContainerService(
     private val testContainerNetworkProvider: TestContainerNetworkProvider,
     private val containerProperties: ContainerProperties,
-) : TestableApplicationPortProvider {
+) : TestableApplicationInfoProvider {
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
+    private var exposedContainerHost: String? = null
     private var exposedContainerPort: Int? = null
 
     companion object {
@@ -96,7 +96,12 @@ open class TestContainerService(
         }
         log.info("Application container started in {}ms", timer.time)
         exposedContainerPort = applicationContainer.getMappedPort(INTERNAL_HTTP_PORT)
-        log.info("Mapping the exposed internal application port of {} to {}", INTERNAL_HTTP_PORT, exposedContainerPort)
+        exposedContainerHost = applicationContainer.host
+        log.info("Mapping the exposed internal application on {} port of {} to {}", exposedContainerHost, INTERNAL_HTTP_PORT, exposedContainerPort)
+    }
+
+    override fun getHost(): String {
+        return exposedContainerHost ?: throw AssertionError("Testable container was not initialized. Check execution order.")
     }
 
     override fun getPort(): Int {

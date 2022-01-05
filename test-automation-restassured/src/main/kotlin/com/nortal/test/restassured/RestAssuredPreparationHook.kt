@@ -1,7 +1,7 @@
 package com.nortal.test.restassured
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.nortal.test.core.services.TestableApplicationPortProvider
+import com.nortal.test.core.services.TestableApplicationInfoProvider
 import com.nortal.test.core.services.hooks.BeforeSuiteHook
 import com.nortal.test.restassured.logs.ExclusionEnablingBasicClientConnectionManager
 import io.restassured.RestAssured
@@ -10,7 +10,6 @@ import io.restassured.config.ObjectMapperConfig
 import io.restassured.mapper.ObjectMapperType
 import io.restassured.path.json.mapper.factory.Jackson2ObjectMapperFactory
 import org.apache.http.impl.client.DefaultHttpClient
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import java.lang.reflect.Type
 
@@ -20,7 +19,7 @@ import java.lang.reflect.Type
 @Component
 class RestAssuredPreparationHook(
     private val objectMapperProvider: RestAssuredConfiguration.ObjectMapperProvider,
-    private val portProvider: TestableApplicationPortProvider,
+    private val portProvider: TestableApplicationInfoProvider,
 ) : BeforeSuiteHook {
 
     /**
