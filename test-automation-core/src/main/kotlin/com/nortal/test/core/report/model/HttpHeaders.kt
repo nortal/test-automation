@@ -8,10 +8,10 @@ class HttpHeaders private constructor(private val headers: Map<String, HttpHeade
     companion object {
 
         fun fromMap(headerMap: Map<String, List<String>>): HttpHeaders {
-            //TODO simplify
-            return HttpHeaders(headers = headerMap
-                .mapKeys { entry -> entry.key.toUpperCase() }
-                .mapValues { entry -> HttpHeader(entry.key.toUpperCase(), entry.value) })
+            val headers = headerMap
+                .mapKeys { entry -> entry.key.uppercase() }
+                .mapValues { entry -> HttpHeader(entry.key.uppercase(), entry.value) }
+            return HttpHeaders(headers)
         }
     }
 
@@ -21,7 +21,7 @@ class HttpHeaders private constructor(private val headers: Map<String, HttpHeade
     }
 
     fun getByName(name: String): HttpHeader? {
-        return headers[name.toUpperCase()]
+        return headers[name.uppercase()]
     }
 
     fun getFirstByName(name: String): String? {

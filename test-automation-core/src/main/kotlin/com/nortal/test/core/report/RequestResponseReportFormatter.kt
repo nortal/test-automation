@@ -52,7 +52,7 @@ open class RequestResponseReportFormatter(
         requestSpec: HttpRequest
     ): ReportFormatter.Attachment {
         attachment
-            .setName(requestSpec.method.toUpperCase() + " " + requestSpec.url)
+            .setName(requestSpec.method.uppercase() + " " + requestSpec.url)
             .setTitle(getRequestDescription(requestSpec))
             .addSection("Request:", ReportFormatter.SectionType.STANDARD, curlBuilder.getRequestCurl(requestSpec))
         return attachment

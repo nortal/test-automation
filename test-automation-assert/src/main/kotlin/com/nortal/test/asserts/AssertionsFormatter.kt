@@ -27,7 +27,7 @@ open class AssertionsFormatter(
             JsonFormattingUtils.prettyPrintHtml(validation.context)
         )
         attachment.addSection("Assertions", ReportFormatter.SectionType.TABLE, formattedAssertionsTable)
-        reportFormatter!!.formatAndAddToReport(attachment)
+        reportFormatter.formatAndAddToReport(attachment)
     }
 
     fun formatIntoErrorMessage(failedAssertions: List<ValidationService.CompletedAssertion>): String {

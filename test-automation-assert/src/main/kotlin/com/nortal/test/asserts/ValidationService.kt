@@ -57,7 +57,7 @@ open class ValidationService(
             }
             completedAssertions.add(completedAssertion)
         }
-        assertionsFormatter!!.formatAndAttachToReport(validation, completedAssertions)
+        assertionsFormatter.formatAndAttachToReport(validation, completedAssertions)
         return completedAssertions
     }
 
@@ -131,7 +131,7 @@ open class ValidationService(
             return CompletedAssertion(assertion, baseExpression, AssertionStatus.FAILED, "Can not perform CONTAINS. Expected value not String!")
         }
         val actualString = actualValue
-        val expectedString = assertion.expectedValue as String
+        val expectedString = assertion.expectedValue
         val contains = actualString.contains(expectedString)
         return CompletedAssertion(assertion, baseExpression, if (contains) AssertionStatus.OK else AssertionStatus.FAILED, actualString)
     }
@@ -154,7 +154,7 @@ open class ValidationService(
             )
         }
         val expectedValues: MutableCollection<Any> = ArrayList()
-        for (o in assertion.expectedValue as Collection<*>) {
+        for (o in assertion.expectedValue) {
             expectedValues.add(o!!)
         }
         val actualValues: MutableCollection<Any> = ArrayList()
@@ -179,7 +179,7 @@ open class ValidationService(
             )
         }
         val expectedValues: MutableCollection<Any?> = ArrayList()
-        for (o in assertion.expectedValue as Collection<*>) {
+        for (o in assertion.expectedValue) {
             expectedValues.add(o)
         }
         return if (!expectedValues.contains(actualValue)) {
@@ -204,7 +204,7 @@ open class ValidationService(
                 "Can not perform LIST CONTAINS. Expected value not Collection!"
             )
         }
-        val expectedValues = assertion.expectedValue as Collection<*>
+        val expectedValues = assertion.expectedValue
         val actualValues = actualValue
         return if (actualValues.containsAll(expectedValues) && expectedValues.containsAll(actualValues)) {
             CompletedAssertion(
@@ -229,7 +229,7 @@ open class ValidationService(
             return CompletedAssertion(assertion, baseExpression, AssertionStatus.FAILED, "Can not perform LIST CONTAINS. Expected value not List!")
         }
         val nonExpectedValues: MutableList<String> = ArrayList()
-        for (o in assertion.expectedValue as List<*>) {
+        for (o in assertion.expectedValue) {
             nonExpectedValues.add(o as String)
         }
         val actualValues: MutableList<String> = ArrayList()
@@ -292,7 +292,7 @@ open class ValidationService(
                 "NOT_EMPTY"
             )
         } else if (Arrays.isArray(actualValue)) {
-            if (Arrays.isNullOrEmpty(actualValue as Array<Any>?)) CompletedAssertion(
+            if (Arrays.isNullOrEmpty(actualValue as Array<*>?)) CompletedAssertion(
                 assertion,
                 baseExpression,
                 AssertionStatus.OK,

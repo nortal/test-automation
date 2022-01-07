@@ -10,7 +10,7 @@ import java.util.function.Consumer
 class CurlBuilder {
     fun getRequestCurl(request: HttpRequest): String {
         val curl = StringBuilder("curl -X ")
-            .append(request.method.toUpperCase())
+            .append(request.method.uppercase())
             .append(" \\\n'")
             .append(request.url)
             .append("' \\\n")
