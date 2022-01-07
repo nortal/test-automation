@@ -13,7 +13,8 @@ import org.junit.platform.suite.api.Suite
     ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = TestRunner.FRAMEWORK_BOOTSTRAP_GLUE),
     ConfigurationParameter(key = PLUGIN_PUBLISH_QUIET_PROPERTY_NAME, value = "true")
 )
-abstract class TestRunner() {
+@Suppress("UtilityClassWithPublicConstructor", "UnnecessaryAbstractClass")
+abstract class TestRunner {
     companion object {
         const val FRAMEWORK_BOOTSTRAP_GLUE = "com.nortal.test.core.cucumber.glue"
 

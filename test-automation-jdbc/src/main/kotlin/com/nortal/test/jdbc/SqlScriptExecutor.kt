@@ -10,7 +10,7 @@ class SqlScriptExecutor(
     private val classpathFileResolver: ClasspathFileResolver
 ) {
     companion object {
-        private val PREFIX_CLASSPATH = "classpath:"
+        private const val PREFIX_CLASSPATH = "classpath:"
     }
 
     fun executeFromClasspath(filePath: String) {

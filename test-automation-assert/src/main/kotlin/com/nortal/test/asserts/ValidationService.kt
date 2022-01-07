@@ -64,25 +64,12 @@ open class ValidationService(
     private fun doAssert(ctx: EvaluationContext, assertion: Assertion, validation: Validation): CompletedAssertion {
         val baseExpression: String = validation.baseExpression
         val actualValue: Any?
-        var expression: String? = null
         try {
-            expression = getExpression(assertion, baseExpression)
-            if (assertion.expectedValue != null) {
-                ctx.setVariable(EXPECTED_CONTEXT_VAR, assertion.expectedValue)
-            }
-            if (assertion.contextValues != null) {
-                assertion.contextValues.forEach { name: String?, value: Any? -> ctx.setVariable(name!!, value) }
-            }
-            if (assertion.actualValue != null) {
-                actualValue = assertion.actualValue
-            } else {
-                actualValue = PARSER.parseExpression(expression).getValue(ctx)
-            }
+            actualValue = resolveActualValue(ctx, assertion, validation)
         } catch (e: Exception) {
-            log.debug("Assertion failed to parse/evaluate. Expression : {}", expression, e)
             return CompletedAssertion(assertion, baseExpression, AssertionStatus.FAILED, "Assertion failed to parse/evaluate path: " + e.message)
-        } 
-        
+        }
+
         return when (assertion.operation) {
             AssertionOperation.EQUALS -> assertEquals(assertion, baseExpression, actualValue)
             AssertionOperation.NOT_EQUALS -> assertNotEquals(assertion, baseExpression, actualValue)
@@ -96,6 +83,25 @@ open class ValidationService(
             AssertionOperation.EMPTY -> assertEmpty(assertion, baseExpression, actualValue)
             AssertionOperation.EXPRESSION -> assertExpression(assertion, baseExpression, actualValue)
             else -> throw IllegalStateException("Unsupported verification operation" + assertion.operation)
+        }
+    }
+
+    private fun resolveActualValue(ctx: EvaluationContext, assertion: Assertion, validation: Validation): Any? {
+        var expression: String? = null
+        try {
+            val baseExpression: String = validation.baseExpression
+            expression = getExpression(assertion, baseExpression)
+            if (assertion.expectedValue != null) {
+                ctx.setVariable(EXPECTED_CONTEXT_VAR, assertion.expectedValue)
+            }
+            if (assertion.contextValues != null) {
+                assertion.contextValues.forEach { (name: String?, value: Any?) -> ctx.setVariable(name, value) }
+            }
+
+            return assertion.actualValue ?: PARSER.parseExpression(expression).getValue(ctx)
+        } catch (e: Exception) {
+            log.debug("Assertion failed to parse/evaluate. Expression : {}", expression, e)
+            throw e
         }
     }
 

@@ -1,5 +1,6 @@
 package com.nortal.test.testcontainers.jacoco
 
+import com.nortal.test.core.exception.TestAutomationException
 import com.nortal.test.core.services.hooks.AfterSuiteHook
 import com.nortal.test.testcontainers.configuration.TestableContainerJacocoProperties
 import org.apache.commons.lang3.time.StopWatch
@@ -50,7 +51,7 @@ open class JacocoCoverageReportGenerator(private val jacocoProperties: TestableC
             generateReport()
             log.info("Jacoco report generated in {}ms.", stopWatch.getTime(TimeUnit.MILLISECONDS))
         } catch (e: Exception) {
-            throw RuntimeException("System tests coverage report generator failed", e)
+            throw TestAutomationException("System tests coverage report generator failed", e)
         }
     }
 

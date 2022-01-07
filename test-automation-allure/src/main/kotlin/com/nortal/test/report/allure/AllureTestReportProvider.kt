@@ -9,6 +9,4 @@ class AllureTestReportProvider : TestReportProvider {
     override fun getCucumberPlugin(): String {
         return AllureCucumber7Jvm::class.java.name
     }
-
-
 }

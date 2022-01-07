@@ -3,7 +3,10 @@ package com.nortal.test.core.model
 import java.time.OffsetDateTime
 import java.util.*
 
-
+/**
+ * TODO
+ */
+@Suppress("UnusedPrivateMember")
 class ScenarioContext {
     private val scenarioId = UUID.randomUUID().toString()
     private val scenarioStartTime = OffsetDateTime.now()

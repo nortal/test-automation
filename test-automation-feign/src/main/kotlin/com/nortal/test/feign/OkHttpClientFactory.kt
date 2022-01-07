@@ -45,8 +45,14 @@ class OkHttpClientFactory {
 
     private val trustManager: X509TrustManager
         get() = object : X509TrustManager {
-            override fun checkClientTrusted(x509Certificates: Array<X509Certificate>, s: String) {}
-            override fun checkServerTrusted(x509Certificates: Array<X509Certificate>, s: String) {}
+            override fun checkClientTrusted(x509Certificates: Array<X509Certificate>, s: String) {
+                //do nothing
+            }
+
+            override fun checkServerTrusted(x509Certificates: Array<X509Certificate>, s: String) {
+                //do nothing
+            }
+
             override fun getAcceptedIssuers(): Array<X509Certificate?> {
                 return arrayOfNulls(0)
             }

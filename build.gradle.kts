@@ -7,6 +7,7 @@ plugins {
     `java-library`
     `maven-publish`
     id("pl.allegro.tech.build.axion-release")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 scmVersion {
@@ -81,6 +82,7 @@ subprojects {
         plugin("maven-publish")
         plugin("org.jetbrains.kotlin.jvm")
         plugin("org.jetbrains.kotlin.plugin.spring")
+        plugin("io.gitlab.arturbosch.detekt")
     }
 
     group = "com.nortal.test"
@@ -154,4 +156,7 @@ subprojects {
         }
     }
 
+    detekt {
+        config = files("${project.rootDir}/detekt-config.yml")
+    }
 }

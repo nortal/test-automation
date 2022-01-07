@@ -28,7 +28,6 @@ workflow:
 
 stages:
   - build
-  - test
   - publish
   - release
 
@@ -39,13 +38,7 @@ build-modules:
     <<: *global_cache
     policy: pull-push
   script: |
-    ./gradlew clean build  -x test
-
-execute-tests:
-  stage: test
-  dependencies: [ ]
-  script: |
-    ./gradlew test
+    ./gradlew clean build
 
 publish-modules:
   stage: publish

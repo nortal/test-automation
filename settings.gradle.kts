@@ -26,6 +26,7 @@ plugins {
     kotlin("plugin.spring") version kotlinVersion apply false
     kotlin("kapt") version kotlinVersion apply false
     id("pl.allegro.tech.build.axion-release") version "1.13.2" apply false
+    id("io.gitlab.arturbosch.detekt").version("1.19.0") apply false
     id("io.qameta.allure") version "2.9.6" apply false
 }
 
