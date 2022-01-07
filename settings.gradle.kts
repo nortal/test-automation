@@ -14,6 +14,7 @@ include("test-automation-jdbc")
 include("test-automation-restassured")
 include("test-automation-feign")
 include("test-automation-allure")
+include("test-automation-selenide")
 //include("int-test-modules:ams-int-test-automation")
 //include("int-test-modules:emr-int-test-automation")
 //include("demos:system-test-demo")
@@ -34,7 +35,7 @@ dependencyResolutionManagement {
             version("kotlin", "1.6.10")
 
             version("cucumber", "7.1.0")
-            version("spring-boot", "2.6.1")
+            version("spring-boot", "2.6.2")
             version("spring-cloud", "3.1.0")
             version("jackson", "2.12.3")
             version("testcontainers", "1.16.2")
@@ -87,6 +88,7 @@ dependencyResolutionManagement {
 
             alias("allure-cucumber").to("io.qameta.allure", "allure-cucumber7-jvm").version("2.17.1")
 
+            alias("selenide").to("com.codeborne", "selenide").version("6.1.2")
             bundle(
                 "cucumber", listOf(
                     "cucumber-java",

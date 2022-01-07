@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration
  */
 @ComponentScan("com.nortal.test")
 @EnableConfigurationProperties(
-    TestAutomationProperties::class,
+    TestAutomationProperties::class
 )
 @Configuration
 open class TestConfiguration {
