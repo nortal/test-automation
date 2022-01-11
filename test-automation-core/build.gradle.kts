@@ -2,13 +2,6 @@ plugins {
     id("org.jetbrains.kotlin.kapt")
 }
 
-configurations {
-    all {
-        exclude("org.springframework.boot", "spring-boot-starter-logging")
-        exclude("ch.qos.logback", "logback-classic")
-    }
-}
-
 dependencies {
     kapt(libs.springboot.configuration.processor)
 

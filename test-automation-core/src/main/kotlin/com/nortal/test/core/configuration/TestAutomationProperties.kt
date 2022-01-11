@@ -13,4 +13,8 @@ data class TestAutomationProperties(
      * environment identifier.
      */
     val environment: String = "none",
+    /**
+     * A name that is used in published reports.
+     */
+    val reportName: String = "tet-report"
 )

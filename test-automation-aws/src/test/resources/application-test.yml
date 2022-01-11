@@ -1,0 +1,10 @@
+logging:
+  level:
+    ROOT: INFO
+
+test-automation:
+  aws:
+    s3-bucket-name: "test-automation-demo1"
+    region: "eu-central-1"
+    access-key: "replace-it"
+    secret-key: "replace-it"
