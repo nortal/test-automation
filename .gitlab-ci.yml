@@ -5,20 +5,19 @@ variables:
   # is usually a priority over speed in CI environments. Using a fresh
   # runtime for each build is more reliable since the runtime is completely
   # isolated from any previous builds.
-#  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  # GRADLE_OPTS: "-Dorg.gradle.daemon=false"
   # Tags are not fetched if GitLab shallow cloning is enabled (default).
   # However, release plugin requires actual tags to be available.
   GIT_FETCH_EXTRA_FLAGS: --tags
 
-#cache:
-#  key: gradle-cache-key
-#  paths:
-#    - .gradle/wrapper
-#    - .gradle/caches
-#  policy: pull
-#
-#before_script:
-#  - export GRADLE_USER_HOME=`pwd`/.gradle
+cache:
+  key:
+    files:
+      - gradle/wrapper/gradle-wrapper.properties
+  paths:
+    - cache/caches/
+    - cache/notifications/
+    - cache/wrapper/
 
 workflow:
   rules:
@@ -34,24 +33,14 @@ stages:
 build-modules:
   stage: build
   dependencies: [ ]
-#  only:
-#    changes:
-#      - "*.gradle"
-#      - gradle.properties
-#  cache:
-#    key: gradle-cache-key
-#    paths:
-#      - .gradle/wrapper
-#      - .gradle/caches
-#    policy: push
   script: |
-    ./gradlew clean build
+    ./gradlew --build-cache --gradle-user-home cache/ clean build
 
 publish-modules:
   stage: publish
   dependencies: [ ]
   script: |
-    ./gradlew publish
+    ./gradlew --build-cache --gradle-user-home cache/ publish
   rules:
     - if: '$CI_COMMIT_TAG'
 
@@ -64,7 +53,7 @@ release-version:
   script: |
     git config user.name "GitLab"
     git config user.email gitlab@gtcybertech.com
-    ./gradlew release -Prelease.ignoreUncommittedChanges=true --stacktrace
+    ./gradlew --build-cache --gradle-user-home cache/ release -Prelease.ignoreUncommittedChanges=true --stacktrace
     git push "https://$GRGIT_USER:$GRGIT_PASS@${CI_REPOSITORY_URL#*@}" --tags
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
