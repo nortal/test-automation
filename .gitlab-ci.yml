@@ -15,9 +15,9 @@ cache:
     files:
       - gradle/wrapper/gradle-wrapper.properties
   paths:
-    - cache/caches/
-    - cache/notifications/
-    - cache/wrapper/
+    - .gradletasknamecache/caches/
+    - .gradletasknamecache/notifications/
+    - .gradletasknamecache/wrapper/
 
 workflow:
   rules:
@@ -34,13 +34,13 @@ build-modules:
   stage: build
   dependencies: [ ]
   script: |
-    ./gradlew --build-cache --gradle-user-home cache/ clean build
+    ./gradlew --build-cache --gradle-user-home .gradletasknamecache/ clean build
 
 publish-modules:
   stage: publish
   dependencies: [ ]
   script: |
-    ./gradlew --build-cache --gradle-user-home cache/ publish
+    ./gradlew --build-cache --gradle-user-home .gradletasknamecache/ publish
   rules:
     - if: '$CI_COMMIT_TAG'
 
@@ -53,7 +53,7 @@ release-version:
   script: |
     git config user.name "GitLab"
     git config user.email gitlab@gtcybertech.com
-    ./gradlew --build-cache --gradle-user-home cache/ release -Prelease.ignoreUncommittedChanges=true --stacktrace
+    ./gradlew --build-cache --gradle-user-home .gradletasknamecache/ release -Prelease.ignoreUncommittedChanges=true --stacktrace
     git push "https://$GRGIT_USER:$GRGIT_PASS@${CI_REPOSITORY_URL#*@}" --tags
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
