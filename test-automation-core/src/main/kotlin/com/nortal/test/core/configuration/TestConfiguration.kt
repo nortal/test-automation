@@ -18,10 +18,11 @@ import org.springframework.context.annotation.Configuration
 )
 @Configuration
 open class TestConfiguration {
+
     @Bean("apiObjectMapper")
     open fun apiObjectMapper(): ObjectMapper {
         return ObjectMapper()
-            .registerModule(KotlinModule())
+            .registerModule(KotlinModule.Builder().build())
             .registerModule(JavaTimeModule())
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
     }

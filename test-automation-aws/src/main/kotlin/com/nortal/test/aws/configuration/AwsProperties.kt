@@ -25,4 +25,6 @@ data class AwsProperties(
      * AWS secret key.
      */
     val secretKey: String,
+
+    val s3PublishReport: Boolean = true
 )

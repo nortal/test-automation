@@ -10,11 +10,11 @@ variables:
   # However, release plugin requires actual tags to be available.
   GIT_FETCH_EXTRA_FLAGS: --tags
 
-cache: &global_cache
-  key: $CI_COMMIT_REF_NAME
+cache:
+  key: gradle-cache-key
   paths:
-    - .gradle
-    - build
+    - .gradle/wrapper
+    - .gradle/caches
   policy: pull
 
 before_script:
@@ -34,9 +34,16 @@ stages:
 build-modules:
   stage: build
   dependencies: [ ]
+  only:
+    changes:
+      - "*.gradle"
+      - gradle.properties
   cache:
-    <<: *global_cache
-    policy: pull-push
+    key: gradle-cache-key
+    paths:
+      - .gradle/wrapper
+      - .gradle/caches
+    policy: push
   script: |
     ./gradlew clean build
 
@@ -46,7 +53,7 @@ publish-modules:
   script: |
     ./gradlew publish
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_TAG'
+    - if: '$CI_COMMIT_TAG'
 
 release-version:
   stage: release
