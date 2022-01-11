@@ -18,10 +18,12 @@ class S3ReportPublisher(
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
     override fun publish(resultDir: Path, reportName: String, entryFileName: String) {
-        s3FileStore.uploadDir(resultDir, reportName)
+        if (awsProperties.s3PublishReport) {
+            s3FileStore.uploadDir(resultDir, reportName)
 
 
-        val indexUrl = amazonS3.getUrl(awsProperties.s3BucketName, "$reportName/index.html")
-        log.info("Report is available at {}", indexUrl)
+            val indexUrl = amazonS3.getUrl(awsProperties.s3BucketName, "$reportName/index.html")
+            log.info("Report is available at {}", indexUrl)
+        }
     }
 }
