@@ -1,4 +1,4 @@
-image: openjdk:11-jdk-alpine
+image: azul/zulu-openjdk-alpine:11
 
 variables:
   GIT_FETCH_EXTRA_FLAGS: --tags
