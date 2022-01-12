@@ -1,13 +1,6 @@
-image: openjdk:11.0.9.1-jdk
+image: openjdk:11-jdk-slim
 
 variables:
-  # Disable the Gradle daemon for Continuous Integration servers as correctness
-  # is usually a priority over speed in CI environments. Using a fresh
-  # runtime for each build is more reliable since the runtime is completely
-  # isolated from any previous builds.
-  # GRADLE_OPTS: "-Dorg.gradle.daemon=false"
-  # Tags are not fetched if GitLab shallow cloning is enabled (default).
-  # However, release plugin requires actual tags to be available.
   GIT_FETCH_EXTRA_FLAGS: --tags
 
 cache:
@@ -15,9 +8,10 @@ cache:
     files:
       - gradle/wrapper/gradle-wrapper.properties
   paths:
-    - .gradletasknamecache/caches/
-    - .gradletasknamecache/notifications/
-    - .gradletasknamecache/wrapper/
+    - .gradle-cache/caches/
+    - .gradle-cache/notifications/
+    - .gradle-cache/wrapper/
+  policy: pull
 
 workflow:
   rules:
@@ -33,14 +27,23 @@ stages:
 build-modules:
   stage: build
   dependencies: [ ]
+  cache:
+    key:
+      files:
+        - gradle/wrapper/gradle-wrapper.properties
+    paths:
+      - .gradle-cache/caches/
+      - .gradle-cache/notifications/
+      - .gradle-cache/wrapper/
+    policy: pull-push
   script: |
-    ./gradlew --build-cache --gradle-user-home .gradletasknamecache/ clean build
+    ./gradlew --build-cache --gradle-user-home .gradle-cache/ clean build
 
 publish-modules:
   stage: publish
   dependencies: [ ]
   script: |
-    ./gradlew --build-cache --gradle-user-home .gradletasknamecache/ publish
+    ./gradlew --build-cache --gradle-user-home .gradle-cache/ publish
   rules:
     - if: '$CI_COMMIT_TAG'
 
@@ -52,8 +55,8 @@ release-version:
     GRGIT_PASS: "${RELEASE_TOKEN}"
   script: |
     git config user.name "GitLab"
-    git config user.email gitlab@gtcybertech.com
-    ./gradlew --build-cache --gradle-user-home .gradletasknamecache/ release -Prelease.ignoreUncommittedChanges=true --stacktrace
+    git config user.email gitlab@nortal.com
+    ./gradlew --build-cache --gradle-user-home .gradle-cache/ release -Prelease.ignoreUncommittedChanges=true --stacktrace
     git push "https://$GRGIT_USER:$GRGIT_PASS@${CI_REPOSITORY_URL#*@}" --tags
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'

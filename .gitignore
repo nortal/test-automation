@@ -24,6 +24,6 @@ gradle-app.setting
 !gradle-wrapper.jar
 
 # Cache of project
-.gradletasknamecache
+.gradle-cache
 
 gradle-local.properties
