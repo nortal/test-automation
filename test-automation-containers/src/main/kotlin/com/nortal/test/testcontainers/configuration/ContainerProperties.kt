@@ -46,6 +46,14 @@ class TestableContainerProperties(
      */
     var debugPort: Int = 9000,
     /**
+     * Internal Http port that has to be exposed
+     */
+    var internalHttpPort: Int = 8080,
+    /**
+     * Application startup timeout.
+     */
+    var startupTimeout: Long = 120,
+    /**
      * Should container wait before debugger is attached?
      */
     val waitForDebugger: Boolean = false,

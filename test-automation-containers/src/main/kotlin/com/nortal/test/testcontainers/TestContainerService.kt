@@ -2,7 +2,7 @@ package com.nortal.test.testcontainers
 
 import com.github.dockerjava.api.model.Container
 import com.nortal.test.core.services.TestableApplicationInfoProvider
-import com.nortal.test.testcontainers.configuration.ContainerProperties
+import com.nortal.test.testcontainers.configuration.TestableContainerProperties
 import com.nortal.test.testcontainers.images.builder.ImageFromDockerfile
 import org.apache.commons.lang3.time.StopWatch
 import org.slf4j.Logger
@@ -21,17 +21,12 @@ import java.util.*
 @Service
 open class TestContainerService(
     private val testContainerNetworkProvider: TestContainerNetworkProvider,
-    private val containerProperties: ContainerProperties,
+    private val testableContainerProperties: TestableContainerProperties
 ) : TestableApplicationInfoProvider {
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
     private var exposedContainerHost: String? = null
     private var exposedContainerPort: Int? = null
-
-    companion object {
-        private val TIMEOUT = Duration.ofSeconds(120)
-        private const val INTERNAL_HTTP_PORT = 8080
-    }
 
     @JvmOverloads
     fun startApplicationUnderTest(
@@ -39,7 +34,7 @@ open class TestContainerService(
     ) {
         val customFixedHostPortGenericContainer = CustomFixedHostPortGenericContainer(image)
         val allExposedPorts: MutableList<Int> = ArrayList()
-        allExposedPorts.add(INTERNAL_HTTP_PORT)
+        allExposedPorts.add(testableContainerProperties.internalHttpPort)
         for (fixedPort in fixedExposedPort) {
             customFixedHostPortGenericContainer.withFixedExposedPort(fixedPort, fixedPort)
             allExposedPorts.add(fixedPort)
@@ -48,9 +43,9 @@ open class TestContainerService(
             customFixedHostPortGenericContainer.withNetwork(testContainerNetworkProvider.network)
                 .withExposedPorts(*allExposedPorts.toTypedArray())
                 .withEnv(envConfig)
-                .withStartupTimeout(TIMEOUT)
+                .withStartupTimeout(Duration.ofSeconds(testableContainerProperties.startupTimeout))
 
-        if (containerProperties.testableContainer.jacoco.enabled) {
+        if (testableContainerProperties.jacoco.enabled) {
             val mountableFile = MountableFile.forClasspathResource("jacoco/org.jacoco.agent.jar")
             applicationContainer
                 .withCommand(getJacocoPort())
@@ -62,7 +57,7 @@ open class TestContainerService(
     }
 
     private fun getJacocoPort(): String {
-        return String.format("-javaagent:/jacocoagent.jar=address=*,port=%d,output=tcpserver", containerProperties.testableContainer.jacoco.port)
+        return String.format("-javaagent:/jacocoagent.jar=address=*,port=%d,output=tcpserver", testableContainerProperties.jacoco.port)
     }
 
     private fun stopContainersOfOlderImage(image: ImageFromDockerfile) {
@@ -88,16 +83,19 @@ open class TestContainerService(
     protected open fun startContainer(applicationContainer: GenericContainer<*>) {
         log.info("Starting application container")
         val timer = StopWatch.createStarted()
-        if (containerProperties.testableContainer.reuseBetweenRuns) {
+        if (testableContainerProperties.reuseBetweenRuns) {
             ContainerUtils.overrideNetworkAliases(applicationContainer, Collections.emptyList())
             applicationContainer.withReuse(true).start()
         } else {
             applicationContainer.start()
         }
         log.info("Application container started in {}ms", timer.time)
-        exposedContainerPort = applicationContainer.getMappedPort(INTERNAL_HTTP_PORT)
+        exposedContainerPort = applicationContainer.getMappedPort(testableContainerProperties.internalHttpPort)
         exposedContainerHost = applicationContainer.host
-        log.info("Mapping the exposed internal application on {} port of {} to {}", exposedContainerHost, INTERNAL_HTTP_PORT, exposedContainerPort)
+        log.info(
+            "Mapping the exposed internal application on {} port of {} to {}", exposedContainerHost,
+            testableContainerProperties.internalHttpPort, exposedContainerPort
+        )
     }
 
     override fun getHost(): String {

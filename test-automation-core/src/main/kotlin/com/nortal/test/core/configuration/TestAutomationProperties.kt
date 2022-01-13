@@ -16,5 +16,5 @@ data class TestAutomationProperties(
     /**
      * A name that is used in published reports.
      */
-    val reportName: String = "tet-report"
+    val reportName: String = "test-report"
 )
