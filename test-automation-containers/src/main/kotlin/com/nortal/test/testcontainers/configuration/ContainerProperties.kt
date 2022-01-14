@@ -63,6 +63,7 @@ class TestableContainerProperties(
     val springProfilesToActivate: String = "cucumber",
     /**
      * Reuse testable container between runs. It will be redeployed if container jar war rebuilt. Eventually container has to be manually closed.
+    NOTE: must be disabled for shared docker instances like CI runners.
      */
     val reuseBetweenRuns: Boolean = false,
     /**
@@ -113,7 +114,9 @@ class ContextContainerProperties(
     val enabled: Boolean = false,
     /**
      * Reuse container between runs. Eventually container has to be manually closed.
+     * Feature is mainly controller by test-automation.containers.testable-container.reuse-between-runs,
+     * if that is disabled - this does nothing.
      */
-    val reuseBetweenRuns: Boolean = false
+    val reuseBetweenRuns: Boolean = true
 )
 

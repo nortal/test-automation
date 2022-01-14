@@ -4,7 +4,6 @@ import org.apache.commons.lang3.time.StopWatch
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import javax.annotation.PostConstruct
 
 @Service
 open class TestContextContainerService(
@@ -15,9 +14,8 @@ open class TestContextContainerService(
 
 
     /**
-     * Runs containers of context applications in parallel, also sets up db schema and redis.
+     * Runs containers of context applications in parallel.
      */
-    @PostConstruct
     fun startContext() {
 
         log.info("Starting context for {} containers", contextContainers.size)

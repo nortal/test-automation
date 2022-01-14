@@ -1,7 +1,5 @@
 package com.nortal.test.testcontainers
 
-import com.nortal.test.core.services.hooks.BeforeSuiteHook
-import com.nortal.test.core.services.hooks.BeforeSuiteHook.Companion.DEFAULT_ORDER
 import com.nortal.test.testcontainers.configuration.TestableContainerProperties
 import com.nortal.test.testcontainers.images.builder.ImageFromDockerfile
 import com.nortal.test.testcontainers.images.builder.ReusableImageFromDockerfile
@@ -16,7 +14,8 @@ import java.nio.file.Paths
  * TODO:
  */
 @Component
-abstract class AbstractTestableContainerSetup : BeforeSuiteHook {
+abstract class AbstractTestableContainerSetup : TestableContainerInitializer {
+
     @Autowired
     protected lateinit var testableContainerProperties: TestableContainerProperties
 
@@ -29,11 +28,8 @@ abstract class AbstractTestableContainerSetup : BeforeSuiteHook {
         private const val JACOCO_AGENT_JAR_PATH = "/jacocoagent.jar"
     }
 
-    override fun beforeSuiteOrder(): Int {
-        return DEFAULT_ORDER - 100
-    }
 
-    override fun beforeSuite() {
+    override fun initialize() {
         containerService.startApplicationUnderTest(
             build(),
             getTargetContainerExposedPorts(),
