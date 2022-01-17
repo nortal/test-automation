@@ -9,3 +9,6 @@ logging:
     com.nortal.test: INFO
     org.springframework: INFO
     org.springframework.jdbc: DEBUG
+
+test-automation:
+  report-name: default-report-name

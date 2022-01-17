@@ -1,0 +1,12 @@
+test-automation:
+  report-name: core-testing
+  cucumber:
+    glue-append: com.nortal.test.core.glue
+    filter:
+      tags: "not @skip"
+    execution:
+      parallel:
+        enabled: true
+        executor-count: 10
+        execution-group-tags: "execution-group-a,execution-group-a-b,execution-group-c"
+        isolation-tag: "isolated"

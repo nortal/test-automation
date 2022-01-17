@@ -1,5 +1,6 @@
 package com.nortal.test.core.cucumber.glue
 
+import com.nortal.test.core.configuration.TestAutomationConstants
 import com.nortal.test.core.configuration.TestConfiguration
 import io.cucumber.spring.CucumberContextConfiguration
 import org.springframework.boot.test.context.SpringBootTest
@@ -9,7 +10,13 @@ import org.springframework.test.context.ActiveProfiles
  * Bootstrap Spring framework.
  */
 @CucumberContextConfiguration
-@ActiveProfiles(value = ["core", "base", "override"])
+@ActiveProfiles(
+    value = [
+        TestAutomationConstants.SPRING_PROFILE_CORE,
+        TestAutomationConstants.SPRING_PROFILE_BASE,
+        TestAutomationConstants.SPRING_PROFILE_OVERRIDE
+    ]
+)
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.NONE,
     classes = [TestConfiguration::class],

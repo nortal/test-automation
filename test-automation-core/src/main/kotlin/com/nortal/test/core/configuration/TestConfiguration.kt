@@ -14,7 +14,11 @@ import org.springframework.context.annotation.Configuration
  */
 @ComponentScan("com.nortal.test")
 @EnableConfigurationProperties(
-    TestAutomationProperties::class
+    TestAutomationProperties::class,
+    TestAutomationCucumberProperties::class,
+    TestAutomationCucumberFilterProperties::class,
+    TestAutomationCucumberExecutionProperties::class,
+    TestAutomationCucumberExecutionParallelProperties::class
 )
 @Configuration
 open class TestConfiguration {

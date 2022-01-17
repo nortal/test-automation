@@ -121,6 +121,19 @@ subprojects {
         }
     }
 
+    tasks.withType<Test> {
+        useJUnitPlatform()
+
+        testLogging {
+            events(PASSED, SKIPPED, FAILED, STANDARD_OUT, STANDARD_ERROR)
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+            showCauses = true
+            showExceptions = true
+            showStackTraces = true
+            showStandardStreams = true
+        }
+    }
+
     val props = Properties()
     rootProject.file("gradle-local.properties").takeIf { it.exists() }?.inputStream()?.use { props.load(it) }
 

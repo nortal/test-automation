@@ -19,6 +19,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.nortal.test.core.cucumber.TestReportProvider;
+import com.nortal.test.core.property.JUnitPropertyInitializer;
 import io.cucumber.core.backend.ObjectFactory;
 import io.cucumber.core.feature.GluePath;
 import io.cucumber.core.options.ObjectFactoryParser;
@@ -78,7 +80,13 @@ class CucumberEngineOptions implements
 
 	private Optional<TestReportProvider> getReportProvider() {
 		ServiceLoader<TestReportProvider> loader = ServiceLoader.load(TestReportProvider.class);
-		return loader.findFirst();
+
+		final Iterator<TestReportProvider> iterator = loader.iterator();
+		if (iterator.hasNext()) {
+			return Optional.of(iterator.next());
+		} else {
+			return Optional.empty();
+		}
 	}
 
 	private Optional<PluginOption> getPublishPlugin() {
