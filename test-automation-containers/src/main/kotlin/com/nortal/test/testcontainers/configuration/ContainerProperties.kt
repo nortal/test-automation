@@ -35,7 +35,7 @@ class TestableContainerProperties(
     /**
      * jar matcher regex pattern. Should be changes if build generates more than one jar.
      */
-    val jarRegexMatcher: String = "^.+-.+.*(?<!plain)\\.jar\$",
+    val jarRegexMatcher: String = "^.+?.*(?<!plain)\\.jar\$",
 
     /**
      * If enabled exposes [debugPort] as remote debug port.

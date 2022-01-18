@@ -85,7 +85,7 @@ abstract class AbstractTestableContainerSetup : TestableContainerInitializer {
     }
 
     private fun isMatchingJarFile(path: Path): Boolean {
-        return path.fileName.toString().matches(Regex("^.+-.+.*(?<!plain)\\.jar\$"));
+        return path.fileName.toString().matches(Regex(testableContainerProperties.jarRegexMatcher))
     }
 
     private fun configure(builder: DockerfileBuilder): DockerfileBuilder {
