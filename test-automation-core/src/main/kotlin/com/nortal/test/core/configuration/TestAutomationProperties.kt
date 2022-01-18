@@ -48,14 +48,14 @@ class TestAutomationCucumberFilterProperties(
      * Scenarios that do not match the expression are not executed.
      * By default all scenarios are executed
      */
-    val name: String?,
+    val name: String = "",
     /**
      * Property name used to set tag filter: "cucumber.filter.tags"
      * Filters scenarios by tag based on the provided tag expression e.g: @Cucumber and not (@Gherkin or @Zucchini).
      * Scenarios that do not match the expression are not executed.
      * By default all scenarios are executed
      */
-    val tags: String?,
+    val tags: String = "",
 )
 
 @ConstructorBinding
@@ -68,7 +68,7 @@ class TestAutomationCucumberExecutionProperties(
      * <p>
      * By default, dry-run is disabled
      */
-    val dryRun: Boolean?,
+    val dryRun: Boolean = false,
     /**
      * Property name used to set execution order: {@value}
      * <p>
@@ -77,7 +77,7 @@ class TestAutomationCucumberExecutionProperties(
      * <p>
      * By default features are executed in lexical file name order
      */
-    val order: String?,
+    val order: String = "",
 )
 
 @ConstructorBinding
@@ -87,18 +87,18 @@ class TestAutomationCucumberExecutionParallelProperties(
     /**
      * Enable parallel scenario execution
      */
-    val enabled: Boolean,
+    val enabled: Boolean = false,
     /**
      * Parallel executor count. Should be fine-tuned for execution env.
      */
-    val executorCount: Int,
+    val executorCount: Int = 1,
     /**
      * Comma separated list for execution groups.
      * Tests with these tags will be grouped before execution and tests within same group will not overlap with each other.
      */
-    executionGroupTags: String?,
+    executionGroupTags: String = "",
     /**
      * Tests tagged with this tag would always be executed separately from other tests.
      */
-    isolationTag: String?
+    isolationTag: String = ""
 )

@@ -16,14 +16,17 @@ class PropertyLoader {
 
     private val yamlPropertySourceLoader = YamlPropertySourceLoader()
     private val propertyFileTemplate = "application.yml"
-    private val propertyFileWithProfileTemplate = "application-%s.yml"
+
+    private val yamlExtensions = arrayListOf("yml", "yaml")
+    private val propertyFileWithProfileTemplate = "application-%s.%s"
 
     fun loadProperties(): Environment {
         val env = StandardEnvironment()
 
         val configurationFiles = mutableListOf(propertyFileTemplate)
         ALL_SPRING_PROFILES.forEach {
-            configurationFiles.add(String.format(propertyFileWithProfileTemplate, it))
+            configurationFiles.add(String.format(propertyFileWithProfileTemplate, it, yamlExtensions[0]))
+            configurationFiles.add(String.format(propertyFileWithProfileTemplate, it, yamlExtensions[1]))
         }
 
         configurationFiles.forEach {

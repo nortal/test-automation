@@ -17,9 +17,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 object JUnitPropertyInitializer {
     private const val PROPERTY_PREFIX = "test-automation."
 
-    private val REQUIRED_CUCUMBER_PROPERTIES = listOf(PARALLEL_EXECUTION_ENABLED_PROPERTY_NAME)
-
     private val OPTIONAL_CUCUMBER_PROPERTIES = listOf(
+        PARALLEL_EXECUTION_ENABLED_PROPERTY_NAME,
         EXECUTION_DRY_RUN_PROPERTY_NAME,
         EXECUTION_ORDER_PROPERTY_NAME,
         FILTER_NAME_PROPERTY_NAME,
@@ -56,19 +55,19 @@ object JUnitPropertyInitializer {
 
 
     private fun applyParallelExecutorConfig(env: Environment) {
-        System.setProperty(PARALLEL_CONFIG_STRATEGY_PROPERTY_NAME, PARALLEL_CONFIG_STRATEGY_PROPERTY)
+        if (env.getProperty(PARALLEL_EXECUTION_ENABLED_PROPERTY_NAME, false.toString()).toBoolean()) {
+            System.setProperty(PARALLEL_CONFIG_STRATEGY_PROPERTY_NAME, PARALLEL_CONFIG_STRATEGY_PROPERTY)
 
-        val propertyKey = PROPERTY_PARALLEL_EXECUTOR_COUNT
-        val property = env.getProperty(propertyKey)
+            val propertyKey = PROPERTY_PARALLEL_EXECUTOR_COUNT
+            val property = env.getProperty(propertyKey)
 
-        if (property != null) {
-            applyExecutionGroupConfig(env)
-            System.setProperty(PARALLEL_CONFIG_FIXED_PARALLELISM_PROPERTY_NAME, property)
-        } else {
-            throw TestAutomationException("Missing required property [$propertyKey] in application-<$ALL_SPRING_PROFILES>.yml")
+            if (property != null) {
+                applyExecutionGroupConfig(env)
+                System.setProperty(PARALLEL_CONFIG_FIXED_PARALLELISM_PROPERTY_NAME, property)
+            } else {
+                throw TestAutomationException("Missing required property [$propertyKey] in application-<$ALL_SPRING_PROFILES>.yml")
+            }
         }
-
-
     }
 
     private fun applyExecutionGroupConfig(env: Environment) {
@@ -90,17 +89,6 @@ object JUnitPropertyInitializer {
     }
 
     private fun applySystemProperties(env: Environment) {
-        REQUIRED_CUCUMBER_PROPERTIES.forEach { cucumberProperty ->
-            val propertyKey = PROPERTY_PREFIX + cucumberProperty
-            val property = env.getProperty(propertyKey)
-
-
-            System.setProperty(
-                cucumberProperty,
-                property ?: throw TestAutomationException("Missing required property [$propertyKey] in application-<$ALL_SPRING_PROFILES>.yml")
-            )
-        }
-
         OPTIONAL_CUCUMBER_PROPERTIES.forEach { cucumberProperty ->
             val propertyKey = PROPERTY_PREFIX + cucumberProperty
             val property = env.getProperty(propertyKey)
