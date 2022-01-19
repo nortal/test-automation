@@ -1,0 +1,4 @@
+test-automation:
+  report-name: core-testing
+  cucumber:
+    glue-append: com.nortal.test.report.allure.glue

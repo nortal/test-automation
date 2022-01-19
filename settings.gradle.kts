@@ -20,7 +20,6 @@ plugins {
     kotlin("kapt") version kotlinVersion apply false
     id("pl.allegro.tech.build.axion-release") version "1.13.2" apply false
     id("io.gitlab.arturbosch.detekt").version("1.19.0") apply false
-    id("io.qameta.allure") version "2.9.6" apply false
 }
 
 dependencyResolutionManagement {
@@ -79,6 +78,9 @@ dependencyResolutionManagement {
 
             //reporting
             alias("allure-cucumber").to("io.qameta.allure", "allure-cucumber7-jvm").version("2.17.2")
+            alias("allure-plugin-api").to("io.qameta.allure", "allure-plugin-api").version("2.17.2")
+            alias("allure-commandline").to("io.qameta.allure", "allure-commandline").version("2.17.2")
+
             alias("cucumber-reporting").to("net.masterthought", "cucumber-reporting").version("5.6.1")
             //UI testing
             alias("selenide").to("com.codeborne", "selenide").version("6.1.2")

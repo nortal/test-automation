@@ -10,4 +10,4 @@ import org.springframework.context.annotation.Configuration
     TestableContainerProperties::class,
     TestableContainerJacocoProperties::class
 )
-class TestContainerConfiguration
+open class TestContainerConfiguration

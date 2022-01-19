@@ -14,7 +14,7 @@ class AllureReportGenerationHook(
     private val reportPublisher: ReportPublisher
 ) : AfterSuiteHook {
     private val entryFileName = "index.html"
-    private val commands = Commands(null as Path?)
+    private val commands = Commands(Path.of("allure_home"))
 
     override fun afterSuite() {
         val reportDir = Path.of(allureReportProperties.reportDir)
