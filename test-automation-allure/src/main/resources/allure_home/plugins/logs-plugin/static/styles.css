@@ -1,0 +1,4 @@
+.log-text-block {
+    max-height: 768px;
+    overflow: scroll;
+}

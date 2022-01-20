@@ -5,3 +5,5 @@ extensions:
   - com.nortal.test.report.allure.plugin.LogsPlugin
 jsFiles:
   - index.js
+cssFiles:
+  - styles.css

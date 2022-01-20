@@ -10,9 +10,9 @@ const template = function (data) {
 
     return `
     <h3 class="pane__title">Test Framework logs:</h3>
-    <div class="attachment">
+    <div class="attachment log-text-block">
         <div class="attachment__text-container">
-            <pre class="attachment__text">${content}</pre>
+            <pre class="attachment__text ">${content}</pre>
         </div>
     </div>
     `;
