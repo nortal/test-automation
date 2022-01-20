@@ -13,7 +13,7 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 
 /**
- * NOTE: It's a copy of allure internal class and solves ZiPath issues.
+ * <b>NOTE: It's a copy of allure internal class and solves ZiPath issues.</b>
  * Visitor that recursive copies directories.
  *
  * @since 2.0

@@ -1,5 +1,8 @@
 package com.nortal.test.core.cucumber
 
+/**
+ * Provided cucumber plugin name that will be used as an report generator.  Note: currently single report provider per instance is supported.
+ */
 interface TestReportProvider {
 
     /**

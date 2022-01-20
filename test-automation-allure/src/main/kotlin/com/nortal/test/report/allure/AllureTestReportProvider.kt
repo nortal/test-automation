@@ -3,7 +3,9 @@ package com.nortal.test.report.allure
 import com.nortal.test.core.cucumber.TestReportProvider
 import io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm
 
-
+/**
+ * Exposes Allure as cucumber report provider.
+ */
 class AllureTestReportProvider : TestReportProvider {
 
     override fun getCucumberPlugin(): String {

@@ -15,7 +15,9 @@ import java.nio.file.FileSystems
 import java.nio.file.Path
 import java.nio.file.Paths
 
-
+/**
+ * Generate Allure report once test execution finishes.
+ */
 @Component
 class AllureReportGenerationHook(
     private val allureReportProperties: AllureReportProperties,

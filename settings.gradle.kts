@@ -71,12 +71,9 @@ dependencyResolutionManagement {
             alias("org.eclipse.jgit").to("org.eclipse.jgit", "org.eclipse.jgit").version("5.11.0.202103091610-r")
 
             alias("testcontainers-core").to("org.testcontainers", "testcontainers").versionRef("testcontainers")
-            alias("testcontainers-postgresql").to("org.testcontainers", "postgresql").versionRef("testcontainers")
 
             alias("jackson-module-kotlin").to("com.fasterxml.jackson.module", "jackson-module-kotlin").versionRef("jackson")
             alias("jackson-datatype-jsr310").to("com.fasterxml.jackson.datatype", "jackson-datatype-jsr310").versionRef("jackson")
-
-            alias("postgresql").to("org.postgresql", "postgresql").version("42.2.21")
 
             alias("jacoco-core").to("org.jacoco", "org.jacoco.core").version("0.8.7")
             alias("jacoco-report").to("org.jacoco", "org.jacoco.report").version("0.8.7")
