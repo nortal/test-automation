@@ -33,6 +33,7 @@ dependencyResolutionManagement {
             version("jackson", "2.12.3")
             version("testcontainers", "1.16.2")
             version("rest-assured", "4.4.0")
+            version("feign", "11.8")
 
             alias("kotlin-stdlib-jdk8").to("org.jetbrains.kotlin", "kotlin-stdlib-jdk8").versionRef("kotlin")
             alias("kotlin-reflect").to("org.jetbrains.kotlin", "kotlin-reflect").versionRef("kotlin")
@@ -55,8 +56,12 @@ dependencyResolutionManagement {
             alias("springcloud-openfeign").to("org.springframework.cloud", "spring-cloud-starter-openfeign").versionRef("spring-cloud")
             alias("springcloud-aws").to("org.springframework.cloud", "spring-cloud-starter-aws").version("2.2.6.RELEASE")
 
+            // API clients: restassured
             alias("restassured").to("io.rest-assured", "rest-assured").versionRef("rest-assured")
             alias("restassured-jsonpath").to("io.rest-assured", "json-path").versionRef("rest-assured")
+            //API clients: feign
+            alias("openfeign-okhttp").to("io.github.openfeign", "feign-okhttp").versionRef("feign")
+            alias("openfeign-jackson").to("io.github.openfeign", "feign-jackson").versionRef("feign")
 
             alias("guava").to("com.google.guava", "guava").version("30.1.1-jre")
             alias("commons-codec").to("commons-codec", "commons-codec").version("1.15")
