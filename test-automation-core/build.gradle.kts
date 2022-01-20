@@ -11,7 +11,6 @@ dependencies {
     api(libs.jackson.module.kotlin)
     api(libs.jackson.datatype.jsr310)
 
-    implementation(libs.swagger.request.validator.core) //TODO create story
     implementation(libs.cucumber.reporting)
     implementation(libs.org.eclipse.jgit)
 }

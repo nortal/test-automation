@@ -11,7 +11,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 /**
- * TODO:
+ * Base class for testable (under test) container setup.
  */
 @Component
 abstract class AbstractTestableContainerSetup : TestableContainerInitializer {
