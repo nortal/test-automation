@@ -11,6 +11,8 @@ dependencies {
     api(libs.jackson.module.kotlin)
     api(libs.jackson.datatype.jsr310)
 
+    api(libs.commons.lang3)
+
     implementation(libs.cucumber.reporting)
     implementation(libs.org.eclipse.jgit)
 }

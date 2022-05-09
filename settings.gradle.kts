@@ -1,5 +1,3 @@
-enableFeaturePreview("VERSION_CATALOGS")
-
 rootProject.name = "test-automation"
 
 include(":test-automation-core")
@@ -14,7 +12,7 @@ include("test-automation-aws")
 
 
 plugins {
-    val kotlinVersion = "1.6.10"
+    val kotlinVersion = "1.6.21"
     kotlin("jvm") version kotlinVersion apply false
     kotlin("plugin.spring") version kotlinVersion apply false
     kotlin("kapt") version kotlinVersion apply false
@@ -25,67 +23,69 @@ plugins {
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            version("kotlin", "1.6.10")
+            version("kotlin", "1.6.21")
 
             version("cucumber", "7.2.2")
-            version("spring-boot", "2.6.2")
-            version("spring-cloud", "3.1.0")
-            version("jackson", "2.12.3")
+            version("spring-boot", "2.6.7")
+            version("spring-cloud", "3.1.2")
+            version("jackson", "2.13.2")
             version("testcontainers", "1.16.2")
             version("rest-assured", "4.4.0")
             version("feign", "11.8")
 
-            alias("kotlin-stdlib-jdk8").to("org.jetbrains.kotlin", "kotlin-stdlib-jdk8").versionRef("kotlin")
-            alias("kotlin-reflect").to("org.jetbrains.kotlin", "kotlin-reflect").versionRef("kotlin")
-            alias("cucumber-java").to("io.cucumber", "cucumber-java").versionRef("cucumber")
-            alias("cucumber-junit-platform-engine").to("io.cucumber", "cucumber-junit-platform-engine").versionRef("cucumber")
-            alias("cucumber-spring").to("io.cucumber", "cucumber-spring").versionRef("cucumber")
+            library("kotlin-stdlib-jdk8","org.jetbrains.kotlin", "kotlin-stdlib-jdk8").versionRef("kotlin")
+            library("kotlin-reflect","org.jetbrains.kotlin", "kotlin-reflect").versionRef("kotlin")
+            library("cucumber-java","io.cucumber", "cucumber-java").versionRef("cucumber")
+            library("cucumber-junit-platform-engine","io.cucumber", "cucumber-junit-platform-engine").versionRef("cucumber")
+            library("cucumber-spring","io.cucumber", "cucumber-spring").versionRef("cucumber")
 
-            alias("junit-platform-suite").to("org.junit.platform", "junit-platform-suite").version("1.8.2")
+            library("junit-platform-suite","org.junit.platform", "junit-platform-suite").version("1.8.2")
 
             //Spring Boot
-            alias("springboot-starter_").to("org.springframework.boot", "spring-boot-starter").versionRef("spring-boot")
-            alias("springboot-starter-web").to("org.springframework.boot", "spring-boot-starter-web").versionRef("spring-boot")
-            alias("springboot-starter-jdbc").to("org.springframework.boot", "spring-boot-starter-jdbc").versionRef("spring-boot")
-            alias("springboot-starter-test").to("org.springframework.boot", "spring-boot-starter-test").versionRef("spring-boot")
-            alias("springboot-starter-log4j2").to("org.springframework.boot", "spring-boot-starter").versionRef("spring-boot")
-            alias("springboot-starter-mail").to("org.springframework.boot", "spring-boot-starter-mail").versionRef("spring-boot")
-            alias("springboot-configuration-processor").to("org.springframework.boot", "spring-boot-configuration-processor")
+            library("springboot-starter_","org.springframework.boot", "spring-boot-starter").versionRef("spring-boot")
+            library("springboot-starter-web","org.springframework.boot", "spring-boot-starter-web").versionRef("spring-boot")
+            library("springboot-starter-jdbc","org.springframework.boot", "spring-boot-starter-jdbc").versionRef("spring-boot")
+            library("springboot-starter-test","org.springframework.boot", "spring-boot-starter-test").versionRef("spring-boot")
+            library("springboot-starter-log4j2","org.springframework.boot", "spring-boot-starter").versionRef("spring-boot")
+            library("springboot-starter-mail","org.springframework.boot", "spring-boot-starter-mail").versionRef("spring-boot")
+            library("springboot-configuration-processor","org.springframework.boot", "spring-boot-configuration-processor")
                 .versionRef("spring-boot")
             //Spring Boot cloud
-            alias("springcloud-openfeign").to("org.springframework.cloud", "spring-cloud-starter-openfeign").versionRef("spring-cloud")
-            alias("springcloud-aws").to("org.springframework.cloud", "spring-cloud-starter-aws").version("2.2.6.RELEASE")
+            library("springcloud-openfeign","org.springframework.cloud", "spring-cloud-starter-openfeign").versionRef("spring-cloud")
+            library("springcloud-aws","org.springframework.cloud", "spring-cloud-starter-aws").version("2.2.6.RELEASE")
 
             // API clients: restassured
-            alias("restassured").to("io.rest-assured", "rest-assured").versionRef("rest-assured")
-            alias("restassured-jsonpath").to("io.rest-assured", "json-path").versionRef("rest-assured")
+            library("restassured","io.rest-assured", "rest-assured").versionRef("rest-assured")
+            library("restassured-jsonpath","io.rest-assured", "json-path").versionRef("rest-assured")
             //API clients: feign
-            alias("openfeign-okhttp").to("io.github.openfeign", "feign-okhttp").versionRef("feign")
-            alias("openfeign-jackson").to("io.github.openfeign", "feign-jackson").versionRef("feign")
+            library("openfeign-okhttp","io.github.openfeign", "feign-okhttp").versionRef("feign")
+            library("openfeign-jackson","io.github.openfeign", "feign-jackson").versionRef("feign")
 
-            alias("guava").to("com.google.guava", "guava").version("30.1.1-jre")
-            alias("commons-codec").to("commons-codec", "commons-codec").version("1.15")
-            alias("commons-io").to("commons-io", "commons-io").version("2.11.0")
+            library("guava","com.google.guava", "guava").version("30.1.1-jre")
 
-            alias("swagger_request_validator_core").to("com.atlassian.oai", "swagger-request-validator-core").version("2.18.0")
-            alias("org.eclipse.jgit").to("org.eclipse.jgit", "org.eclipse.jgit").version("5.11.0.202103091610-r")
+            library("commons-lang3","org.apache.commons", "commons-lang3").version("3.12.0")
+            library("commons-codec","commons-codec", "commons-codec").version("1.15")
+            library("commons-io","commons-io", "commons-io").version("2.11.0")
 
-            alias("testcontainers-core").to("org.testcontainers", "testcontainers").versionRef("testcontainers")
+            library("swagger_request_validator_core","com.atlassian.oai", "swagger-request-validator-core").version("2.18.0")
+            library("org.eclipse.jgit","org.eclipse.jgit", "org.eclipse.jgit").version("5.11.0.202103091610-r")
 
-            alias("jackson-module-kotlin").to("com.fasterxml.jackson.module", "jackson-module-kotlin").versionRef("jackson")
-            alias("jackson-datatype-jsr310").to("com.fasterxml.jackson.datatype", "jackson-datatype-jsr310").versionRef("jackson")
+            library("testcontainers-core","org.testcontainers", "testcontainers").versionRef("testcontainers")
 
-            alias("jacoco-core").to("org.jacoco", "org.jacoco.core").version("0.8.7")
-            alias("jacoco-report").to("org.jacoco", "org.jacoco.report").version("0.8.7")
+            library("jackson-module-kotlin","com.fasterxml.jackson.module", "jackson-module-kotlin").versionRef("jackson")
+            library("jackson-datatype-jsr310","com.fasterxml.jackson.datatype", "jackson-datatype-jsr310").versionRef("jackson")
+
+            library("jacoco-core","org.jacoco", "org.jacoco.core").version("0.8.7")
+            library("jacoco-report","org.jacoco", "org.jacoco.report").version("0.8.7")
 
             //reporting
-            alias("allure-cucumber").to("io.qameta.allure", "allure-cucumber7-jvm").version("2.17.2")
-            alias("allure-plugin-api").to("io.qameta.allure", "allure-plugin-api").version("2.17.2")
-            alias("allure-commandline").to("io.qameta.allure", "allure-commandline").version("2.17.2")
+            library("allure-cucumber","io.qameta.allure", "allure-cucumber7-jvm").version("2.17.2")
+            library("allure-plugin-api","io.qameta.allure", "allure-plugin-api").version("2.17.2")
+            library("allure-commandline","io.qameta.allure", "allure-commandline").version("2.17.2")
 
-            alias("cucumber-reporting").to("net.masterthought", "cucumber-reporting").version("5.6.1")
+            library("cucumber-reporting","net.masterthought", "cucumber-reporting").version("5.6.1")
             //UI testing
-            alias("selenide").to("com.codeborne", "selenide").version("6.1.2")
+            library("selenide","com.codeborne", "selenide").version("6.1.2")
 
             bundle(
                 "cucumber", listOf(
