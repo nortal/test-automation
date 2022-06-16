@@ -5,7 +5,7 @@ spring:
 logging:
   level:
     ROOT: INFO
-    cucumber: TRACE
+    cucumber: INFO
     com.nortal.test: INFO
     org.springframework: INFO
     org.springframework.jdbc: DEBUG

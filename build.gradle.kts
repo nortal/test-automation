@@ -1,3 +1,4 @@
+import java.util.Calendar
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -8,6 +9,7 @@ plugins {
     `maven-publish`
     id("pl.allegro.tech.build.axion-release")
     id("io.gitlab.arturbosch.detekt")
+    id("com.github.hierynomus.license")
 }
 
 scmVersion {
@@ -46,28 +48,6 @@ allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-        /*maven(props.getRequiredProperty("MAVEN_MIRROR_REPOSITORY_URL", "mirrorRepositoryUrl")) {
-            credentials {
-                username = props.getRequiredProperty("MAVEN_MIRROR_REPOSITORY_USERNAME", "mirrorRepositoryUsername")
-                password = props.getRequiredProperty("MAVEN_MIRROR_REPOSITORY_PASSWORD", "mirrorRepositoryPassword")
-            }
-        }
-        maven {
-            url = uri(props.getRequiredProperty("MAVEN_RELEASES_REPOSITORY_URL", "releasesRepoUrl"))
-            authentication { create<HttpHeaderAuthentication>("") }
-            credentials(HttpHeaderCredentials::class) {
-                name = System.getenv("CI_JOB_TOKEN")?.let { "Job-Token" } ?: "Private-Token"
-                value = props.getRequiredProperty("CI_JOB_TOKEN", "personalAccessToken")
-            }
-        }
-        maven {
-            url = uri(props.getRequiredProperty("MAVEN_SNAPSHOTS_REPOSITORY_URL", "snapshotsRepoUrl"))
-            authentication { create<HttpHeaderAuthentication>("") }
-            credentials(HttpHeaderCredentials::class) {
-                name = System.getenv("CI_JOB_TOKEN")?.let { "Job-Token" } ?: "Private-Token"
-                value = props.getRequiredProperty("CI_JOB_TOKEN", "personalAccessToken")
-            }
-        }*/
     }
 
     configurations.all {
@@ -83,6 +63,7 @@ subprojects {
         plugin("org.jetbrains.kotlin.jvm")
         plugin("org.jetbrains.kotlin.plugin.spring")
         plugin("io.gitlab.arturbosch.detekt")
+        plugin("com.github.hierynomus.license")
     }
 
     group = "com.nortal.test"
@@ -123,7 +104,7 @@ subprojects {
 
     tasks.withType<Test> {
         useJUnitPlatform()
-
+        1
         testLogging {
             events(PASSED, SKIPPED, FAILED, STANDARD_OUT, STANDARD_ERROR)
             exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
@@ -171,5 +152,26 @@ subprojects {
 
     detekt {
         config = files("${project.rootDir}/detekt-config.yml")
+    }
+
+    license {
+        header = file("${project.rootDir}/LICENSE_HEADER")
+        isStrictCheck = true
+        isSkipExistingHeaders = true
+
+        excludes(
+            listOf(
+                "**/*.jar",
+                "**/*.xml",
+                "**/*.yml",
+                "**/*.yaml",
+                "**/*.properties",
+                "**/*.html",
+                "**/*.css",
+                "**/*.feature",
+                "**/*.txt",
+            )
+        )
+        ext["year"] = Calendar.getInstance().get(Calendar.YEAR).toString()
     }
 }
