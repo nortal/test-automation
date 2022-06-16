@@ -13,6 +13,5 @@ dependencies {
 
     api(libs.commons.lang3)
 
-    implementation(libs.cucumber.reporting)
-    implementation(libs.org.eclipse.jgit)
+    implementation(libs.guava)
 }

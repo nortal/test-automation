@@ -16,16 +16,16 @@ scmVersion {
     localOnly = true
     ignoreUncommittedChanges = false
 
-    tag(closureOf<pl.allegro.tech.build.axion.release.domain.TagNameSerializationConfig> {
+    tag {
         prefix = "v"
         versionSeparator = ""
-    })
-    repository(closureOf<pl.allegro.tech.build.axion.release.domain.RepositoryConfig> {
+    }
+    repository {
         pushTagsOnly = true
-    })
-    checks(closureOf<pl.allegro.tech.build.axion.release.domain.ChecksConfig> {
-        aheadOfRemote = false
-    })
+    }
+    checks {
+        isAheadOfRemote = false
+    }
 }
 
 version = scmVersion.version

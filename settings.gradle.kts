@@ -11,28 +11,31 @@ include("test-automation-selenide")
 include("test-automation-aws")
 
 
+
 plugins {
-    val kotlinVersion = "1.6.21"
+    val kotlinVersion = "1.7.0"
     kotlin("jvm") version kotlinVersion apply false
     kotlin("plugin.spring") version kotlinVersion apply false
     kotlin("kapt") version kotlinVersion apply false
-    id("pl.allegro.tech.build.axion-release") version "1.13.2" apply false
-    id("io.gitlab.arturbosch.detekt").version("1.19.0") apply false
+    id("pl.allegro.tech.build.axion-release") version "1.13.14" apply false
+    id("io.gitlab.arturbosch.detekt").version("1.20.0") apply false
     id("com.github.hierynomus.license").version("0.16.1") apply false
 }
 
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            version("kotlin", "1.6.21")
+            version("kotlin", "1.7.0")
 
-            version("cucumber", "7.2.2")
-            version("spring-boot", "2.6.7")
-            version("spring-cloud", "3.1.2")
-            version("jackson", "2.13.2")
-            version("testcontainers", "1.16.2")
-            version("rest-assured", "4.4.0")
+            version("cucumber", "7.3.4")
+            version("spring-boot", "2.7.0")
+            version("spring-cloud", "3.1.3")
+            version("jackson", "2.13.3")
+            version("testcontainers", "1.17.2")
+            version("rest-assured", "5.1.1")
             version("feign", "11.8")
+            version("jacoco", "0.8.8")
+            version("allure", "2.18.1")
 
             library("kotlin-stdlib-jdk8", "org.jetbrains.kotlin", "kotlin-stdlib-jdk8").versionRef("kotlin")
             library("kotlin-reflect", "org.jetbrains.kotlin", "kotlin-reflect").versionRef("kotlin")
@@ -62,31 +65,30 @@ dependencyResolutionManagement {
             library("openfeign-okhttp", "io.github.openfeign", "feign-okhttp").versionRef("feign")
             library("openfeign-jackson", "io.github.openfeign", "feign-jackson").versionRef("feign")
 
-            library("guava", "com.google.guava", "guava").version("30.1.1-jre")
+            library("guava", "com.google.guava", "guava").version("31.1-jre")
 
             library("commons-lang3", "org.apache.commons", "commons-lang3").version("3.12.0")
             library("commons-codec", "commons-codec", "commons-codec").version("1.15")
             library("commons-io", "commons-io", "commons-io").version("2.11.0")
 
             library("swagger_request_validator_core", "com.atlassian.oai", "swagger-request-validator-core").version("2.18.0")
-            library("org.eclipse.jgit", "org.eclipse.jgit", "org.eclipse.jgit").version("5.11.0.202103091610-r")
+            library("org.eclipse.jgit", "org.eclipse.jgit", "org.eclipse.jgit").version("6.2.0.202206071550-r")
 
             library("testcontainers-core", "org.testcontainers", "testcontainers").versionRef("testcontainers")
 
             library("jackson-module-kotlin", "com.fasterxml.jackson.module", "jackson-module-kotlin").versionRef("jackson")
             library("jackson-datatype-jsr310", "com.fasterxml.jackson.datatype", "jackson-datatype-jsr310").versionRef("jackson")
 
-            library("jacoco-core", "org.jacoco", "org.jacoco.core").version("0.8.7")
-            library("jacoco-report", "org.jacoco", "org.jacoco.report").version("0.8.7")
+            library("jacoco-core", "org.jacoco", "org.jacoco.core").versionRef("jacoco")
+            library("jacoco-report", "org.jacoco", "org.jacoco.report").versionRef("jacoco")
 
             //reporting
-            library("allure-cucumber", "io.qameta.allure", "allure-cucumber7-jvm").version("2.17.2")
-            library("allure-plugin-api", "io.qameta.allure", "allure-plugin-api").version("2.17.2")
-            library("allure-commandline", "io.qameta.allure", "allure-commandline").version("2.17.2")
+            library("allure-cucumber", "io.qameta.allure", "allure-cucumber7-jvm").versionRef("allure")
+            library("allure-plugin-api", "io.qameta.allure", "allure-plugin-api").versionRef("allure")
+            library("allure-commandline", "io.qameta.allure", "allure-commandline").versionRef("allure")
 
-            library("cucumber-reporting", "net.masterthought", "cucumber-reporting").version("5.6.1")
             //UI testing
-            library("selenide", "com.codeborne", "selenide").version("6.1.2")
+            library("selenide", "com.codeborne", "selenide").version("6.6.3")
 
             bundle(
                 "cucumber", listOf(

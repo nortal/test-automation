@@ -25,6 +25,7 @@ package io.cucumber.junit.platform.engine;
 import static io.cucumber.core.resource.ClasspathSupport.CLASSPATH_SCHEME_PREFIX;
 import static io.cucumber.junit.platform.engine.Constants.ANSI_COLORS_DISABLED_PROPERTY_NAME;
 import static io.cucumber.junit.platform.engine.Constants.EXECUTION_DRY_RUN_PROPERTY_NAME;
+import static io.cucumber.junit.platform.engine.Constants.FEATURES_PROPERTY_NAME;
 import static io.cucumber.junit.platform.engine.Constants.FILTER_NAME_PROPERTY_NAME;
 import static io.cucumber.junit.platform.engine.Constants.FILTER_TAGS_PROPERTY_NAME;
 import static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME;
@@ -41,6 +42,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -52,6 +54,7 @@ import java.util.stream.Stream;
 import com.nortal.test.core.cucumber.TestReportProvider;
 import com.nortal.test.core.property.JUnitPropertyInitializer;
 import io.cucumber.core.backend.ObjectFactory;
+import io.cucumber.core.feature.FeatureWithLines;
 import io.cucumber.core.feature.GluePath;
 import io.cucumber.core.options.ObjectFactoryParser;
 import io.cucumber.core.options.PluginOption;
@@ -213,4 +216,14 @@ class CucumberEngineOptions implements
 				.orElse(DefaultNamingStrategy.SHORT);
 	}
 
+	List<FeatureWithLines> featuresWithLines() {
+		return configurationParameters.get(FEATURES_PROPERTY_NAME,
+						s -> Arrays.stream(s.split(","))
+								.map(String::trim)
+								.map(FeatureWithLines::parse)
+								.sorted(Comparator.comparing(FeatureWithLines::uri))
+								.distinct()
+								.collect(Collectors.toList()))
+				.orElse(Collections.emptyList());
+	}
 }
