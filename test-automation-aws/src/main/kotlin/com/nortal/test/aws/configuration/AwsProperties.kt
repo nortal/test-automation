@@ -48,5 +48,8 @@ data class AwsProperties(
      */
     val secretKey: String,
 
+    /**
+     * Enables report upload to S3.
+     */
     val s3PublishReport: Boolean = true
 )

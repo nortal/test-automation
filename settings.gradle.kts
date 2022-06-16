@@ -10,8 +10,6 @@ include("test-automation-allure")
 include("test-automation-selenide")
 include("test-automation-aws")
 
-
-
 plugins {
     val kotlinVersion = "1.7.0"
     kotlin("jvm") version kotlinVersion apply false
