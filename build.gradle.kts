@@ -128,18 +128,18 @@ subprojects {
         }
 
         repositories {
-            maven {
-                url = if (version.toString().endsWith("SNAPSHOT")) {
-                    uri(props.getRequiredProperty("MAVEN_SNAPSHOTS_REPOSITORY_URL", "snapshotsRepoUrl"))
-                } else {
-                    uri(props.getRequiredProperty("MAVEN_RELEASES_REPOSITORY_URL", "releasesRepoUrl"))
-                }
-                authentication { create<HttpHeaderAuthentication>("") }
-                credentials(HttpHeaderCredentials::class) {
-                    name = System.getenv("CI_JOB_TOKEN")?.let { "Job-Token" } ?: "Private-Token"
-                    value = props.getRequiredProperty("CI_JOB_TOKEN", "personalAccessToken")
-                }
-            }
+//            maven {
+//                url = if (version.toString().endsWith("SNAPSHOT")) {
+//                    uri(props.getRequiredProperty("MAVEN_SNAPSHOTS_REPOSITORY_URL", "snapshotsRepoUrl"))
+//                } else {
+//                    uri(props.getRequiredProperty("MAVEN_RELEASES_REPOSITORY_URL", "releasesRepoUrl"))
+//                }
+//                authentication { create<HttpHeaderAuthentication>("") }
+//                credentials(HttpHeaderCredentials::class) {
+//                    name = System.getenv("CI_JOB_TOKEN")?.let { "Job-Token" } ?: "Private-Token"
+//                    value = props.getRequiredProperty("CI_JOB_TOKEN", "personalAccessToken")
+//                }
+//            }
         }
     }
 
