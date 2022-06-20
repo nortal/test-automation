@@ -61,7 +61,7 @@ class TestContainerNetworkProvider(
 
     private fun getReusableNetwork(): Network {
         val reusableNetworkOptional = findExistingReusableNetwork()
-        return if (reusableNetworkOptional.isEmpty) {
+        return if (!reusableNetworkOptional.isPresent) {
             createReusableNetwork()
         } else {
             ReusedNetwork(reusableNetworkOptional.get().id)

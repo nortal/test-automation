@@ -24,9 +24,11 @@ package com.nortal.test.core.report
 
 import com.nortal.test.core.services.ScenarioExecutionContext
 import io.cucumber.java.Scenario
+import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.tuple.Triple
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.stereotype.Component
+import java.nio.charset.StandardCharsets
 import java.util.*
 import java.util.stream.Collectors
 
@@ -81,7 +83,9 @@ class ReportFormatter(
     private fun loadTemplate(name: String) {
         val resource = Thread.currentThread().contextClassLoader.getResource("report/$name")
         try {
-            Objects.requireNonNull(resource).openStream().use { inputStream -> templates.put(name, String(inputStream.readAllBytes())) }
+            Objects.requireNonNull(resource).openStream().use { inputStream ->
+                templates.put(name, IOUtils.toString(inputStream, StandardCharsets.UTF_8))
+            }
         } catch (e: Exception) {
             throw AssertionError("Could not load template for reporting", e)
         }

@@ -22,6 +22,7 @@
  */
 package com.nortal.test.testcontainers
 
+import com.nortal.test.core.exception.TestConfigurationException
 import com.nortal.test.testcontainers.configuration.TestableContainerProperties
 import com.nortal.test.testcontainers.images.builder.ImageFromDockerfile
 import com.nortal.test.testcontainers.images.builder.ReusableImageFromDockerfile
@@ -87,7 +88,7 @@ abstract class AbstractTestableContainerSetup : TestableContainerInitializer {
     protected open fun build(): ImageFromDockerfile {
         val appJarDir = Paths.get(testableContainerProperties.jarBuildDir)
         val appJarPath = Files.find(appJarDir, 1, { t, _ -> isMatchingJarFile(t) })
-            .findFirst().orElseThrow()
+            .findFirst().orElseThrow { TestConfigurationException("Failed to find jar in $testableContainerProperties.jarBuildDir") }
 
 
         val reusableImageFromDockerfile =

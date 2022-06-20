@@ -73,13 +73,13 @@ open class AssertionsFormatter(
     }
 
     companion object {
-        val HEADERS = java.util.List.of("Status", "Message", "Actual value path", "Operation", "Expected value", "Actual value")
+        val HEADERS = listOf("Status", "Message", "Actual value path", "Operation", "Expected value", "Actual value")
         private fun convertToTableLine(completedAssertion: ValidationService.CompletedAssertion, validation: Validation): List<String?> {
             val assertion = completedAssertion.assertion
             val expectedValueString = getExpectedValue(assertion)
             val expression = getExpression(assertion, validation.baseExpression)
             val actualValueString = getActualValue(completedAssertion)
-            return java.util.List.of(
+            return listOf(
                 completedAssertion.status.toString(),
                 assertion.message,
                 expression,

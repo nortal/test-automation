@@ -29,6 +29,8 @@ import com.nortal.test.report.allure.configuration.AllureReportProperties
 import io.qameta.allure.Commands
 import io.qameta.allure.option.ConfigOptions
 import org.apache.commons.io.function.IOConsumer
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.io.IOException
 import java.net.URI
@@ -45,11 +47,18 @@ class AllureReportGenerationHook(
     private val allureReportProperties: AllureReportProperties,
     private val reportPublisher: ReportPublisher
 ) : AfterSuiteHook {
+    private val log: Logger = LoggerFactory.getLogger(javaClass)
+
     private val entryFileName = "index.html"
 
+    override fun afterSuitOrder(): Int {
+        return 50000
+    }
+
     override fun afterSuite() {
-        val reportDir = Path.of(allureReportProperties.reportDir)
-        val executionResultDir = Path.of(allureReportProperties.resultDir)
+        log.info("Generating Allure Report..")
+        val reportDir = FileSystems.getDefault().getPath(allureReportProperties.reportDir)
+        val executionResultDir = FileSystems.getDefault().getPath(allureReportProperties.resultDir)
 
         val resource = this.javaClass.getResource("/allure_home")
             ?: throw TestAutomationException("Missing allure_home under classpath!")

@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import java.nio.file.Path
+import java.nio.file.FileSystems
 
 @ActiveProfiles("test")
 @SpringBootTest(
@@ -43,6 +43,6 @@ class S3FileStoreIntTest {
     @Test
     fun shouldUploadFolder() {
 
-        s3FileStore.uploadDir(Path.of("build/resources/test/test-data/"), "target-dir")
+        s3FileStore.uploadDir(FileSystems.getDefault().getPath("build/resources/test/test-data/"), "target-dir")
     }
 }

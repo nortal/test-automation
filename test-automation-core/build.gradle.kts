@@ -12,6 +12,7 @@ dependencies {
     api(libs.jackson.datatype.jsr310)
 
     api(libs.commons.lang3)
+    api(libs.commons.io)
 
     implementation(libs.guava)
 }
