@@ -84,19 +84,6 @@ subprojects {
         implementation("org.jetbrains.kotlin:kotlin-reflect")
     }
 
-
-    tasks.withType<Test> {
-        useJUnitPlatform()
-        testLogging {
-            events(org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED, org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED, org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED, org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_OUT, org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR)
-            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-            showCauses = true
-            showExceptions = true
-            showStackTraces = true
-            showStandardStreams = true
-        }
-    }
-
     tasks.withType<KotlinCompile> {
         kotlinOptions {
             freeCompilerArgs = listOf(
@@ -110,7 +97,7 @@ subprojects {
 
     tasks.withType<Test> {
         useJUnitPlatform()
-        1
+
         testLogging {
             events(PASSED, SKIPPED, FAILED, STANDARD_OUT, STANDARD_ERROR)
             exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
