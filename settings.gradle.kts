@@ -10,6 +10,8 @@ include("test-automation-allure")
 include("test-automation-selenide")
 include("test-automation-aws")
 
+include(":demos:demo-ui-test")
+
 plugins {
     val kotlinVersion = "1.7.0"
     kotlin("jvm") version kotlinVersion apply false
@@ -18,6 +20,7 @@ plugins {
     id("pl.allegro.tech.build.axion-release") version "1.13.14" apply false
     id("io.gitlab.arturbosch.detekt").version("1.20.0") apply false
     id("com.github.hierynomus.license").version("0.16.1") apply false
+    id("io.freefair.lombok") version "6.5.0" apply false
 }
 
 dependencyResolutionManagement {

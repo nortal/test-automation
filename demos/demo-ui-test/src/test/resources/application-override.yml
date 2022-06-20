@@ -1,0 +1,31 @@
+#Logging configuration
+logging:
+  level:
+    ROOT: INFO
+    cucumber: TRACE
+    com.nortal.test: INFO
+    org.springframework: INFO
+
+test-automation:
+  report-name: demo-suite
+  environment: local
+  cucumber:
+    execution:
+      parallel:
+        enabled: true
+        executor-count: 2
+    glue-append: "com.nortal.test.demo.glue"
+    filter:
+      tags: "not @Skip"
+  selenide:
+    browser: CHROME # Options: CHROME, EDGE, FIREFOX, OPERA, SAFARI (works only with Mac)
+    browser-size: "1920x1080"
+    driver-manager-enabled: true
+    headless: false
+    timeout: 40000
+    page-load-timeout: 30000
+  custom:
+    demo-mode: true
+    lazy-execution: false
+    lazy-execution-time: 1
+    screenshots-steps: true
