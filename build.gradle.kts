@@ -7,6 +7,7 @@ import java.util.Properties
 plugins {
     `java-library`
     `maven-publish`
+    signing
     id("pl.allegro.tech.build.axion-release")
     id("io.gitlab.arturbosch.detekt")
     id("com.github.hierynomus.license")
@@ -64,6 +65,7 @@ subprojects {
         plugin("org.jetbrains.kotlin.plugin.spring")
         plugin("io.gitlab.arturbosch.detekt")
         plugin("com.github.hierynomus.license")
+        plugin("signing")
     }
 
     group = "com.nortal.test"
@@ -116,6 +118,10 @@ subprojects {
         from(sourceSets.getByName("main").allSource)
     }
 
+    /*signing {
+        sign(configurations.archives.get())
+    }*/
+
     publishing {
         publications {
             create<MavenPublication>(project.name) {
@@ -128,18 +134,18 @@ subprojects {
         }
 
         repositories {
-//            maven {
-//                url = if (version.toString().endsWith("SNAPSHOT")) {
-//                    uri(props.getRequiredProperty("MAVEN_SNAPSHOTS_REPOSITORY_URL", "snapshotsRepoUrl"))
-//                } else {
-//                    uri(props.getRequiredProperty("MAVEN_RELEASES_REPOSITORY_URL", "releasesRepoUrl"))
-//                }
-//                authentication { create<HttpHeaderAuthentication>("") }
-//                credentials(HttpHeaderCredentials::class) {
-//                    name = System.getenv("CI_JOB_TOKEN")?.let { "Job-Token" } ?: "Private-Token"
-//                    value = props.getRequiredProperty("CI_JOB_TOKEN", "personalAccessToken")
-//                }
-//            }
+            maven {
+                url = if (version.toString().endsWith("SNAPSHOT")) {
+                    uri(props.getRequiredProperty("MAVEN_SNAPSHOTS_REPOSITORY_URL", "snapshotsRepoUrl"))
+                } else {
+                    uri(props.getRequiredProperty("MAVEN_RELEASES_REPOSITORY_URL", "releasesRepoUrl"))
+                }
+                authentication { create<HttpHeaderAuthentication>("") }
+                credentials(org.gradle.api.artifacts.repositories.PasswordCredentials::class) {
+                    name = props.getRequiredProperty("OSS_USERNAME", "ossUsername")
+                    password = props.getRequiredProperty("OSS_PASSWORD", "ossPassword")
+                }
+            }
         }
     }
 
