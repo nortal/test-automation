@@ -151,6 +151,9 @@ subprojects {
                 artifact(sourcesJar)
                 artifact(javadocJar)
                 pom {
+                    name.set("Test automation framework")
+                    description.set("Cucumber based API and UI test framework")
+                    url.set("https://$gitHubProjectPath")
                     licenses {
                         license {
                             name.set("MIT license")
