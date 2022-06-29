@@ -65,6 +65,7 @@ subprojects {
         plugin("org.jetbrains.kotlin.plugin.spring")
         plugin("io.gitlab.arturbosch.detekt")
         plugin("com.github.hierynomus.license")
+        plugin("org.jetbrains.dokka")
         plugin("signing")
     }
 
@@ -113,26 +114,67 @@ subprojects {
     val props = Properties()
     rootProject.file("gradle-local.properties").takeIf { it.exists() }?.inputStream()?.use { props.load(it) }
 
-    val sourcesJar by tasks.creating(org.gradle.api.tasks.bundling.Jar::class) {
-        archiveClassifier.set("sources")
-        from(sourceSets.getByName("main").allSource)
-    }
-
-    signing {
-        setRequired({
-            gradle.taskGraph.hasTask("publish")
-        })
-        sign(configurations.archives.get())
-    }
-
     publishing {
+        //Generate sources
+        val sourcesJar by tasks.creating(org.gradle.api.tasks.bundling.Jar::class) {
+            archiveClassifier.set("sources")
+            from(sourceSets.getByName("main").allSource)
+        }
+        //Generate javadoc
+        val dokkaHtml by tasks.getting(org.jetbrains.dokka.gradle.DokkaTask::class)
+        val javadocJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
+            dependsOn(dokkaHtml)
+            archiveClassifier.set("javadoc")
+            from(dokkaHtml.outputDirectory)
+        }
+
+        tasks.withType<Zip>().configureEach {
+            doLast {
+                listOf("md5", "sha1", "sha-256", "sha-512").forEach {
+                    ant.withGroovyBuilder {
+                        "checksum"(
+                            "file" to this@configureEach.archiveFile.get().asFile,
+                            "algorithm" to it
+                        )
+                    }
+                }
+            }
+        }
+
         publications {
             create<MavenPublication>(project.name) {
+                val gitHubProjectPath = "github.com/nortal/test-automation"
                 groupId = "${project.group}"
                 artifactId = project.name
                 version = version
                 from(components["java"])
                 artifact(sourcesJar)
+                artifact(javadocJar)
+                pom {
+                    licenses {
+                        license {
+                            name.set("MIT license")
+                            url.set("https://opensource.org/licenses/MIT")
+                        }
+                    }
+                    issueManagement {
+                        system.set("Github")
+                        url.set("https://$gitHubProjectPath/issues")
+                    }
+                    scm {
+                        connection.set("scm:git:git://$gitHubProjectPath.git")
+                        developerConnection.set("scm:git:ssh://$gitHubProjectPath.git")
+                        url.set("https://$gitHubProjectPath")
+                    }
+                    developers {
+                        developer {
+                            name.set("Ričardas Bučiūnas")
+                            email.set("ricardas.buciunas@nortal.com")
+                            organization.set("Nortal AB")
+                            organizationUrl.set("https://nortal.com/")
+                        }
+                    }
+                }
             }
         }
 
@@ -149,6 +191,10 @@ subprojects {
                 }
             }
         }
+    }
+
+    signing {
+        sign(publishing.publications[project.name])
     }
 
     detekt {

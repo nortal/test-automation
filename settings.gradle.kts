@@ -20,6 +20,7 @@ plugins {
     id("pl.allegro.tech.build.axion-release") version "1.13.14" apply false
     id("io.gitlab.arturbosch.detekt").version("1.20.0") apply false
     id("com.github.hierynomus.license").version("0.16.1") apply false
+    id("org.jetbrains.dokka") version "1.7.0" apply false
     id("io.freefair.lombok") version "6.5.0" apply false
 }
 
