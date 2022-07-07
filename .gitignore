@@ -27,3 +27,6 @@ gradle-app.setting
 .gradle-cache
 
 gradle-local.properties
+
+# Ignore docker volumes
+**/docker-data
