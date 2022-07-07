@@ -1,2 +1,3 @@
 plugins:
   - logs-plugin
+  - custom-logo
