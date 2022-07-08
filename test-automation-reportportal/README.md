@@ -21,6 +21,6 @@ http://IP_ADDRESS:8080
 - `default\1q2w3e`
 - `superadmin\erebus`
 
-5. Adjust `rp.api.key` and `rp.project` properties in [reportportal.properties](./src/main/resources/reportportal.properties) file based on ReportPortal user information (can be found in User Profile window).
+5. Adjust `rp.api.key` and `rp.project` properties in [application-base.yml](./src/test/resources/application-base.yml) file based on ReportPortal user information (which can be found in User Profile window).
 
 6. Execute tests in this module and observe generated reports in ReportPortal.

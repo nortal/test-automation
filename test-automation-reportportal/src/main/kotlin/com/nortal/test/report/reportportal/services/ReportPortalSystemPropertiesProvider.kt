@@ -20,18 +20,26 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.nortal.test.report.reportportal
+package com.nortal.test.report.reportportal.services
 
-import com.epam.reportportal.cucumber.ScenarioReporter
-import com.epam.reportportal.cucumber.StepReporter
-import com.nortal.test.core.cucumber.TestReportProvider
+import com.nortal.test.core.cucumber.SystemPropertiesProvider
+import com.epam.reportportal.utils.properties.ListenerProperty.API_KEY
+import com.epam.reportportal.utils.properties.ListenerProperty.BASE_URL
+import com.epam.reportportal.utils.properties.ListenerProperty.BATCH_SIZE_LOGS
+import com.epam.reportportal.utils.properties.ListenerProperty.PROJECT_NAME
+import com.epam.reportportal.utils.properties.ListenerProperty.LAUNCH_NAME
 
-/**
- * Exposes Report Portal's Scenario Reporter as cucumber report provider.
- */
-class ReportPortalTestReportProvider : TestReportProvider {
+class ReportPortalSystemPropertiesProvider: SystemPropertiesProvider {
 
-    override fun getCucumberPlugin(): String {
-        return ScenarioReporter::class.java.name
+    private val mandatoryProperties = mapOf(
+            "report." + BASE_URL.propertyName to BASE_URL.propertyName,
+            "report." + PROJECT_NAME.propertyName to PROJECT_NAME.propertyName,
+            "report." + LAUNCH_NAME.propertyName to LAUNCH_NAME.propertyName,
+            "report." + API_KEY.propertyName to API_KEY.propertyName,
+            "report." + BATCH_SIZE_LOGS.propertyName to BATCH_SIZE_LOGS.propertyName
+    )
+
+    override fun getProperties(): Map<String, String> {
+        return mandatoryProperties
     }
 }

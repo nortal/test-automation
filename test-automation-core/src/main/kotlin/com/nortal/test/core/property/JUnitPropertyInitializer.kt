@@ -29,11 +29,13 @@ import com.nortal.test.core.configuration.TestAutomationConstants.PROPERTY_BOOTS
 import com.nortal.test.core.configuration.TestAutomationConstants.PROPERTY_PARALLEL_EXECUTION_GROUP_TAGS
 import com.nortal.test.core.configuration.TestAutomationConstants.PROPERTY_PARALLEL_EXECUTOR_COUNT
 import com.nortal.test.core.configuration.TestAutomationConstants.PROPERTY_PARALLEL_ISOLATION_TAG
+import com.nortal.test.core.cucumber.SystemPropertiesProvider
 import com.nortal.test.core.exception.TestAutomationException
 import io.cucumber.core.options.Constants.EXECUTION_ORDER_PROPERTY_NAME
 import io.cucumber.junit.platform.engine.Constants.*
 import org.apache.commons.lang3.StringUtils
 import org.springframework.core.env.Environment
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 object JUnitPropertyInitializer {
@@ -60,6 +62,7 @@ object JUnitPropertyInitializer {
 
                 applyHardCodedProperties()
                 applySystemProperties(env)
+                applyProviderSystemProperties(env)
                 applyGlueAppendProperty(env)
                 applyParallelExecutorConfig(env)
 
@@ -128,6 +131,23 @@ object JUnitPropertyInitializer {
                 System.setProperty(GLUE_PROPERTY_NAME, "$FRAMEWORK_BOOTSTRAP_GLUE,$it")
         }
 
+    }
+
+    private fun applyProviderSystemProperties(env: Environment) {
+        val loader = ServiceLoader.load(SystemPropertiesProvider::class.java)
+        val iterator: Iterator<SystemPropertiesProvider> = loader.iterator()
+
+        if (!iterator.hasNext()) {
+            return
+        }
+
+        val properties: Map<String, String> = iterator.next().getProperties()
+        properties.forEach{ providerProperty ->
+            val propertyKey = PROPERTY_PREFIX + providerProperty.key
+            val property = env.getProperty(propertyKey)
+
+            property?.let { System.setProperty(providerProperty.value, it) }
+        }
     }
 
 }
