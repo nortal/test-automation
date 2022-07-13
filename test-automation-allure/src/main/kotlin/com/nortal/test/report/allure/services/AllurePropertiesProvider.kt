@@ -20,40 +20,19 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.nortal.test.report.allure.configuration
+package com.nortal.test.report.allure.services
 
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.ConstructorBinding
-import org.springframework.boot.context.properties.NestedConfigurationProperty
+import com.nortal.test.core.cucumber.SystemPropertiesProvider
 
-@ConstructorBinding
-@ConfigurationProperties(prefix = "test-automation.report.allure")
-data class AllureReportProperties(
-    /**
-     * Report dir where generated report will be put in.
-     */
-    val reportDir: String,
-    /**
-     * Cucumber result dir in raw allure format.
-     */
-    val resultDir: String,
-    @NestedConfigurationProperty
-    val serveReport: AllureServeReportProperties = AllureServeReportProperties()
-)
+class AllurePropertiesProvider: SystemPropertiesProvider {
 
-@ConstructorBinding
-@ConfigurationProperties(prefix = "test-automation.report.allure.serve-report")
-class AllureServeReportProperties(
-    /**
-     * Serve latest report through embedded webserver.
-     */
-    val enabled: Boolean = false,
-    /**
-     * Hostname to use.
-     */
-    val hostname: String = "127.0.0.1",
-    /**
-     * Port.
-     */
-    var port: Int = 9898,
-)
+    private val systemProperties = mapOf(
+            "report.allure.result-dir" to "allure.results.directory",
+            "report.allure.custom-logo-dir" to "allure.custom-logo-dir",
+            "report.allure.custom-collapsed-logo-dir" to "allure.custom-collapsed-logo-dir"
+    )
+
+    override fun getProperties(): Map<String, String> {
+        return systemProperties
+    }
+}

@@ -20,17 +20,9 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.nortal.test.report.allure
+package com.nortal.test.core.cucumber
 
-import com.nortal.test.core.cucumber.TestReportProvider
-import io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm
+interface SystemPropertiesProvider {
 
-/**
- * Exposes Allure as cucumber report provider.
- */
-class AllureTestReportProvider : TestReportProvider {
-
-    override fun getCucumberPlugin(): String {
-        return AllureCucumber7Jvm::class.java.name
-    }
+    fun getProperties() : Map<String, String>
 }
