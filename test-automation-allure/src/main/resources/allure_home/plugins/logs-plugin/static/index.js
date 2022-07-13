@@ -31,10 +31,12 @@ const template = function (data) {
     let content=data.items[0].attributes.content
 
     return `
-    <h3 class="pane__title">Test Framework logs:</h3>
-    <div class="attachment log-text-block">
-        <div class="attachment__text-container">
-            <pre class="attachment__text ">${content}</pre>
+    <div class="log-window">
+        <h3 class="pane__title">Test Framework logs:</h3>
+        <div class="attachment log-text-block">
+            <div class="attachment__text-container">
+                <pre class="attachment__text ">${content}</pre>
+            </div>
         </div>
     </div>
     `;
