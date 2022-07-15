@@ -1,4 +1,11 @@
 .log-text-block {
-    max-height: 768px;
     overflow: scroll;
+    overflow-x: auto;
+}
+
+.log-window {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: 100vh;
 }
