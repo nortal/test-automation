@@ -57,7 +57,7 @@
 *.bat text
 *.ep text
 *.css text
-*.configuration text
+*.config text
 *.groovy text
 *.scn text
 *.vm text

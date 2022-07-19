@@ -22,7 +22,7 @@
  */
 package com.nortal.test.report.reportportal.services
 
-import com.nortal.test.report.reportportal.CustomScenarioReporter
+import com.nortal.test.report.reportportal.TestAutomationScenarioReporter
 import com.nortal.test.core.cucumber.TestReportProvider
 
 /**
@@ -31,6 +31,6 @@ import com.nortal.test.core.cucumber.TestReportProvider
 class ReportPortalTestReportProvider : TestReportProvider {
 
     override fun getCucumberPlugin(): String {
-        return CustomScenarioReporter::class.java.name
+        return TestAutomationScenarioReporter::class.java.name
     }
 }

@@ -26,18 +26,22 @@ import com.epam.reportportal.cucumber.ScenarioReporter
 import com.epam.reportportal.listeners.ListenerParameters
 import com.epam.reportportal.service.ReportPortal
 import com.epam.reportportal.utils.properties.PropertiesLoader
+import com.nortal.test.core.exception.TestAutomationException
 
-class CustomScenarioReporter : ScenarioReporter() {
+class TestAutomationScenarioReporter : ScenarioReporter() {
 
     @Override
     override fun buildReportPortal(): ReportPortal? {
         val listenerParameters = ListenerParameters(PropertiesLoader.load())
 
-        listenerParameters.apiKey = System.getProperty("rp.api.key")
-        listenerParameters.launchName = System.getProperty("rp.launch")
-        listenerParameters.baseUrl = System.getProperty("rp.endpoint")
-        listenerParameters.projectName = System.getProperty("rp.project")
-        listenerParameters.batchLogsSize = System.getProperty("rp.batch.size.logs").toInt()
+        listenerParameters.apiKey = System.getProperty("rp.api.key") ?:
+                throw TestAutomationException("Unable to find property test-automation.report.rp.api.key")
+        listenerParameters.baseUrl = System.getProperty("rp.endpoint") ?:
+                throw TestAutomationException("Unable to find property test-automation.report.rp.endpoint")
+        listenerParameters.projectName = System.getProperty("rp.project") ?:
+                throw TestAutomationException("Unable to find property test-automation.report.rp.project")
+        listenerParameters.launchName = System.getProperty("rp.launch") ?: "TEST_AUTOMATION"
+        listenerParameters.batchLogsSize = (System.getProperty("rp.batch.size.logs") ?: "100").toInt()
 
         return ReportPortal.builder()
                 .withParameters(listenerParameters)
