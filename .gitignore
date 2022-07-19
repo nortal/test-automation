@@ -17,7 +17,7 @@ target/
 !src/**/build/
 gradle-local.properties
 
-# Ignore Gradle GUI config
+# Ignore Gradle GUI configuration
 gradle-app.setting
 
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
@@ -27,3 +27,6 @@ gradle-app.setting
 .gradle-cache
 
 gradle-local.properties
+
+# Ignore docker volumes
+**/docker-data
