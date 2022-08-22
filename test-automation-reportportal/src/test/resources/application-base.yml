@@ -1,0 +1,16 @@
+test-automation:
+  report-name: core-testing
+
+  cucumber:
+    glue-append: com.nortal.test.report.reportportal.glue
+
+  report:
+    rp:
+      api:
+        key: dc01dfd0-93c1-49a4-8344-c6b32ec37566
+      endpoint: http://localhost:8080
+      launch: TEST_AUTOMATION
+      project: default_personal
+      batch:
+        size:
+          logs: 100

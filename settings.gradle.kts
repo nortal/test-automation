@@ -9,6 +9,7 @@ include("test-automation-feign")
 include("test-automation-allure")
 include("test-automation-selenide")
 include("test-automation-aws")
+include("test-automation-reportportal")
 
 include(":demos:demo-ui-test")
 
@@ -38,6 +39,7 @@ dependencyResolutionManagement {
             version("feign", "11.8")
             version("jacoco", "0.8.8")
             version("allure", "2.18.1")
+            version("reportportal", "5.1.2")
 
             library("kotlin-stdlib-jdk8", "org.jetbrains.kotlin", "kotlin-stdlib-jdk8").versionRef("kotlin")
             library("kotlin-reflect", "org.jetbrains.kotlin", "kotlin-reflect").versionRef("kotlin")
@@ -88,6 +90,9 @@ dependencyResolutionManagement {
             library("allure-cucumber", "io.qameta.allure", "allure-cucumber7-jvm").versionRef("allure")
             library("allure-plugin-api", "io.qameta.allure", "allure-plugin-api").versionRef("allure")
             library("allure-commandline", "io.qameta.allure", "allure-commandline").versionRef("allure")
+
+            library("reportportal-cucumber", "com.epam.reportportal", "agent-java-cucumber6").versionRef("reportportal")
+            library("reportportal-logger", "com.epam.reportportal", "logger-java-logback").versionRef("reportportal")
 
             //UI testing
             library("selenide", "com.codeborne", "selenide").version("6.6.3")
