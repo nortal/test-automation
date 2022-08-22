@@ -1,0 +1,5 @@
+test-automation:
+  report:
+    allure:
+      report-dir: build/allure-report
+      result-dir: build/allure-results

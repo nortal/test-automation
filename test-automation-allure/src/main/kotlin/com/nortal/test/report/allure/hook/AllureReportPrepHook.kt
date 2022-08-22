@@ -36,9 +36,7 @@ class AllureReportPrepHook : BeforeSuiteHook {
     }
 
     override fun beforeSuite() {
-        val properties = PropertiesUtils.loadAllureProperties()
-        val path = properties.getProperty("allure.results.directory", "allure-results")
-
+        val path = System.getProperty("allure.results.directory", "allure-results")
 
         val resultDir = Paths.get(path).toFile()
         if (resultDir.isDirectory && resultDir.exists()) {

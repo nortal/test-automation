@@ -29,3 +29,7 @@ test-automation:
     lazy-execution: false
     lazy-execution-time: 1
     screenshots-steps: true
+  report:
+    allure:
+      custom-logo-dir: /logo/kotlin-horizontal.svg
+      custom-collapsed-logo-dir: /logo/kotlin-icon.svg

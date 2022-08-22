@@ -20,7 +20,7 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.nortal.test.report.allure
+package com.nortal.test.report.allure.services
 
 import com.nortal.test.core.cucumber.TestReportProvider
 import io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm
