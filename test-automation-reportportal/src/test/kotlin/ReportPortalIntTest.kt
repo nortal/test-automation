@@ -26,4 +26,4 @@ import com.nortal.test.TestRunner
 import org.junit.platform.suite.api.SelectClasspathResource
 
 @SelectClasspathResource("/behavior")
-class ReportPortalTest : TestRunner()
+class ReportPortalIntTest : TestRunner()

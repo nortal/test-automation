@@ -101,6 +101,10 @@ subprojects {
     tasks.withType<Test> {
         useJUnitPlatform()
 
+        if (!project.hasProperty("intTests")) {
+            exclude("**/**IntTest**")
+        }
+
         testLogging {
             events(PASSED, SKIPPED, FAILED, STANDARD_OUT, STANDARD_ERROR)
             exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
