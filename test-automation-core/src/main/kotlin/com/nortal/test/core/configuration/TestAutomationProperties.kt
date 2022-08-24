@@ -40,6 +40,11 @@ data class TestAutomationProperties(
      * A name that is used in published reports.
      */
     val reportName: String = "test-report",
+
+    /**
+     * Additional spring component scan for beans that should be loaded together with the framework.
+     */
+    val springComponentScan: String = "com.nortal.test",
     /**
      * Cucumber configuration.
      */

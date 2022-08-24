@@ -34,7 +34,7 @@ import org.springframework.context.annotation.Configuration
 /**
  * Main configuration class for spring context.
  */
-@ComponentScan("com.nortal.test")
+@ComponentScan(basePackages = ["com.nortal.test", "\${test-automation.spring-component-scan:}"])
 @EnableConfigurationProperties(
     TestAutomationProperties::class,
     TestAutomationCucumberProperties::class,
