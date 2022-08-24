@@ -14,31 +14,31 @@ include("test-automation-reportportal")
 include(":demos:demo-ui-test")
 
 plugins {
-    val kotlinVersion = "1.7.0"
+    val kotlinVersion = "1.7.10"
     kotlin("jvm") version kotlinVersion apply false
     kotlin("plugin.spring") version kotlinVersion apply false
     kotlin("kapt") version kotlinVersion apply false
     id("pl.allegro.tech.build.axion-release") version "1.13.14" apply false
     id("io.gitlab.arturbosch.detekt").version("1.20.0") apply false
     id("com.github.hierynomus.license").version("0.16.1") apply false
-    id("org.jetbrains.dokka") version "1.7.0" apply false
+    id("org.jetbrains.dokka") version kotlinVersion apply false
     id("io.freefair.lombok") version "6.5.0" apply false
 }
 
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            version("kotlin", "1.7.0")
+            version("kotlin", "1.7.10")
 
-            version("cucumber", "7.3.4")
-            version("spring-boot", "2.7.0")
+            version("cucumber", "7.6.0")
+            version("spring-boot", "2.7.3")
             version("spring-cloud", "3.1.3")
             version("jackson", "2.13.3")
-            version("testcontainers", "1.17.2")
+            version("testcontainers", "1.17.3")
             version("rest-assured", "5.1.1")
-            version("feign", "11.8")
+            version("feign", "11.9.1")
             version("jacoco", "0.8.8")
-            version("allure", "2.18.1")
+            version("allure", "2.19.0")
             version("reportportal", "5.1.2")
 
             library("kotlin-stdlib-jdk8", "org.jetbrains.kotlin", "kotlin-stdlib-jdk8").versionRef("kotlin")
@@ -47,7 +47,7 @@ dependencyResolutionManagement {
             library("cucumber-junit-platform-engine", "io.cucumber", "cucumber-junit-platform-engine").versionRef("cucumber")
             library("cucumber-spring", "io.cucumber", "cucumber-spring").versionRef("cucumber")
 
-            library("junit-platform-suite", "org.junit.platform", "junit-platform-suite").version("1.8.2")
+            library("junit-platform-suite", "org.junit.platform", "junit-platform-suite").version("1.9.0")
 
             //Spring Boot
             library("springboot-starter_", "org.springframework.boot", "spring-boot-starter").versionRef("spring-boot")
@@ -95,7 +95,7 @@ dependencyResolutionManagement {
             library("reportportal-logger", "com.epam.reportportal", "logger-java-logback").versionRef("reportportal")
 
             //UI testing
-            library("selenide", "com.codeborne", "selenide").version("6.6.3")
+            library("selenide", "com.codeborne", "selenide").version("6.7.2")
 
             bundle(
                 "cucumber", listOf(
