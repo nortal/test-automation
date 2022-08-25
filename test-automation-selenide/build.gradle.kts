@@ -7,4 +7,5 @@ dependencies {
 
     api(project(":test-automation-core"))
     api(libs.selenide)
+    api(libs.allure.selenide)
 }

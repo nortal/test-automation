@@ -88,6 +88,7 @@ dependencyResolutionManagement {
 
             //reporting
             library("allure-cucumber", "io.qameta.allure", "allure-cucumber7-jvm").versionRef("allure")
+            library("allure-selenide", "io.qameta.allure", "allure-selenide").versionRef("allure")
             library("allure-plugin-api", "io.qameta.allure", "allure-plugin-api").versionRef("allure")
             library("allure-commandline", "io.qameta.allure", "allure-commandline").versionRef("allure")
 

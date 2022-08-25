@@ -22,11 +22,14 @@
  */
 package com.nortal.test.selenide.configuration
 
+import com.codeborne.selenide.logevents.SelenideLogger
+import io.qameta.allure.selenide.AllureSelenide
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration
 import javax.annotation.PostConstruct
+
 
 /**
  * Selenide module configuration.
@@ -45,18 +48,39 @@ open class SelenideConfiguration(private val selenideProperties: SelenidePropert
     open fun initSelenide() {
         log.info("Setting up Selenide with config: {}", selenideProperties)
 
-        com.codeborne.selenide.Configuration.browser = selenideProperties.browser.name
-        com.codeborne.selenide.Configuration.browserSize = selenideProperties.browserSize
-        com.codeborne.selenide.Configuration.driverManagerEnabled = selenideProperties.driverManagerEnabled
-
-        com.codeborne.selenide.Configuration.headless = selenideProperties.headless
+        com.codeborne.selenide.Configuration.baseUrl = selenideProperties.baseUrl
         com.codeborne.selenide.Configuration.timeout = selenideProperties.timeout
-        com.codeborne.selenide.Configuration.pageLoadTimeout = selenideProperties.pageLoadTimeout
+        com.codeborne.selenide.Configuration.pollingInterval = selenideProperties.pollingInterval
         com.codeborne.selenide.Configuration.holdBrowserOpen = selenideProperties.holdBrowserOpen
-        com.codeborne.selenide.Configuration.screenshots = selenideProperties.screenshotOnFailure
+        com.codeborne.selenide.Configuration.reopenBrowserOnFail = selenideProperties.reopenBrowserOnFail
+        com.codeborne.selenide.Configuration.browser = selenideProperties.browser.name
+        com.codeborne.selenide.Configuration.browserVersion = selenideProperties.browserVersion
 
-        if (selenideProperties.remoteGridEnabled) {
-            com.codeborne.selenide.Configuration.remote = selenideProperties.remoteGridUrl
-        }
+        com.codeborne.selenide.Configuration.remote = selenideProperties.remote
+        com.codeborne.selenide.Configuration.browserSize = selenideProperties.browserSize
+        com.codeborne.selenide.Configuration.browserPosition = selenideProperties.browserPosition
+        com.codeborne.selenide.Configuration.pageLoadStrategy = selenideProperties.pageLoadStrategy
+        com.codeborne.selenide.Configuration.pageLoadTimeout = selenideProperties.pageLoadTimeout
+        com.codeborne.selenide.Configuration.clickViaJs = selenideProperties.clickViaJs
+        com.codeborne.selenide.Configuration.screenshots = selenideProperties.screenshots
+        com.codeborne.selenide.Configuration.savePageSource = selenideProperties.savePageSource
+        com.codeborne.selenide.Configuration.reportsFolder = selenideProperties.reportsFolder
+        com.codeborne.selenide.Configuration.downloadsFolder = selenideProperties.downloadsFolder
+        com.codeborne.selenide.Configuration.fastSetValue = selenideProperties.fastSetValue
+        com.codeborne.selenide.Configuration.selectorMode = selenideProperties.selectorMode
+        com.codeborne.selenide.Configuration.assertionMode = selenideProperties.assertionMode
+        com.codeborne.selenide.Configuration.fileDownload = selenideProperties.fileDownload
+        com.codeborne.selenide.Configuration.proxyEnabled = selenideProperties.proxyEnabled
+        com.codeborne.selenide.Configuration.proxyHost = selenideProperties.proxyHost
+        com.codeborne.selenide.Configuration.proxyPort = selenideProperties.proxyPort
+        com.codeborne.selenide.Configuration.driverManagerEnabled = selenideProperties.driverManagerEnabled
+        com.codeborne.selenide.Configuration.webdriverLogsEnabled = selenideProperties.webdriverLogsEnabled
+        com.codeborne.selenide.Configuration.headless = selenideProperties.headless
+        com.codeborne.selenide.Configuration.browserBinary = selenideProperties.browserBinary
+
+        //TODO: make this optional.
+        SelenideLogger.addListener("AllureSelenide", AllureSelenide()
+            .screenshots(true)
+            .savePageSource(true))
     }
 }
