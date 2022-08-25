@@ -36,7 +36,7 @@ class StepDefs(private val scenarioExecutionContext: ScenarioExecutionContext) {
     @Given("A step is called")
     fun `a step is called`() {
         log.info("A step is called within test {}", scenarioExecutionContext.getScenario().name)
-        Thread.sleep(1000L)
+        Thread.sleep(100L)
     }
 
     @Then("Something is called")

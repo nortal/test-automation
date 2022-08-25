@@ -25,21 +25,13 @@ package com.nortal.test.core.model
 import java.time.OffsetDateTime
 import java.util.*
 
-/**
- * TODO
- */
-@Suppress("UnusedPrivateMember")
-class ScenarioContext {
-    private val scenarioId = UUID.randomUUID().toString()
-    private val scenarioStartTime = OffsetDateTime.now()
-    private val common = ScenarioCommonContext()
-
-
-    class ScenarioCommonContext {
-//        private val lastHttpResponse: HttpResponse<*>? = null
-        private val headers: MutableMap<String, String> = HashMap()
-        fun addHeader(key: String, value: String) {
-            headers[key] = value
-        }
+data class ScenarioContext(
+    val scenarioId: String = UUID.randomUUID().toString(),
+    val scenarioStartTime: OffsetDateTime = OffsetDateTime.now(),
+    val stepData: MutableMap<String, Any> = HashMap()
+) {
+    fun <T> getStepData(key: String): T? {
+        return stepData[key] as? T?
     }
+
 }
