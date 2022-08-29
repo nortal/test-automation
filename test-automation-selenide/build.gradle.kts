@@ -6,7 +6,11 @@ dependencies {
     kapt(libs.springboot.configuration.processor)
 
     api(project(":test-automation-core"))
-    api(libs.selenide)
-    api(libs.selenide.proxy)
+    api(libs.selenide) {
+        exclude(group = "org.slf4j", module = "slf4j-api")
+    }
+    api(libs.selenide.proxy){
+        exclude(group = "org.slf4j", module = "slf4j-api")
+    }
     api(libs.allure.selenide)
 }
