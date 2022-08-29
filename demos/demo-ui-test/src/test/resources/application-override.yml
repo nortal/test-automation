@@ -25,6 +25,7 @@ test-automation:
     timeout: 40000
     page-load-timeout: 30000
     proxy-enabled: true
+    proxy-host: 127.0.0.1
     file-download: proxy
   custom:
     demo-mode: true
