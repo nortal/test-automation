@@ -24,6 +24,8 @@ test-automation:
     headless: false
     timeout: 40000
     page-load-timeout: 30000
+    proxy-enabled: true
+    file-download: proxy
   custom:
     demo-mode: true
     lazy-execution: false

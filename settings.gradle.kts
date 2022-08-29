@@ -96,8 +96,8 @@ dependencyResolutionManagement {
             library("reportportal-logger", "com.epam.reportportal", "logger-java-logback").versionRef("reportportal")
 
             //UI testing
-            library("selenide", "com.codeborne", "selenide").version("6.7.2")
-
+            library("selenide", "com.codeborne", "selenide").version("6.7.3")
+            library("selenide-proxy", "com.codeborne", "selenide-proxy").version("6.7.3")
             bundle(
                 "cucumber", listOf(
                     "cucumber-java",
