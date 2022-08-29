@@ -35,7 +35,7 @@ class StepDefs(private val scenarioExecutionContext: ScenarioExecutionContext) {
     @Given("A step is called")
     fun `a step is called`() {
         for (i in 1..500) {
-            log.info("A step is called within test {}. Iteration $i", scenarioExecutionContext.getScenario().name)
+            log.info("A step is called within test {}. Iteration $i", scenarioExecutionContext.getCucumberScenario().name)
         }
 
         Thread.sleep(50L)

@@ -80,7 +80,7 @@ public class UiMediator {
 	private void takeScreenshot() {
 		byte[] data = Selenide.screenshot(OutputType.BYTES);
 		String name = "screenshot-" + screenshotCounter.incrementAndGet();
-		scenarioExecutionContext.getScenario().attach(data, "image/png", name);
+		scenarioExecutionContext.getCucumberScenario().attach(data, "image/png", name);
 	}
 
 	private void lazyExecution() {

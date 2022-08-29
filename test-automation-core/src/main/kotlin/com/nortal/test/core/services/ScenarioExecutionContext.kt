@@ -22,7 +22,6 @@
  */
 package com.nortal.test.core.services
 
-import com.nortal.test.core.model.ScenarioContext
 import io.cucumber.java.Scenario
 import io.cucumber.spring.ScenarioScope
 import org.springframework.stereotype.Component
@@ -42,23 +41,19 @@ import org.springframework.stereotype.Component
 @ScenarioScope //TODO remove thredlocal and use scenario scoped beans.
 class ScenarioExecutionContext {
     private val scenario = ThreadLocal<Scenario>()
-    private val scenarioContext = ThreadLocal<ScenarioContext>()
 
     fun prepare(scenario: Scenario) {
         this.scenario.set(scenario)
-        scenarioContext.set(ScenarioContext())
     }
 
     fun clean() {
         scenario.remove()
-        scenarioContext.remove()
     }
 
-    fun getScenario(): Scenario {
+    /**
+     * Get cucumber internal scenario.
+     */
+    fun getCucumberScenario(): Scenario {
         return scenario.get()
-    }
-
-    fun get(): ScenarioContext {
-        return scenarioContext.get()
     }
 }

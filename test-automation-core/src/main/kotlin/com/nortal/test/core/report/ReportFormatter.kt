@@ -49,7 +49,7 @@ class ReportFormatter(
     }
 
     fun formatAndAddToReport(attachment: Attachment) {
-        formatAndAddToReport(attachment, scenarioExecutionContext.getScenario())
+        formatAndAddToReport(attachment, scenarioExecutionContext.getCucumberScenario())
     }
 
     /**
