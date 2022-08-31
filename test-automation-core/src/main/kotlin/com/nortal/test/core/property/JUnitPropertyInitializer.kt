@@ -34,6 +34,7 @@ import com.nortal.test.core.exception.TestAutomationException
 import io.cucumber.core.options.Constants.EXECUTION_ORDER_PROPERTY_NAME
 import io.cucumber.junit.platform.engine.Constants.*
 import org.apache.commons.lang3.StringUtils
+import org.slf4j.LoggerFactory
 import org.springframework.core.env.Environment
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -49,6 +50,7 @@ object JUnitPropertyInitializer {
         FILTER_TAGS_PROPERTY_NAME
     )
 
+    private val log = LoggerFactory.getLogger(JUnitPropertyInitializer.javaClass)
     private val propertyLoader = PropertyLoader()
     private var initialized = AtomicBoolean(false)
 
@@ -98,7 +100,10 @@ object JUnitPropertyInitializer {
     private fun applyExecutionGroupConfig(env: Environment) {
         env.getProperty(PROPERTY_PARALLEL_ISOLATION_TAG)?.let {
             val propertyKey = getExecutionGroupPropertyKey(it)
-            System.setProperty(propertyKey, "org.junit.platform.engine.support.hierarchical.ExclusiveResource.GLOBAL_KEY")
+            System.setProperty(
+                propertyKey,
+                "org.junit.platform.engine.support.hierarchical.ExclusiveResource.GLOBAL_KEY"
+            )
         }
 
         env.getProperty(PROPERTY_PARALLEL_EXECUTION_GROUP_TAGS)?.let {
@@ -110,7 +115,10 @@ object JUnitPropertyInitializer {
     }
 
     private fun getExecutionGroupPropertyKey(tag: String): String {
-        return EXECUTION_EXCLUSIVE_RESOURCES_READ_WRITE_TEMPLATE.replace(EXECUTION_EXCLUSIVE_RESOURCES_TAG_TEMPLATE_VARIABLE, tag)
+        return EXECUTION_EXCLUSIVE_RESOURCES_READ_WRITE_TEMPLATE.replace(
+            EXECUTION_EXCLUSIVE_RESOURCES_TAG_TEMPLATE_VARIABLE,
+            tag
+        )
     }
 
     private fun applySystemProperties(env: Environment) {
@@ -118,7 +126,12 @@ object JUnitPropertyInitializer {
             val propertyKey = PROPERTY_PREFIX + cucumberProperty
             val property = env.getProperty(propertyKey)
 
-            property?.let { System.setProperty(cucumberProperty, it) }
+            property?.let {
+                val value = if (System.getProperty(propertyKey) == null) it else System.getProperty(propertyKey)
+
+                System.setProperty(cucumberProperty, value)
+                log.info("Cucumber prop [{}] was set to [{}]", cucumberProperty, value)
+            }
         }
     }
 
@@ -142,7 +155,7 @@ object JUnitPropertyInitializer {
         }
 
         val properties: Map<String, String> = iterator.next().getProperties()
-        properties.forEach{ providerProperty ->
+        properties.forEach { providerProperty ->
             val propertyKey = PROPERTY_PREFIX + providerProperty.key
             val property = env.getProperty(propertyKey)
 
