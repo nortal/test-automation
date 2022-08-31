@@ -38,7 +38,15 @@ data class AllureReportProperties(
      */
     val resultDir: String,
     @NestedConfigurationProperty
-    val serveReport: AllureServeReportProperties = AllureServeReportProperties()
+    val serveReport: AllureServeReportProperties = AllureServeReportProperties(),
+    /**
+     * Path to custom logo.
+     */
+    val customLogo: String? = null,
+    /**
+     * Path to collapsed custom logo.
+     */
+    val customCollapsedLogo: String? = null,
 )
 
 @ConstructorBinding

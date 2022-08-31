@@ -28,8 +28,8 @@ class AllurePropertiesProvider: SystemPropertiesProvider {
 
     private val systemProperties = mapOf(
             "report.allure.result-dir" to "allure.results.directory",
-            "report.allure.custom-logo-dir" to "allure.custom-logo-dir",
-            "report.allure.custom-collapsed-logo-dir" to "allure.custom-collapsed-logo-dir"
+             "report.allure.custom-logo" to "allure.custom-logo",
+            "report.allure.custom-collapsed-logo" to "allure.custom-collapsed-logo"
     )
 
     override fun getProperties(): Map<String, String> {

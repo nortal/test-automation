@@ -32,21 +32,21 @@ import java.nio.file.Path
 /**
  * This plugin enables changing logo on the report into a custom one.
  *
- * New logos are controlled by properties `test-automation.report.allure.custom-logo-dir` and
- * `test-automation.report.allure.custom-collapsed-logo-dir`. If `custom-collapsed-logo-dir` is not defined,
- * logo from `custom-logo-dir` will be used with both expanded and collapsed navigation.
+ * New logos are controlled by properties `test-automation.report.allure.custom-logo` and
+ * `test-automation.report.allure.custom-collapsed-logo`. If `custom-collapsed-logo` is not defined,
+ * logo from `custom-logo` will be used with both expanded and collapsed navigation.
  *
  */
 class CustomLogoPlugin : Aggregator {
 
     override fun aggregate(configuration: Configuration?, launchesResults: List<LaunchResults>, outputDirectory: Path) {
-        val fullLogoProperty = System.getProperty("allure.custom-logo-dir") ?: return
-        val collapsedLogoProperty = System.getProperty("allure.custom-collapsed-logo-dir") ?: fullLogoProperty
+        val fullLogoProperty = System.getProperty("allure.custom-logo") ?: return
+        val collapsedLogoProperty = System.getProperty("allure.custom-collapsed-logo") ?: fullLogoProperty
 
         val newFullLogoPath = this.javaClass.getResource(fullLogoProperty) ?:
-            throw TestAutomationException("Unable to find custom logo in resource folder path $fullLogoProperty")
+            throw TestAutomationException("Unable to find custom logo in resource path $fullLogoProperty")
         val newCollapsedLogoPath = this.javaClass.getResource(collapsedLogoProperty) ?:
-            throw TestAutomationException("Unable to find custom logo in resource folder path $collapsedLogoProperty")
+            throw TestAutomationException("Unable to find custom logo in resource path $collapsedLogoProperty")
 
         val newFullLogo = File(newFullLogoPath.toURI())
         val newCollapsedLogo = File(newCollapsedLogoPath.toURI())

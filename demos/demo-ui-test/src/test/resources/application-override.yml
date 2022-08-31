@@ -34,5 +34,5 @@ test-automation:
     screenshots-steps: true
   report:
     allure:
-      custom-logo-dir: /logo/kotlin-horizontal.svg
-      custom-collapsed-logo-dir: /logo/kotlin-icon.svg
+      custom-logo: /logo/kotlin-horizontal.svg
+      custom-collapsed-logo: /logo/kotlin-icon.svg
