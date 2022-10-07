@@ -14,18 +14,18 @@ plugins {
 }
 
 scmVersion {
-    localOnly = true
-    ignoreUncommittedChanges = false
+    localOnly.set(true)
+    ignoreUncommittedChanges.set(false)
 
     tag {
-        prefix = "v"
-        versionSeparator = ""
+        prefix.set("v")
+        versionSeparator.set("")
     }
     repository {
-        pushTagsOnly = true
+        pushTagsOnly.set(true)
     }
     checks {
-        isAheadOfRemote = false
+        aheadOfRemote.set(false)
     }
 }
 
