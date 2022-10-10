@@ -34,7 +34,7 @@ import java.io.IOException
 @Component
 open class ReportInterceptor(
     private val formatter: RequestResponseReportFormatter
-) : Interceptor {
+) : FeignClientInterceptor {
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -46,6 +46,10 @@ open class ReportInterceptor(
             formatter.formatAndAddToReport(resolveRequest(chain.request()))
             throw e
         }
+    }
+
+    override fun getOrder(): Int {
+        return 100
     }
 
     private fun resolveRequest(request: Request): HttpRequest {

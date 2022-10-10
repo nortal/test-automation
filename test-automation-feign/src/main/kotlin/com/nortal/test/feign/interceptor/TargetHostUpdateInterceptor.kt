@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component
 import java.io.IOException
 
 @Component
-open class TargetHostUpdateInterceptor(private val testableApplicationInfoProvider: TestableApplicationInfoProvider) : Interceptor {
+open class TargetHostUpdateInterceptor(private val testableApplicationInfoProvider: TestableApplicationInfoProvider) : FeignClientInterceptor {
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -44,5 +44,9 @@ open class TargetHostUpdateInterceptor(private val testableApplicationInfoProvid
             .build()
 
         return chain.proceed(request)
+    }
+
+    override fun getOrder(): Int {
+        return 10
     }
 }
