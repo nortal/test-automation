@@ -26,6 +26,8 @@ import com.nortal.test.core.exception.TestConfigurationException
 import com.nortal.test.testcontainers.configuration.TestableContainerProperties
 import com.nortal.test.testcontainers.images.builder.ImageFromDockerfile
 import com.nortal.test.testcontainers.images.builder.ReusableImageFromDockerfile
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.testcontainers.images.builder.dockerfile.DockerfileBuilder
@@ -38,6 +40,7 @@ import java.nio.file.Paths
  */
 @Component
 abstract class AbstractTestableContainerSetup : TestableContainerInitializer {
+    private val log: Logger = LoggerFactory.getLogger(javaClass)
 
     @Autowired
     protected lateinit var testableContainerProperties: TestableContainerProperties
@@ -88,11 +91,17 @@ abstract class AbstractTestableContainerSetup : TestableContainerInitializer {
     protected open fun build(): ImageFromDockerfile {
         val appJarDir = Paths.get(testableContainerProperties.jarBuildDir)
         val appJarPath = Files.find(appJarDir, 1, { t, _ -> isMatchingJarFile(t) })
-            .findFirst().orElseThrow { TestConfigurationException("Failed to find jar in $testableContainerProperties.jarBuildDir") }
+            .findFirst()
+            .orElseThrow { TestConfigurationException("Failed to find jar in $testableContainerProperties.jarBuildDir") }
 
+        log.info("Will use {} jar for container creation", appJarPath.toString())
 
         val reusableImageFromDockerfile =
-            ReusableImageFromDockerfile(createImageName(appJarPath), false, testableContainerProperties.reuseBetweenRuns)
+            ReusableImageFromDockerfile(
+                createImageName(appJarPath),
+                false,
+                testableContainerProperties.reuseBetweenRuns
+            )
                 .withFileFromPath(APP_JAR_PATH, appJarPath)
                 .withFileFromClasspath(JACOCO_AGENT_JAR_PATH, JACOCO_CLASSPATH_PATH)
 

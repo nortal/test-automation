@@ -26,11 +26,10 @@ import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.Network
 
 /**
- * TODO: rename
  * Interface marking the container as a context one.
  * Context containers are initialized and started before the system under test.
  */
-interface ContextualContainer<T : GenericContainer<T>> {
+interface AuxiliaryContainer<T : GenericContainer<T>> {
 
     fun start(network: Network?)
 

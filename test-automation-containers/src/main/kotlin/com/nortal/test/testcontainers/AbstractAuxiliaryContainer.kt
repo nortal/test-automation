@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.Network
 
-abstract class AbstractContextualContainer<T : GenericContainer<T>> : ContextualContainer<T> {
+abstract class AbstractAuxiliaryContainer<T : GenericContainer<T>> : AuxiliaryContainer<T> {
     @Autowired
     private lateinit var containerProperties: ContainerProperties
 

@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service
 
 @Service
 open class TestContextContainerService(
-    private val contextContainers: Collection<ContextualContainer<*>>,
+    private val contextContainers: Collection<AuxiliaryContainer<*>>,
     private val testContainerNetworkProvider: TestContainerNetworkProvider,
 ) {
     private val log: Logger = LoggerFactory.getLogger(javaClass)
@@ -47,9 +47,9 @@ open class TestContextContainerService(
         log.info("Context containers started in {}ms", timer.time)
     }
 
-    protected open fun startContainer(contextualContainer: ContextualContainer<*>){
+    protected open fun startContainer(auxiliaryContainer: AuxiliaryContainer<*>){
         val network = testContainerNetworkProvider.network
 
-        contextualContainer.start(network)
+        auxiliaryContainer.start(network)
     }
 }
