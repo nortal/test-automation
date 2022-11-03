@@ -30,17 +30,17 @@ dependencyResolutionManagement {
         create("libs") {
             version("kotlin", "1.7.20")
 
-            version("cucumber", "7.8.1")
-            version("spring-boot", "2.7.4")
+            version("cucumber", "7.9.0")
+            version("spring-boot", "2.7.5")
             version("spring-cloud", "3.1.4")
             version("jackson", "2.13.4")
             version("testcontainers", "1.17.5")
             version("rest-assured", "5.2.0")
-            version("feign", "11.10")
+            version("feign", "12.0")
             version("jacoco", "0.8.8")
             version("allure", "2.19.0")
             version("reportportal", "5.1.2")
-            version("selenide", "6.8.1")
+            version("selenide", "6.9.0")
 
             library("kotlin-stdlib-jdk8", "org.jetbrains.kotlin", "kotlin-stdlib-jdk8").versionRef("kotlin")
             library("kotlin-reflect", "org.jetbrains.kotlin", "kotlin-reflect").versionRef("kotlin")
