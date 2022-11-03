@@ -52,7 +52,8 @@ import java.nio.file.attribute.BasicFileAttributes
 import java.util.concurrent.TimeUnit
 
 @Component
-open class JacocoCoverageReportGenerator(private val jacocoProperties: TestableContainerJacocoProperties) : AfterSuiteHook {
+open class JacocoCoverageReportGenerator(private val jacocoProperties: TestableContainerJacocoProperties) :
+    AfterSuiteHook {
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
     companion object {
@@ -73,6 +74,7 @@ open class JacocoCoverageReportGenerator(private val jacocoProperties: TestableC
             generateReport()
             log.info("Jacoco report generated in {}ms.", stopWatch.getTime(TimeUnit.MILLISECONDS))
         } catch (e: Exception) {
+            log.error("Failed to generate Jacoco report", e)
             throw TestAutomationException("System tests coverage report generator failed", e)
         }
     }
@@ -97,7 +99,9 @@ open class JacocoCoverageReportGenerator(private val jacocoProperties: TestableC
 
         Files.find(
             Paths.get(".."), 10,
-            { path: Path, _: BasicFileAttributes? -> path.toString().matches(Regex(jacocoProperties.structureAnalysisRegex)) })
+            { path: Path, _: BasicFileAttributes? ->
+                path.toString().matches(Regex(jacocoProperties.structureAnalysisRegex))
+            })
             .use { stream ->
                 stream.forEach { path ->
                     try {
@@ -134,7 +138,9 @@ open class JacocoCoverageReportGenerator(private val jacocoProperties: TestableC
         )
         Files.find(
             Paths.get(".."), 10,
-            { path: Path, _: BasicFileAttributes? -> path.toString().matches(Regex(jacocoProperties.sourceCodeLookupRegex)) })
+            { path: Path, _: BasicFileAttributes? ->
+                path.toString().matches(Regex(jacocoProperties.sourceCodeLookupRegex))
+            })
             .use { stream ->
                 stream.forEach { path ->
                     try {

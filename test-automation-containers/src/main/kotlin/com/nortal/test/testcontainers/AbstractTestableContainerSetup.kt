@@ -98,7 +98,7 @@ abstract class AbstractTestableContainerSetup : TestableContainerInitializer {
 
         val reusableImageFromDockerfile =
             ReusableImageFromDockerfile(
-                createImageName(appJarPath),
+                applicationName(),
                 false,
                 testableContainerProperties.reuseBetweenRuns
             )
@@ -108,12 +108,6 @@ abstract class AbstractTestableContainerSetup : TestableContainerInitializer {
         additionalImageFromDockerfileConfiguration(reusableImageFromDockerfile)
         reusableImageFromDockerfile.withDockerfileFromBuilder { builder -> configure(builder).build() }
         return reusableImageFromDockerfile
-    }
-
-    private fun createImageName(appJarPath: Path): String {
-        val jarFile = appJarPath.toFile()
-
-        return applicationName() + ":" + jarFile.lastModified()
     }
 
     private fun isMatchingJarFile(path: Path): Boolean {
