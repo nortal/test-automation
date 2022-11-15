@@ -22,7 +22,7 @@
  */
 package com.nortal.test.core.report
 
-import com.nortal.test.core.services.ScenarioExecutionContext
+import com.nortal.test.core.services.CucumberScenarioProvider
 import io.cucumber.java.Scenario
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.tuple.Triple
@@ -40,7 +40,7 @@ import java.util.stream.Collectors
  */
 @Component
 class ReportFormatter(
-    private val scenarioExecutionContext: ScenarioExecutionContext
+    private val scenarioProvider: CucumberScenarioProvider
 ) : InitializingBean {
     private val templates: MutableMap<String, String> = HashMap()
 
@@ -49,7 +49,7 @@ class ReportFormatter(
     }
 
     fun formatAndAddToReport(attachment: Attachment) {
-        formatAndAddToReport(attachment, scenarioExecutionContext.getCucumberScenario())
+        formatAndAddToReport(attachment, scenarioProvider.getCucumberScenario())
     }
 
     /**

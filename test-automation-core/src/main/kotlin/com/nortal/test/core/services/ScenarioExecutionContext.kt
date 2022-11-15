@@ -38,22 +38,15 @@ import org.springframework.stereotype.Component
  * Users beware that its possible that the container will be empty if it is accessed before scenario starts.
  */
 @Component
-@ScenarioScope //TODO remove thredlocal and use scenario scoped beans.
-class ScenarioExecutionContext {
-    private val scenario = ThreadLocal<Scenario>()
+@ScenarioScope
+class ScenarioExecutionContext : CucumberScenarioProvider {
+    private var scenario: Scenario? = null
 
     fun prepare(scenario: Scenario) {
-        this.scenario.set(scenario)
+        this.scenario = scenario
     }
 
-    fun clean() {
-        scenario.remove()
-    }
-
-    /**
-     * Get cucumber internal scenario.
-     */
-    fun getCucumberScenario(): Scenario {
-        return scenario.get()
+    override fun getCucumberScenario(): Scenario {
+        return scenario!!
     }
 }

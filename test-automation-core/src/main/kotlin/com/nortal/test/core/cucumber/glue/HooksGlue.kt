@@ -49,7 +49,6 @@ class HooksGlue(
         scenarioExecutionContext.prepare(scenario)
     }
 
-
     @Before(order = 1)
     fun beforeScenario() {
         beforeScenarioHooks.forEach(Consumer { it: BeforeScenarioHook -> it.before(scenarioExecutionContext) })
@@ -58,9 +57,6 @@ class HooksGlue(
     @After(order = Int.MIN_VALUE)
     fun afterScenario() {
         afterScenarioHooks.forEach(Consumer { hook: AfterScenarioHook -> hook.after(scenarioExecutionContext) })
-        log.info("Cleaning scenario container")
-        scenarioExecutionContext.clean()
     }
-
 
 }

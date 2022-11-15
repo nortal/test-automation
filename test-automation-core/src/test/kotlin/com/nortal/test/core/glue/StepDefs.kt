@@ -23,15 +23,15 @@
 package com.nortal.test.core.glue
 
 import com.nortal.test.core.exception.TestAutomationException
+import com.nortal.test.core.services.CucumberScenarioProvider
 import com.nortal.test.core.services.ScenarioContext
-import com.nortal.test.core.services.ScenarioExecutionContext
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 class StepDefs(
-    private val scenarioExecutionContext: ScenarioExecutionContext,
+    private val scenarioProvider: CucumberScenarioProvider,
     private val scenarioContext: ScenarioContext
 ) {
     private val log: Logger = LoggerFactory.getLogger(javaClass)
@@ -39,7 +39,7 @@ class StepDefs(
 
     @Given("A step is called")
     fun `a step is called`() {
-        log.info("A step is called within test {}", scenarioExecutionContext.getCucumberScenario().name)
+        log.info("A step is called within test {}", scenarioProvider.getCucumberScenario().name)
 
         scenarioContext.putStepData("key", "value")
         Thread.sleep(100L)

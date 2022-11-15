@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
-import com.nortal.test.core.services.ScenarioExecutionContext;
+import com.nortal.test.core.services.CucumberScenarioProvider;
 import com.nortal.test.core.util.RetryingInvoker;
 import com.nortal.test.demo.configuration.TestDemoProperties;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ import org.springframework.stereotype.Component;
 public class UiMediator {
 	private final AtomicInteger screenshotCounter = new AtomicInteger();
 	private final TestDemoProperties testDemoProperties;
-	private final ScenarioExecutionContext scenarioExecutionContext;
+	private final CucumberScenarioProvider scenarioProvider;
 
 	public enum ElementType {XPATH, ID, CLASS_NAME, NAME, TAG_NAME, CSS}
 
@@ -80,7 +80,7 @@ public class UiMediator {
 	private void takeScreenshot() {
 		byte[] data = Selenide.screenshot(OutputType.BYTES);
 		String name = "screenshot-" + screenshotCounter.incrementAndGet();
-		scenarioExecutionContext.getCucumberScenario().attach(data, "image/png", name);
+		scenarioProvider.getCucumberScenario().attach(data, "image/png", name);
 	}
 
 	private void lazyExecution() {
