@@ -27,6 +27,7 @@ import com.nortal.test.core.services.CucumberScenarioProvider
 import com.nortal.test.core.services.ScenarioContext
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
+import org.junit.jupiter.api.Assertions
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -36,18 +37,23 @@ class StepDefs(
 ) {
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
+    private var scenarioName: String? = null
 
     @Given("A step is called")
     fun `a step is called`() {
         log.info("A step is called within test {}", scenarioProvider.getCucumberScenario().name)
-
-        scenarioContext.putStepData("key", "value")
+        scenarioName = scenarioProvider.getCucumberScenario().name
+        scenarioContext.putStepData("key", scenarioProvider.getCucumberScenario().name)
         Thread.sleep(100L)
     }
 
     @Then("Something is called")
     fun `something is called`() {
         scenarioContext.getRequiredStepData("key") as String?
+        log.info("A step is called within test {} val {}", scenarioProvider.getCucumberScenario().name, hashCode())
+
+        //verify that parallel execution is not messing up values.
+        Assertions.assertEquals(scenarioName, scenarioProvider.getCucumberScenario().name)
         Thread.sleep(50L)
     }
 
