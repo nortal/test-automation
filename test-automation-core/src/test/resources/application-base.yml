@@ -9,4 +9,4 @@ test-automation:
         enabled: true
         executor-count: 10
         execution-group-tags: "execution-group-a,execution-group-a-b,execution-group-c"
-        isolation-tag: "isolated"
+        isolation-tag: "@isolated"

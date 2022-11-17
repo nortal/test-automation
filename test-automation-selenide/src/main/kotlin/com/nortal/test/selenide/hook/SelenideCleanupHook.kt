@@ -23,7 +23,7 @@
 package com.nortal.test.selenide.hook
 
 import com.codeborne.selenide.Selenide
-import com.nortal.test.core.services.ScenarioExecutionContext
+import com.nortal.test.core.services.CucumberScenarioProvider
 import com.nortal.test.core.services.hooks.AfterScenarioHook
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component
 class SelenideCleanupHook : AfterScenarioHook {
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
-    override fun after(scenario: ScenarioExecutionContext?) {
+    override fun after(scenario: CucumberScenarioProvider?) {
         log.info("Closing Selenide controller WebDriver..")
         Selenide.closeWebDriver()
     }

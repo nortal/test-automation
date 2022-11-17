@@ -109,7 +109,9 @@ object JUnitPropertyInitializer {
         env.getProperty(PROPERTY_PARALLEL_EXECUTION_GROUP_TAGS)?.let {
             it.split(",").forEach { tag ->
                 val propertyKey = getExecutionGroupPropertyKey(tag)
-                System.setProperty(propertyKey, tag)
+
+                val sanitizedTag = sanitizeTagName(tag)
+                System.setProperty(propertyKey, sanitizedTag)
             }
         }
     }
@@ -117,8 +119,12 @@ object JUnitPropertyInitializer {
     private fun getExecutionGroupPropertyKey(tag: String): String {
         return EXECUTION_EXCLUSIVE_RESOURCES_READ_WRITE_TEMPLATE.replace(
             EXECUTION_EXCLUSIVE_RESOURCES_TAG_TEMPLATE_VARIABLE,
-            tag
+            sanitizeTagName(tag)
         )
+    }
+
+    private fun sanitizeTagName(tag: String): String {
+        return tag.replaceFirst("@", "")
     }
 
     private fun applySystemProperties(env: Environment) {

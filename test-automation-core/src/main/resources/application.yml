@@ -9,6 +9,7 @@ logging:
     com.nortal.test: INFO
     org.springframework: INFO
     org.springframework.jdbc: DEBUG
+    org.springframework.boot.test.context: WARN
 
 test-automation:
   report-name: default-report-name

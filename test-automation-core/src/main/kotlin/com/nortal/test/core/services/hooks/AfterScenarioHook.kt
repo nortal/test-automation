@@ -22,7 +22,7 @@
  */
 package com.nortal.test.core.services.hooks
 
-import com.nortal.test.core.services.ScenarioExecutionContext
+import com.nortal.test.core.services.CucumberScenarioProvider
 
 /**
  * Interface for performing after scenario cleanup. Any bean that implements this interface will have its cleanup method called during cucumber @After
@@ -32,5 +32,5 @@ interface AfterScenarioHook {
     /**
      * Perform after scenario operations.
      */
-    fun after(scenario: ScenarioExecutionContext?)
+    fun after(scenario: CucumberScenarioProvider?)
 }
