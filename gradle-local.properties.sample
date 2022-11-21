@@ -1,0 +1,5 @@
+snapshotsRepoUrl=https://oss.sonatype.org/content/repositories/snapshots/
+releasesRepoUrl=https://oss.sonatype.org/service/local/staging/deploy/maven2/
+ossUsername=<username>
+ossPassword=<password>
+
