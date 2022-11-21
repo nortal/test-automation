@@ -25,8 +25,7 @@ package com.nortal.test.core.glue
 import com.nortal.test.core.exception.TestAutomationException
 import com.nortal.test.core.services.CucumberScenarioProvider
 import com.nortal.test.core.services.ScenarioContext
-import io.cucumber.java.en.Given
-import io.cucumber.java.en.Then
+import io.cucumber.java.en.Step
 import org.junit.jupiter.api.Assertions
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -39,7 +38,7 @@ class StepDefs(
 
     private var scenarioName: String? = null
 
-    @Given("A step is called")
+    @Step("A step is called")
     fun `a step is called`() {
         log.info("A step is called within test {}", scenarioProvider.getCucumberScenario().name)
         scenarioName = scenarioProvider.getCucumberScenario().name
@@ -47,7 +46,7 @@ class StepDefs(
         Thread.sleep(100L)
     }
 
-    @Then("Something is called")
+    @Step("Something is called")
     fun `something is called`() {
         scenarioContext.getRequiredStepData("key") as String?
         log.info("A step is called within test {} val {}", scenarioProvider.getCucumberScenario().name, hashCode())
@@ -57,12 +56,12 @@ class StepDefs(
         Thread.sleep(50L)
     }
 
-    @Then("Something is done")
+    @Step("Something is done")
     fun `something is done`() {
         Thread.sleep(50L)
     }
 
-    @Then("A failing step")
+    @Step("A failing step")
     fun `a failing step`() {
         throw TestAutomationException("This should fail")
     }
