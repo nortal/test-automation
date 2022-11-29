@@ -20,29 +20,9 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.nortal.test.selenide.hook
+package com.nortal.test.selenide.configuration
 
-import com.codeborne.selenide.Selenide
-import com.nortal.test.core.services.CucumberScenarioProvider
-import com.nortal.test.core.services.hooks.AfterScenarioHook
-import com.nortal.test.selenide.configuration.SelenideCleanupMode
-import com.nortal.test.selenide.configuration.SelenideProperties
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Component
-
-@Component
-class SelenideCleanupHook(val selenideProperties: SelenideProperties) : AfterScenarioHook {
-    private val log: Logger = LoggerFactory.getLogger(javaClass)
-
-    override fun after(scenario: CucumberScenarioProvider?) {
-        if (selenideProperties.scenarioCleanupMode == SelenideCleanupMode.CLEAR_BROWSER_DATA) {
-            log.info("Clearing Selenide browser cookies and storage..")
-            Selenide.clearBrowserCookies()
-            Selenide.clearBrowserLocalStorage()
-        } else {
-            log.info("Closing Selenide controller WebDriver..")
-            Selenide.closeWebDriver()
-        }
-    }
+enum class SelenideCleanupMode {
+    CLOSE_WEBDRIVER,
+    CLEAR_BROWSER_DATA
 }

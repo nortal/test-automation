@@ -40,7 +40,11 @@ data class SelenideProperties(
      * <br></br>
      * Default value: http://localhost:8080
      */
-    val baseUrl: String ="http://localhost:8080",
+    val baseUrl: String = "http://localhost:8080",
+    /**
+     * Scenario cleanup mode. Closing webdriver is slow, faster approach is clearing the data.
+     */
+    val scenarioCleanupMode: SelenideCleanupMode = SelenideCleanupMode.CLEAR_BROWSER_DATA,
     /**
      * Timeout in milliseconds to fail the test, if conditions still not met
      * Can be configured either programmatically, via selenide.properties file or by system property "-Dselenide.timeout=10000"

@@ -80,6 +80,7 @@ dependencyResolutionManagement {
             library("org.eclipse.jgit", "org.eclipse.jgit", "org.eclipse.jgit").version("6.2.0.202206071550-r")
 
             library("testcontainers-core", "org.testcontainers", "testcontainers").versionRef("testcontainers")
+            library("testcontainers-mockserver", "org.testcontainers", "mockserver").versionRef("testcontainers")
 
             library("jackson-module-kotlin", "com.fasterxml.jackson.module", "jackson-module-kotlin").versionRef("jackson")
             library("jackson-datatype-jsr310", "com.fasterxml.jackson.datatype", "jackson-datatype-jsr310").versionRef("jackson")
