@@ -25,6 +25,7 @@ package com.nortal.test.restassured
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.nortal.test.core.services.TestableApplicationInfoProvider
 import com.nortal.test.core.services.hooks.BeforeSuiteHook
+import com.nortal.test.restassured.filter.RestAssuredRequestFilter
 import com.nortal.test.restassured.logs.ExclusionEnablingBasicClientConnectionManager
 import io.restassured.RestAssured
 import io.restassured.config.HttpClientConfig
@@ -34,6 +35,7 @@ import io.restassured.path.json.mapper.factory.Jackson2ObjectMapperFactory
 import org.apache.http.impl.client.DefaultHttpClient
 import org.springframework.stereotype.Component
 import java.lang.reflect.Type
+import java.util.*
 
 /**
  * This class holds all the pre run configuration for RestAssured.
@@ -41,7 +43,8 @@ import java.lang.reflect.Type
 @Component
 class RestAssuredPreparationHook(
     private val objectMapperProvider: RestAssuredConfiguration.ObjectMapperProvider,
-    private val portProvider: TestableApplicationInfoProvider,
+    private val portProvider: Optional<TestableApplicationInfoProvider>,
+    private val restAssuredRequestFilter: RestAssuredRequestFilter,
 ) : BeforeSuiteHook {
 
     /**
@@ -55,11 +58,15 @@ class RestAssuredPreparationHook(
         val httpClientConfig = HttpClientConfig()
             .httpClientFactory { DefaultHttpClient(ExclusionEnablingBasicClientConnectionManager()) }
 
-        RestAssured.port = portProvider.getPort()
+        portProvider.ifPresent {
+            RestAssured.port = it.getPort()
+        }
         RestAssured.config = RestAssured
             .config()
             .objectMapperConfig(mapperConfig)
             .httpClient(httpClientConfig)
+
+        RestAssured.filters(restAssuredRequestFilter)
     }
 
     private class JacksonFactory(private val objectMapper: ObjectMapper) : Jackson2ObjectMapperFactory {
