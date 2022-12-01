@@ -7,6 +7,10 @@ dependencies {
 
     implementation(project(":test-automation-core"))
 
-    implementation(libs.reportportal.cucumber)
-    implementation(libs.reportportal.logger)
+    api(libs.reportportal.cucumber){
+        exclude(group = "org.slf4j", module = "slf4j-api")
+        exclude(group = "io.cucumber", module = "cucumber-gherkin")
+    }
+    api(libs.reportportal.logger)
+    api(libs.reportportal.client)
 }

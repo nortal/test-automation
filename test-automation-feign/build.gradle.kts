@@ -8,6 +8,7 @@ dependencies {
     api(project(":test-automation-core"))
 
     api(libs.springcloud.openfeign)
+    api(libs.openfeign.core)
     api(libs.openfeign.okhttp)
-    implementation(libs.openfeign.jackson)
+    api(libs.openfeign.jackson)
 }

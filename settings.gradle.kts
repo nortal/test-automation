@@ -41,6 +41,8 @@ dependencyResolutionManagement {
             version("allure", "2.20.1")
             version("reportportal", "5.1.2")
             version("selenide", "6.10.1")
+            version("netty", "4.1.85.Final")
+            version("browserup-proxy", "2.2.6")
 
             library("kotlin-stdlib-jdk8", "org.jetbrains.kotlin", "kotlin-stdlib-jdk8").versionRef("kotlin")
             library("kotlin-reflect", "org.jetbrains.kotlin", "kotlin-reflect").versionRef("kotlin")
@@ -67,10 +69,12 @@ dependencyResolutionManagement {
             library("restassured", "io.rest-assured", "rest-assured").versionRef("rest-assured")
             library("restassured-jsonpath", "io.rest-assured", "json-path").versionRef("rest-assured")
             //API clients: feign
+            library("openfeign-core", "io.github.openfeign", "feign-core").versionRef("feign")
             library("openfeign-okhttp", "io.github.openfeign", "feign-okhttp").versionRef("feign")
             library("openfeign-jackson", "io.github.openfeign", "feign-jackson").versionRef("feign")
 
             library("guava", "com.google.guava", "guava").version("31.1-jre")
+            library("snakeyaml", "org.yaml", "snakeyaml").version("1.33")
 
             library("commons-lang3", "org.apache.commons", "commons-lang3").version("3.12.0")
             library("commons-codec", "commons-codec", "commons-codec").version("1.15")
@@ -82,6 +86,7 @@ dependencyResolutionManagement {
             library("testcontainers-core", "org.testcontainers", "testcontainers").versionRef("testcontainers")
             library("testcontainers-mockserver", "org.testcontainers", "mockserver").versionRef("testcontainers")
 
+            library("jackson-databind", "com.fasterxml.jackson.core", "jackson-databind").versionRef("jackson")
             library("jackson-module-kotlin", "com.fasterxml.jackson.module", "jackson-module-kotlin").versionRef("jackson")
             library("jackson-datatype-jsr310", "com.fasterxml.jackson.datatype", "jackson-datatype-jsr310").versionRef("jackson")
 
@@ -94,12 +99,15 @@ dependencyResolutionManagement {
             library("allure-plugin-api", "io.qameta.allure", "allure-plugin-api").versionRef("allure")
             library("allure-commandline", "io.qameta.allure", "allure-commandline").versionRef("allure")
 
+            library("reportportal-client", "com.epam.reportportal", "client-java").version("5.1.11")
             library("reportportal-cucumber", "com.epam.reportportal", "agent-java-cucumber6").versionRef("reportportal")
             library("reportportal-logger", "com.epam.reportportal", "logger-java-logback").versionRef("reportportal")
 
             //UI testing
             library("selenide", "com.codeborne", "selenide").versionRef("selenide")
             library("selenide-proxy", "com.codeborne", "selenide-proxy").versionRef("selenide")
+            library("netty", "io.netty", "netty-all").versionRef("netty")
+            library("browserup-proxy", "com.github.valfirst.browserup-proxy", "browserup-proxy-core").versionRef("browserup-proxy")
 
             bundle(
                 "cucumber", listOf(

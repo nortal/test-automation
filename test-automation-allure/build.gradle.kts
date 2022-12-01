@@ -9,6 +9,7 @@ dependencies {
 
     implementation(libs.allure.cucumber) {
         exclude(group = "org.slf4j", module = "slf4j-api")
+        exclude(group = "io.cucumber", module = "gherkin")
     }
     implementation(libs.allure.plugin.api) {
         exclude(group = "org.slf4j", module = "slf4j-api")
@@ -18,5 +19,5 @@ dependencies {
         exclude(group = "ch.qos.logback", module = "logback-classic")
     }
 
-    implementation(libs.commons.io)
+    api(libs.commons.io)
 }
