@@ -24,12 +24,12 @@ package com.nortal.test.report.allure.services
 
 import com.nortal.test.core.cucumber.SystemPropertiesProvider
 
-class AllurePropertiesProvider: SystemPropertiesProvider {
+class AllurePropertiesProvider : SystemPropertiesProvider {
 
     private val systemProperties = mapOf(
-            "report.allure.result-dir" to "allure.results.directory",
-             "report.allure.custom-logo" to "allure.custom-logo",
-            "report.allure.custom-collapsed-logo" to "allure.custom-collapsed-logo"
+        "report.allure.result-dir" to "allure.results.directory",
+        "report.allure.custom-logo" to "allure.custom-logo",
+        "report.allure.custom-collapsed-logo" to "allure.custom-collapsed-logo"
     )
 
     override fun getProperties(): Map<String, String> {

@@ -154,19 +154,17 @@ object JUnitPropertyInitializer {
 
     private fun applyProviderSystemProperties(env: Environment) {
         val loader = ServiceLoader.load(SystemPropertiesProvider::class.java)
-        val iterator: Iterator<SystemPropertiesProvider> = loader.iterator()
 
-        if (!iterator.hasNext()) {
-            return
+        loader.forEach { propertiesProvider ->
+            val properties: Map<String, String> = propertiesProvider.getProperties()
+            properties.forEach { providerProperty ->
+                val propertyKey = PROPERTY_PREFIX + providerProperty.key
+                val property = env.getProperty(propertyKey)
+
+                property?.let { System.setProperty(providerProperty.value, it) }
+            }
         }
 
-        val properties: Map<String, String> = iterator.next().getProperties()
-        properties.forEach { providerProperty ->
-            val propertyKey = PROPERTY_PREFIX + providerProperty.key
-            val property = env.getProperty(propertyKey)
-
-            property?.let { System.setProperty(providerProperty.value, it) }
-        }
     }
 
 }
