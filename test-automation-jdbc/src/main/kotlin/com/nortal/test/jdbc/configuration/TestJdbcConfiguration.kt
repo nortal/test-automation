@@ -23,12 +23,13 @@
 package com.nortal.test.jdbc.configuration
 
 import com.nortal.test.jdbc.JdbcUrlProvider
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Primary
+import org.springframework.context.annotation.Lazy
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import javax.sql.DataSource
@@ -38,8 +39,8 @@ import javax.sql.DataSource
 @ComponentScan("com.nortal.test.jdbc")
 open class TestJdbcConfiguration {
 
-    @Bean
-    @Primary
+    @Lazy
+    @Bean("testAutomationDataSource")
     open fun primaryDataSource(
         dataSourceProperties: JdbcDataSourceProperties,
         jdbcUrlProvider: JdbcUrlProvider
@@ -52,13 +53,15 @@ open class TestJdbcConfiguration {
             .build()
     }
 
+    @Lazy
     @Bean
-    open fun defaultJdbcTemplate(dataSource: DataSource): JdbcTemplate {
+    open fun defaultJdbcTemplate(@Qualifier("testAutomationDataSource") dataSource: DataSource): JdbcTemplate {
         return JdbcTemplate(dataSource)
     }
 
+    @Lazy
     @Bean
-    open fun defaultNamedParameterJdbcTemplate(dataSource: DataSource): NamedParameterJdbcTemplate {
+    open fun defaultNamedParameterJdbcTemplate(@Qualifier("testAutomationDataSource") dataSource: DataSource): NamedParameterJdbcTemplate {
         return NamedParameterJdbcTemplate(dataSource)
     }
 }

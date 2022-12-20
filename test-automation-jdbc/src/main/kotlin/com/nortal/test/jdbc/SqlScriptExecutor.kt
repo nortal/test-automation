@@ -23,9 +23,11 @@
 package com.nortal.test.jdbc
 
 import com.nortal.test.core.file.ClasspathFileResolver
+import org.springframework.context.annotation.Lazy
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Component
 
+@Lazy
 @Component
 class SqlScriptExecutor(
     private val jdbcTemplate: JdbcTemplate,
