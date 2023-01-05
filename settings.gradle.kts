@@ -14,24 +14,24 @@ include("test-automation-reportportal")
 include(":demos:demo-ui-test")
 
 plugins {
-    val kotlinVersion = "1.7.20"
+    val kotlinVersion = "1.8.0"
     kotlin("jvm") version kotlinVersion apply false
     kotlin("plugin.spring") version kotlinVersion apply false
     kotlin("kapt") version kotlinVersion apply false
-    id("pl.allegro.tech.build.axion-release") version "1.14.2" apply false
-    id("io.gitlab.arturbosch.detekt").version("1.21.0") apply false
+    id("pl.allegro.tech.build.axion-release") version "1.14.3" apply false
+    id("io.gitlab.arturbosch.detekt").version("1.22.0") apply false
     id("com.github.hierynomus.license").version("0.16.1") apply false
-    id("org.jetbrains.dokka") version "1.7.10" apply false
-    id("io.freefair.lombok") version "6.5.1" apply false
+    id("org.jetbrains.dokka") version "1.7.20" apply false
+    id("io.freefair.lombok") version "6.6.1" apply false
 }
 
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            version("kotlin", "1.7.20")
+            version("kotlin", "1.8.0")
 
-            version("cucumber", "7.9.0")
-            version("spring-boot", "2.7.6")
+            version("cucumber", "7.10.1")
+            version("spring-boot", "2.7.7")
             version("spring-cloud", "3.1.5")
             version("jackson", "2.14.1")
             version("testcontainers", "1.17.6")
@@ -40,8 +40,8 @@ dependencyResolutionManagement {
             version("jacoco", "0.8.8")
             version("allure", "2.20.1")
             version("reportportal", "5.1.2")
-            version("selenide", "6.10.1")
-            version("netty", "4.1.85.Final")
+            version("selenide", "6.10.3")
+            version("netty", "4.1.86.Final")
             version("browserup-proxy", "2.2.6")
 
             library("kotlin-stdlib-jdk8", "org.jetbrains.kotlin", "kotlin-stdlib-jdk8").versionRef("kotlin")
