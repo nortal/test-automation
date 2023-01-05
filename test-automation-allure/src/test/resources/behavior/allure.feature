@@ -5,3 +5,9 @@ Feature: Test with execution groups feature
     Given A step is called
     When Something is called
     Then Something is done
+    And Doc String is used
+    """json
+    {
+    "test": []
+    }
+    """

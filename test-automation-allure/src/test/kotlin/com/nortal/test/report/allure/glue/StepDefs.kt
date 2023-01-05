@@ -24,7 +24,9 @@ package com.nortal.test.report.allure.glue
 
 import com.nortal.test.core.exception.TestAutomationException
 import com.nortal.test.core.services.CucumberScenarioProvider
+import io.cucumber.docstring.DocString
 import io.cucumber.java.en.Given
+import io.cucumber.java.en.Step
 import io.cucumber.java.en.Then
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -48,6 +50,12 @@ class StepDefs(private val scenarioProvider: CucumberScenarioProvider) {
 
     @Then("Something is done")
     fun `something is done`() {
+        Thread.sleep(50L)
+    }
+
+    @Step("Doc String is used")
+    fun `doc string is used`(docString: DocString) {
+        scenarioProvider.getCucumberScenario().attach(docString.content, "application/json", "Expected JSON")
         Thread.sleep(50L)
     }
 
