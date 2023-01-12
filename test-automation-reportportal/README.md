@@ -1,6 +1,6 @@
-# ReportPortal.io in Test Automation Framework
+# Report Portal module
 
-## Report Portal setup
+## Setup
 
 1. Install [Docker](https://docs.docker.com/engine/installation/) ([Engine](https://docs.docker.com/engine/installation/), [Compose](https://docs.docker.com/compose/install/)).
 
@@ -23,6 +23,6 @@ http://IP_ADDRESS:8080
 
 5. Add dependency to this module in your project.
 
-6. Set `test-automation.report.endpoint` property in `application-override.yml` to the IP address of previously deployed ReportPortal. Also adjust `test-automation.report.rp.api.key` and `test-automation.report.rp.project` properties based on ReportPortal user information (which can be found in User Profile window).
+6. Set `test-automation.report.rp.endpoint` property in `application-override.yml` to the IP address of previously deployed ReportPortal. Also adjust `test-automation.report.rp.api.key` and `test-automation.report.rp.project` properties based on ReportPortal user information (which can be found in User Profile window).
 
 7. Execute your tests and observe generated reports in ReportPortal.
