@@ -13,7 +13,7 @@ Import module to your project:
 
    * Gradle - add the dependency to your project build.gradle.kts:
    
-   `implementation(":test-automation-selenide")`
+   `testImplementation("com.nortal.test:test-automation-selenide:${testAutomationFrameworkVersion}")`
 
 ### Reporting
 
