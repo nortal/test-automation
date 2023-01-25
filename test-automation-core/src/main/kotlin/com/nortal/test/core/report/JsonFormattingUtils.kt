@@ -30,7 +30,7 @@ import org.apache.commons.lang3.StringUtils
 
 object JsonFormattingUtils {
     private val objectMapper: ObjectMapper = ObjectMapper()
-        .registerModule(JavaTimeModule())
+        .registerModules(JavaTimeModule(), ResourceSerializingModule())
         .enable(SerializationFeature.INDENT_OUTPUT)
 
     @JvmStatic
