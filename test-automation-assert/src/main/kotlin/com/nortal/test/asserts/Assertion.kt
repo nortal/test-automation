@@ -124,13 +124,13 @@ data class Assertion(
 
         fun operation(operation: AssertionOperation) = apply { this.operation = operation }
 
-        fun expectedValue(expectedValue: Any) = apply { this.expectedValue = expectedValue }
+        fun expectedValue(expectedValue: Any?) = apply { this.expectedValue = expectedValue }
 
         fun contextValues(contextValues: Map<String, Any>) = apply { this.contextValues = contextValues }
 
         fun skipRestIfFailed(skipRestIfFailed: Boolean) = apply { this.skipRestIfFailed = skipRestIfFailed }
 
-        fun actualValue(actualValue: Any) = apply { this.actualValue = actualValue }
+        fun actualValue(actualValue: Any?) = apply { this.actualValue = actualValue }
 
         fun build() = Assertion(this)
     }

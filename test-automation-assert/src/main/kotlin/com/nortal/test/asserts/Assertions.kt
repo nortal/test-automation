@@ -34,22 +34,34 @@ class Assertions private constructor() {
         @JvmStatic
         fun notNullAssertion(expression: String): Assertion {
             return Assertion.Builder()
-                    .message("Field is not null")
-                    .expression(expression)
-                    .operation(AssertionOperation.NOT_NULL)
-                    .build()
+                 .message("Field is not null")
+                .expression(expression)
+                .operation(AssertionOperation.NOT_NULL)
+                .build()
         }
 
         /**
          * Creates equals assertion.
          */
         @JvmStatic
-        fun equalsAssertion(expected: Any, actualValuePath: String, message: String): Assertion {
+        fun equalsAssertion(expected: Any?, actualValuePath: String, message: String): Assertion {
             return Assertion.Builder()
-                    .message(message)
-                    .expression(actualValuePath)
-                    .expectedValue(expected)
-                    .build()
+                .message(message)
+                .expression(actualValuePath)
+                .expectedValue(expected)
+                .build()
+        }
+
+        /**
+         * Creates equals assertion.
+         */
+        @JvmStatic
+        fun equalsAssertion(expected: Any?, actualValuePath: String): Assertion {
+            return Assertion.Builder()
+                .message("Assert equals")
+                .expression(actualValuePath)
+                .expectedValue(expected)
+                .build()
         }
     }
 
