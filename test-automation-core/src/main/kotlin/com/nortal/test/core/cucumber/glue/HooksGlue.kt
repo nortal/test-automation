@@ -30,7 +30,6 @@ import io.cucumber.java.Before
 import io.cucumber.java.Scenario
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.util.function.Consumer
 
 class HooksGlue(
     private val afterScenarioHooks: List<AfterScenarioHook>,
@@ -51,12 +50,16 @@ class HooksGlue(
 
     @Before(order = 1)
     fun beforeScenario() {
-        beforeScenarioHooks.forEach(Consumer { it: BeforeScenarioHook -> it.before(scenarioExecutionContext) })
+        beforeScenarioHooks.stream()
+            .sorted(Comparator.comparingInt { obj: BeforeScenarioHook -> obj.beforeScenarioOrder() })
+            .forEach { it: BeforeScenarioHook -> it.before(scenarioExecutionContext) }
     }
 
     @After(order = Int.MIN_VALUE)
     fun afterScenario() {
-        afterScenarioHooks.forEach(Consumer { hook: AfterScenarioHook -> hook.after(scenarioExecutionContext) })
+        afterScenarioHooks.stream()
+            .sorted(Comparator.comparingInt { obj: AfterScenarioHook -> obj.afterScenarioOrder() })
+            .forEach { hook: AfterScenarioHook -> hook.after(scenarioExecutionContext) }
     }
 
 }

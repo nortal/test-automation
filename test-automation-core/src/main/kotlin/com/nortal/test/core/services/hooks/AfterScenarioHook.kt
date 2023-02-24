@@ -33,4 +33,18 @@ interface AfterScenarioHook {
      * Perform after scenario operations.
      */
     fun after(scenario: CucumberScenarioProvider?)
+
+    /**
+     * Returns order in which the hooks will be run. Lower order runs first.
+     * Default order: 10000
+     *
+     * @return order
+     */
+    fun afterScenarioOrder(): Int {
+        return DEFAULT_ORDER
+    }
+
+    companion object {
+        const val DEFAULT_ORDER = 10000
+    }
 }

@@ -32,4 +32,18 @@ interface BeforeScenarioHook {
      * Runs pre scenario preparation operations.
      */
     fun before(scenario: ScenarioExecutionContext)
+
+    /**
+     * Returns order in which the hooks will be run. Lower order runs first.
+     * Default order: 10000
+     *
+     * @return order
+     */
+    fun beforeScenarioOrder(): Int {
+        return DEFAULT_ORDER
+    }
+
+    companion object {
+        const val DEFAULT_ORDER = 10000
+    }
 }
