@@ -26,18 +26,25 @@ import com.nortal.test.core.report.RequestResponseReportFormatter
 import com.nortal.test.core.report.model.HttpHeaders
 import com.nortal.test.core.report.model.HttpRequest
 import com.nortal.test.core.report.model.HttpResponse
+import com.nortal.test.core.services.CucumberScopeMonitor
 import com.nortal.test.feign.util.FeignUtils
 import okhttp3.*
 import org.springframework.stereotype.Component
 import java.io.IOException
+import java.util.*
 
 @Component
-open class ReportInterceptor(
-    private val formatter: RequestResponseReportFormatter
+class ReportInterceptor(
+    private val formatter: RequestResponseReportFormatter,
+    private val cucumberScopeMonitor: CucumberScopeMonitor
 ) : FeignClientInterceptor {
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
+        if (!cucumberScopeMonitor.isCalledWithinScope()) {
+            return chain.proceed(chain.request())
+        }
+
         return try {
             val response = chain.proceed(chain.request())
             formatter.formatAndAddToReport(resolveRequest(response.request), resolveResponse(response))
@@ -51,6 +58,7 @@ open class ReportInterceptor(
     override fun getOrder(): Int {
         return 100
     }
+
 
     private fun resolveRequest(request: Request): HttpRequest {
         val headers = request.headers.toMultimap().toMutableMap()
@@ -76,7 +84,7 @@ open class ReportInterceptor(
         )
     }
 
-    private fun resolveBody(response: Response): String? {
+    private fun resolveBody(response: Response): String {
         val body: ResponseBody = response.peekBody(Long.MAX_VALUE)
         return body.string()
     }
