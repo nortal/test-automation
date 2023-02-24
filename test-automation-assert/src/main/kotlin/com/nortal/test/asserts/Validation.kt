@@ -58,7 +58,7 @@ data class Validation(
 ) {
 
     private constructor(builder: Builder) : this(
-        title = builder.title ?: throw NullPointerException(),
+        title = builder.title ?: "",
         context = builder.context ?: throw NullPointerException(),
         assertions = builder.assertions,
         contextDescription = builder.contextDescription,

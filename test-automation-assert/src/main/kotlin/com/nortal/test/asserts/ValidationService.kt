@@ -25,12 +25,11 @@ package com.nortal.test.asserts
 import org.assertj.core.util.Arrays
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.BeanUtils
 import org.springframework.expression.EvaluationContext
 import org.springframework.expression.spel.standard.SpelExpressionParser
 import org.springframework.expression.spel.support.StandardEvaluationContext
 import org.springframework.stereotype.Component
-import java.lang.IllegalStateException
-import java.lang.AssertionError
 import java.util.*
 import java.util.stream.Collectors
 
@@ -66,8 +65,9 @@ open class ValidationService(
     }
 
     private fun doValidation(validation: Validation): List<CompletedAssertion> {
-        val ctx: EvaluationContext = StandardEvaluationContext(validation.context)
+        val ctx = createSpElContext(validation.context)
         val completedAssertions: MutableList<CompletedAssertion> = ArrayList()
+
         var skip = false
         for (assertion in validation.assertions) {
             val completedAssertion: CompletedAssertion
@@ -75,12 +75,19 @@ open class ValidationService(
                 completedAssertion = doAssert(ctx, assertion, validation)
                 skip = assertion.skipRestIfFailed && completedAssertion.status == AssertionStatus.FAILED
             } else {
-                completedAssertion = CompletedAssertion(assertion, validation.baseExpression, AssertionStatus.SKIPPED, "")
+                completedAssertion =
+                    CompletedAssertion(assertion, validation.baseExpression, AssertionStatus.SKIPPED, "")
             }
             completedAssertions.add(completedAssertion)
         }
         assertionsFormatter.formatAndAttachToReport(validation, completedAssertions)
         return completedAssertions
+    }
+
+    private fun createSpElContext(rootObject: Any): EvaluationContext {
+        val ctx = StandardEvaluationContext(rootObject)
+        ctx.registerFunction("jsonPath", BeanUtils.resolveSignature("evaluate", JsonPathUtils::class.java)!!)
+        return ctx
     }
 
     private fun doAssert(ctx: EvaluationContext, assertion: Assertion, validation: Validation): CompletedAssertion {
@@ -89,7 +96,13 @@ open class ValidationService(
         try {
             actualValue = resolveActualValue(ctx, assertion, validation)
         } catch (e: Exception) {
-            return CompletedAssertion(assertion, baseExpression, AssertionStatus.FAILED, "Assertion failed to parse/evaluate path: " + e.message)
+            log.trace("Failed to resolve assertion actual value from body {}", ctx.rootObject, e)
+            return CompletedAssertion(
+                assertion,
+                baseExpression,
+                AssertionStatus.FAILED,
+                "Assertion failed to parse/evaluate path: " + e.message
+            )
         }
 
         return when (assertion.operation) {
@@ -99,12 +112,16 @@ open class ValidationService(
             AssertionOperation.NOT_NULL -> assertNotNull(assertion, baseExpression, actualValue)
             AssertionOperation.CONTAINS -> assertContains(assertion, baseExpression, actualValue)
             AssertionOperation.LIST_CONTAINS -> assertListContains(assertion, baseExpression, actualValue)
-            AssertionOperation.LIST_CONTAINS_VALUE -> assertListOfExpectedValuesContainsActualValue(assertion, baseExpression, actualValue)
+            AssertionOperation.LIST_CONTAINS_VALUE -> assertListOfExpectedValuesContainsActualValue(
+                assertion,
+                baseExpression,
+                actualValue
+            )
+
             AssertionOperation.LIST_EXCLUDES -> assertListExcludes(assertion, baseExpression, actualValue)
             AssertionOperation.LIST_EQUALS -> assertListContainsAll(assertion, baseExpression, actualValue)
             AssertionOperation.EMPTY -> assertEmpty(assertion, baseExpression, actualValue)
             AssertionOperation.EXPRESSION -> assertExpression(assertion, baseExpression, actualValue)
-            else -> throw IllegalStateException("Unsupported verification operation" + assertion.operation)
         }
     }
 
@@ -128,8 +145,10 @@ open class ValidationService(
     }
 
     private fun getExpression(assertion: Assertion, baseExpression: String): String {
-        return if (assertion.expressionType.equals(ExpressionType.RELATIVE)) {
+        return if (assertion.expressionType == ExpressionType.RELATIVE) {
             baseExpression + assertion.expression
+        } else if (assertion.expressionType == ExpressionType.JSON_PATH) {
+            "#jsonPath(#root,'" + assertion.expression + "')"
         } else {
             assertion.expression
         }
@@ -153,18 +172,37 @@ open class ValidationService(
 
     private fun assertContains(assertion: Assertion, baseExpression: String, actualValue: Any?): CompletedAssertion {
         if (actualValue !is String) {
-            return CompletedAssertion(assertion, baseExpression, AssertionStatus.FAILED, "Can not perform CONTAINS. Actual value not String!")
+            return CompletedAssertion(
+                assertion,
+                baseExpression,
+                AssertionStatus.FAILED,
+                "Can not perform CONTAINS. Actual value not String!"
+            )
         }
         if (assertion.expectedValue !is String) {
-            return CompletedAssertion(assertion, baseExpression, AssertionStatus.FAILED, "Can not perform CONTAINS. Expected value not String!")
+            return CompletedAssertion(
+                assertion,
+                baseExpression,
+                AssertionStatus.FAILED,
+                "Can not perform CONTAINS. Expected value not String!"
+            )
         }
         val actualString = actualValue
         val expectedString = assertion.expectedValue
         val contains = actualString.contains(expectedString)
-        return CompletedAssertion(assertion, baseExpression, if (contains) AssertionStatus.OK else AssertionStatus.FAILED, actualString)
+        return CompletedAssertion(
+            assertion,
+            baseExpression,
+            if (contains) AssertionStatus.OK else AssertionStatus.FAILED,
+            actualString
+        )
     }
 
-    private fun assertListContains(assertion: Assertion, baseExpression: String, actualValue: Any?): CompletedAssertion {
+    private fun assertListContains(
+        assertion: Assertion,
+        baseExpression: String,
+        actualValue: Any?
+    ): CompletedAssertion {
         if (actualValue !is Collection<*>) {
             return CompletedAssertion(
                 assertion,
@@ -197,7 +235,11 @@ open class ValidationService(
         return CompletedAssertion(assertion, baseExpression, AssertionStatus.OK, actualValues)
     }
 
-    private fun assertListOfExpectedValuesContainsActualValue(assertion: Assertion, baseExpression: String, actualValue: Any?): CompletedAssertion {
+    private fun assertListOfExpectedValuesContainsActualValue(
+        assertion: Assertion,
+        baseExpression: String,
+        actualValue: Any?
+    ): CompletedAssertion {
         if (assertion.expectedValue !is Collection<*>) {
             return CompletedAssertion(
                 assertion,
@@ -215,7 +257,11 @@ open class ValidationService(
         } else CompletedAssertion(assertion, baseExpression, AssertionStatus.OK, actualValue)
     }
 
-    private fun assertListContainsAll(assertion: Assertion, baseExpression: String, actualValue: Any?): CompletedAssertion {
+    private fun assertListContainsAll(
+        assertion: Assertion,
+        baseExpression: String,
+        actualValue: Any?
+    ): CompletedAssertion {
         if (actualValue !is Collection<*>) {
             return CompletedAssertion(
                 assertion,
@@ -249,12 +295,26 @@ open class ValidationService(
         )
     }
 
-    private fun assertListExcludes(assertion: Assertion, baseExpression: String, actualValue: Any?): CompletedAssertion {
+    private fun assertListExcludes(
+        assertion: Assertion,
+        baseExpression: String,
+        actualValue: Any?
+    ): CompletedAssertion {
         if (actualValue !is List<*>) {
-            return CompletedAssertion(assertion, baseExpression, AssertionStatus.FAILED, "Can not perform LIST CONTAINS. Actual value not List!")
+            return CompletedAssertion(
+                assertion,
+                baseExpression,
+                AssertionStatus.FAILED,
+                "Can not perform LIST CONTAINS. Actual value not List!"
+            )
         }
         if (assertion.expectedValue !is List<*>) {
-            return CompletedAssertion(assertion, baseExpression, AssertionStatus.FAILED, "Can not perform LIST CONTAINS. Expected value not List!")
+            return CompletedAssertion(
+                assertion,
+                baseExpression,
+                AssertionStatus.FAILED,
+                "Can not perform LIST CONTAINS. Expected value not List!"
+            )
         }
         val nonExpectedValues: MutableList<String> = ArrayList()
         for (o in assertion.expectedValue) {
@@ -271,12 +331,22 @@ open class ValidationService(
                 break
             }
         }
-        return CompletedAssertion(assertion, baseExpression, if (excludes) AssertionStatus.OK else AssertionStatus.FAILED, actualValues)
+        return CompletedAssertion(
+            assertion,
+            baseExpression,
+            if (excludes) AssertionStatus.OK else AssertionStatus.FAILED,
+            actualValues
+        )
     }
 
     private fun assertNull(assertion: Assertion, baseExpression: String, actualValue: Any?): CompletedAssertion {
         val exists = Objects.isNull(actualValue)
-        return if (exists) CompletedAssertion(assertion, baseExpression, AssertionStatus.OK, "NULL") else CompletedAssertion(
+        return if (exists) CompletedAssertion(
+            assertion,
+            baseExpression,
+            AssertionStatus.OK,
+            "NULL"
+        ) else CompletedAssertion(
             assertion,
             baseExpression,
             AssertionStatus.FAILED,
@@ -286,7 +356,12 @@ open class ValidationService(
 
     private fun assertNotNull(assertion: Assertion, baseExpression: String, actualValue: Any?): CompletedAssertion {
         val exists = Objects.nonNull(actualValue)
-        return if (exists) CompletedAssertion(assertion, baseExpression, AssertionStatus.OK, "NOT_NULL") else CompletedAssertion(
+        return if (exists) CompletedAssertion(
+            assertion,
+            baseExpression,
+            AssertionStatus.OK,
+            "NOT_NULL"
+        ) else CompletedAssertion(
             assertion,
             baseExpression,
             AssertionStatus.FAILED,
@@ -297,13 +372,23 @@ open class ValidationService(
     private fun assertEquals(assertion: Assertion, baseExpression: String, actualValue: Any?): CompletedAssertion {
         val expectedValue: Any? = assertion.expectedValue
         val equals = expectedValue == actualValue
-        return CompletedAssertion(assertion, baseExpression, if (equals) AssertionStatus.OK else AssertionStatus.FAILED, actualValue)
+        return CompletedAssertion(
+            assertion,
+            baseExpression,
+            if (equals) AssertionStatus.OK else AssertionStatus.FAILED,
+            actualValue
+        )
     }
 
     private fun assertNotEquals(assertion: Assertion, baseExpression: String, actualValue: Any?): CompletedAssertion {
         val expectedValue: Any? = assertion.expectedValue
         val equals = expectedValue == actualValue
-        return CompletedAssertion(assertion, baseExpression, if (equals) AssertionStatus.FAILED else AssertionStatus.OK, actualValue)
+        return CompletedAssertion(
+            assertion,
+            baseExpression,
+            if (equals) AssertionStatus.FAILED else AssertionStatus.OK,
+            actualValue
+        )
     }
 
     private fun assertEmpty(assertion: Assertion, baseExpression: String, actualValue: Any?): CompletedAssertion {
@@ -344,6 +429,9 @@ open class ValidationService(
             return
         }
         val message = assertionsFormatter.formatIntoErrorMessage(failedAssertions)
+        failedAssertions.forEach {
+            log.info("Failed assertion: {}", it)
+        }
         throw AssertionError("Assertions failed! Find more details in the attachment.\n$message")
     }
 

@@ -26,59 +26,18 @@ package com.nortal.test.asserts
  * This class represents an assertion that will be carried out.
  */
 data class Assertion(
-    /**
-     * Assertion messages describing what the assertion does.
-     * e.g. Verify ratePlanSoc or Verify correct line count
-     */
-    val message: String = "",
-
-    /**
-     * SpEL expression that retrieves actual value from the context.
-     * Expectation here is that once the expression is parsed and getValue is executed on the context whatever actualValue is returned will
-     * pass the selected operation against the expectedValue.
-     *
-     * Some default variables can be used in the expression:
-     * #root to reference the root context object
-     * #expected to reference the expectedValue
-     */
+     val message: String,
     val expression: String = "",
-
     val expressionType: ExpressionType = ExpressionType.RELATIVE,
-
-    /**
-     * Operation that will be executed using expected and actual values as operands
-     */
     val operation: AssertionOperation = AssertionOperation.EQUALS,
-
-    /**
-     * Expected value.
-     * Depending on the selected operation may be optional (e.g. for NOT_NULL)
-     */
     val expectedValue: Any? = null,
-
-    /**
-     * Context values.
-     * Designed to be used in tandem with EXPRESSION
-     */
     val contextValues: Map<String, Any>? = null,
-
-    /**
-     * Some assertions can act as gatekeepers, meaning that if they fail, there is little meaning in running the rest of them.
-     * If TRUE will skip the rest of assertions.
-     * FALSE by default
-     */
     val skipRestIfFailed: Boolean = false,
-
-    /**
-     * Some assertions are just simple assertions where you would want to compare two numbers and check if they match
-     * and for them to show up in the report. For this actual value can be set.
-     */
     val actualValue: Any? = null
 ) {
 
-
-    private constructor(builder: Assertion.Builder) : this(
-        message = builder.message ?: throw NullPointerException(),
+    private constructor(builder: Builder) : this(
+        message = builder.message ?: "",
         expression = builder.expression ?: throw NullPointerException(),
         expressionType = builder.expressionType ?: ExpressionType.RELATIVE,
         operation = builder.operation ?: AssertionOperation.EQUALS,
@@ -109,30 +68,60 @@ data class Assertion(
             actualValue = assertion.actualValue
         }
 
+        /**
+         * Assertion messages describing what the assertion does.
+         * e.g. Verify ratePlanSoc or Verify correct line count
+         */
+        fun message(message: String) = apply { this.message = message }
+
+        /**
+         * SpEL expression that retrieves actual value from the context.
+         * Expectation here is that once the expression is parsed and getValue is executed on the context whatever actualValue is returned will
+         * pass the selected operation against the expectedValue.
+         *
+         * Some default variables can be used in the expression:
+         * #root to reference the root context object
+         * #expected to reference the expectedValue
+         */
+        fun expression(expression: String) = apply { this.expression = expression }
+
+        fun expressionType(expressionType: ExpressionType) = apply { this.expressionType = expressionType }
+        /**
+         * Operation that will be executed using expected and actual values as operands
+         */
+        fun operation(operation: AssertionOperation) = apply { this.operation = operation }
+        /**
+         * Expected value.
+         * Depending on the selected operation may be optional (e.g. for NOT_NULL)
+         */
+        fun expectedValue(expectedValue: Any?) = apply { this.expectedValue = expectedValue }
+
+        /**
+         * Context values.
+         * Designed to be used in tandem with EXPRESSION
+         */
+        fun contextValues(contextValues: Map<String, Any>) = apply { this.contextValues = contextValues }
+        /**
+         * Some assertions can act as gatekeepers, meaning that if they fail, there is little meaning in running the rest of them.
+         * If TRUE will skip the rest of assertions.
+         * FALSE by default
+         */
+        fun skipRestIfFailed(skipRestIfFailed: Boolean) = apply { this.skipRestIfFailed = skipRestIfFailed }
+
+        /**
+         * Some assertions are just simple assertions where you would want to compare two numbers and check if they match
+         * and for them to show up in the report. For this actual value can be set.
+         */
+        fun actualValue(actualValue: Any?) = apply { this.actualValue = actualValue }
+
+        fun build() = Assertion(this)
+
         companion object {
             @JvmStatic
             fun fromAssertion(assertion: Assertion): Builder {
                 return Builder(assertion)
             }
         }
-
-        fun message(message: String) = apply { this.message = message }
-
-        fun expression(expression: String) = apply { this.expression = expression }
-
-        fun expressionType(expressionType: ExpressionType) = apply { this.expressionType = expressionType }
-
-        fun operation(operation: AssertionOperation) = apply { this.operation = operation }
-
-        fun expectedValue(expectedValue: Any?) = apply { this.expectedValue = expectedValue }
-
-        fun contextValues(contextValues: Map<String, Any>) = apply { this.contextValues = contextValues }
-
-        fun skipRestIfFailed(skipRestIfFailed: Boolean) = apply { this.skipRestIfFailed = skipRestIfFailed }
-
-        fun actualValue(actualValue: Any?) = apply { this.actualValue = actualValue }
-
-        fun build() = Assertion(this)
     }
 
 }

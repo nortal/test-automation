@@ -23,21 +23,48 @@
 package com.nortal.test.asserts
 
 /**
- * Defines the type of the expression
+ * Helper class to create most common assertions.
  */
-enum class ExpressionType {
-    /**
-     * Expression that is evaluated against the base expression
-     */
-    RELATIVE,
+object JsonPathAssertions {
 
     /**
-     * Expression that is evaluated against the root of the context
+     * Creates assertion to check if field is not null.
      */
-    ABSOLUTE,
+    @JvmStatic
+    fun notNullAssertion(expression: String): Assertion {
+        return Assertion.Builder()
+            .message("Field is not null")
+            .expression(expression)
+            .expressionType(ExpressionType.JSON_PATH)
+            .operation(AssertionOperation.NOT_NULL)
+            .build()
+    }
 
     /**
-     * Enables json path expressions against root of the context
+     * Creates equals assertion.
      */
-    JSON_PATH
+    @JvmStatic
+    fun equalsAssertion(expected: Any?, actualValuePath: String, message: String): Assertion {
+        return Assertion.Builder()
+            .message(message)
+            .expression(actualValuePath)
+            .expressionType(ExpressionType.JSON_PATH)
+            .expectedValue(expected)
+            .build()
+    }
+
+    /**
+     * Creates equals assertion.
+     */
+    @JvmStatic
+    fun equalsAssertion(expected: Any?, actualValuePath: String): Assertion {
+        return Assertion.Builder()
+            .message("Assert equals")
+            .expression(actualValuePath)
+            .expressionType(ExpressionType.JSON_PATH)
+            .expectedValue(expected)
+            .build()
+    }
+
+
 }

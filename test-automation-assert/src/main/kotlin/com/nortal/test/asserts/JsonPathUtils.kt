@@ -22,22 +22,31 @@
  */
 package com.nortal.test.asserts
 
-/**
- * Defines the type of the expression
- */
-enum class ExpressionType {
-    /**
-     * Expression that is evaluated against the base expression
-     */
-    RELATIVE,
+import com.jayway.jsonpath.JsonPath
+import com.jayway.jsonpath.Predicate
+import java.io.ByteArrayInputStream
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
+import java.net.URL
 
-    /**
-     * Expression that is evaluated against the root of the context
-     */
-    ABSOLUTE,
+object JsonPathUtils {
 
-    /**
-     * Enables json path expressions against root of the context
-     */
-    JSON_PATH
+    @JvmStatic
+    @Throws(IOException::class)
+    fun <T> evaluate(json: Any?, jsonPath: String?, vararg predicates: Predicate?): T {
+        return if (json is String) {
+            JsonPath.read(json as String?, jsonPath, *predicates)
+        } else if (json is ByteArray) {
+            JsonPath.read(ByteArrayInputStream(json as ByteArray?), jsonPath, *predicates)
+        } else if (json is File) {
+            JsonPath.read(json as File?, jsonPath, *predicates)
+        } else if (json is URL) {
+            JsonPath.read(json.openStream(), jsonPath, *predicates)
+        } else if (json is InputStream) {
+            JsonPath.read(json as InputStream?, jsonPath, *predicates)
+        } else {
+            JsonPath.read(json, jsonPath, *predicates)
+        }
+    }
 }
