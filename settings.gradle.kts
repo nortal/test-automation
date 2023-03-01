@@ -14,35 +14,35 @@ include("test-automation-reportportal")
 include(":demos:demo-ui-test")
 
 plugins {
-    val kotlinVersion = "1.8.0"
+    val kotlinVersion = "1.8.10"
     kotlin("jvm") version kotlinVersion apply false
     kotlin("plugin.spring") version kotlinVersion apply false
     kotlin("kapt") version kotlinVersion apply false
-    id("pl.allegro.tech.build.axion-release") version "1.14.3" apply false
+    id("pl.allegro.tech.build.axion-release") version "1.14.4" apply false
     id("io.gitlab.arturbosch.detekt").version("1.22.0") apply false
     id("com.github.hierynomus.license").version("0.16.1") apply false
     id("org.jetbrains.dokka") version "1.7.20" apply false
-    id("io.freefair.lombok") version "6.6.1" apply false
+    id("io.freefair.lombok") version "6.6.3" apply false
 }
 
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            version("kotlin", "1.8.0")
+            version("kotlin", "1.8.20")
 
-            version("cucumber", "7.10.1")
-            version("spring-boot", "2.7.7")
-            version("spring-cloud", "3.1.5")
-            version("jackson", "2.14.1")
+            version("cucumber", "7.11.1")
+            version("spring-boot", "2.7.9")
+            version("spring-cloud", "3.1.6")
+            version("jackson", "2.14.2")
             version("testcontainers", "1.17.6")
             version("rest-assured", "5.2.0")
-            version("feign", "12.1")
+            version("feign", "12.2")
             version("jacoco", "0.8.8")
-            version("allure", "2.20.1")
+            version("allure", "2.21.0")
             version("reportportal", "5.1.2")
-            version("selenide", "6.10.3")
-            version("netty", "4.1.86.Final")
-            version("browserup-proxy", "2.2.6")
+            version("selenide", "6.12.0")
+            version("netty", "4.1.89.Final")
+            version("browserup-proxy", "2.2.8")
 
             library("kotlin-stdlib-jdk8", "org.jetbrains.kotlin", "kotlin-stdlib-jdk8").versionRef("kotlin")
             library("kotlin-reflect", "org.jetbrains.kotlin", "kotlin-reflect").versionRef("kotlin")
@@ -50,7 +50,7 @@ dependencyResolutionManagement {
             library("cucumber-junit-platform-engine", "io.cucumber", "cucumber-junit-platform-engine").versionRef("cucumber")
             library("cucumber-spring", "io.cucumber", "cucumber-spring").versionRef("cucumber")
 
-            library("junit-platform-suite", "org.junit.platform", "junit-platform-suite").version("1.9.1")
+            library("junit-platform-suite", "org.junit.platform", "junit-platform-suite").version("1.9.2")
 
             //Spring Boot
             library("springboot-starter_", "org.springframework.boot", "spring-boot-starter").versionRef("spring-boot")
