@@ -72,6 +72,10 @@ class TestableContainerProperties(
      */
     var internalHttpPort: Int = 8080,
     /**
+     * container alias that will be registered under its network.
+     */
+    var internalNetworkAlias: String = "container-under-test",
+    /**
      * Application startup timeout.
      */
     var startupTimeout: Long = 120,

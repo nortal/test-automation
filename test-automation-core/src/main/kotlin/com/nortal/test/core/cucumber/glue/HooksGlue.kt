@@ -44,7 +44,7 @@ class HooksGlue(
      */
     @Before(order = -1)
     fun prepareScenarioContext(scenario: Scenario) {
-        log.info("Preparing scenario container")
+        log.trace("Preparing scenario context")
         scenarioExecutionContext.prepare(scenario)
     }
 

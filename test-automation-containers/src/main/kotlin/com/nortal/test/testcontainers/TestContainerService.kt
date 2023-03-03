@@ -63,13 +63,14 @@ open class TestContainerService(
             allExposedPorts.add(fixedPort)
         }
 
-        val logger = LoggerFactory.getLogger("test-container")
+        val logger = LoggerFactory.getLogger(testableContainerProperties.internalNetworkAlias)
         val logConsumer = Slf4jLogConsumer(logger).withSeparateOutputStreams()
         val applicationContainer =
             customFixedHostPortGenericContainer.withNetwork(testContainerNetworkProvider.network)
                 .withExposedPorts(*allExposedPorts.toTypedArray())
                 .withEnv(envConfig)
                 .withLogConsumer(logConsumer)
+                .withNetworkAliases(testableContainerProperties.internalNetworkAlias)
                 .withStartupTimeout(Duration.ofSeconds(testableContainerProperties.startupTimeout))
 
         if (testableContainerProperties.jacoco.enabled) {
@@ -84,7 +85,10 @@ open class TestContainerService(
     }
 
     private fun getJacocoPort(): String {
-        return String.format("-javaagent:/jacocoagent.jar=address=*,port=%d,output=tcpserver", testableContainerProperties.jacoco.port)
+        return String.format(
+            "-javaagent:/jacocoagent.jar=address=*,port=%d,output=tcpserver",
+            testableContainerProperties.jacoco.port
+        )
     }
 
     private fun stopContainersOfOlderImage(image: ImageFromDockerfile) {
@@ -126,11 +130,13 @@ open class TestContainerService(
     }
 
     override fun getHost(): String {
-        return exposedContainerHost ?: throw AssertionError("Testable container was not initialized. Check execution order.")
+        return exposedContainerHost
+            ?: throw AssertionError("Testable container was not initialized. Check execution order.")
     }
 
     override fun getPort(): Int {
-        return exposedContainerPort ?: throw AssertionError("Testable container was not initialized. Check execution order.")
+        return exposedContainerPort
+            ?: throw AssertionError("Testable container was not initialized. Check execution order.")
     }
 
 }
