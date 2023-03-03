@@ -17,7 +17,10 @@ dependencies {
     implementation(libs.allure.commandline) {
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "ch.qos.logback", module = "logback-classic")
+        exclude(group = "com.opencsv", module = "opencsv")
     }
+
+    implementation(libs.opencsv)
 
     api(libs.commons.io)
 }

@@ -76,6 +76,8 @@ dependencyResolutionManagement {
             library("guava", "com.google.guava", "guava").version("31.1-jre")
             library("snakeyaml", "org.yaml", "snakeyaml").version("1.33")
 
+            library("opencsv", "com.opencsv", "opencsv").version("5.7.1")
+
             library("commons-lang3", "org.apache.commons", "commons-lang3").version("3.12.0")
             library("commons-codec", "commons-codec", "commons-codec").version("1.15")
             library("commons-io", "commons-io", "commons-io").version("2.11.0")
