@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service
 import org.testcontainers.DockerClientFactory
 import org.testcontainers.containers.CustomFixedHostPortGenericContainer
 import org.testcontainers.containers.GenericContainer
+import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.utility.MountableFile
 import java.time.Duration
 import java.util.*
@@ -61,10 +62,14 @@ open class TestContainerService(
             customFixedHostPortGenericContainer.withFixedExposedPort(fixedPort, fixedPort)
             allExposedPorts.add(fixedPort)
         }
+
+        val logger = LoggerFactory.getLogger("test-container")
+        val logConsumer = Slf4jLogConsumer(logger).withSeparateOutputStreams()
         val applicationContainer =
             customFixedHostPortGenericContainer.withNetwork(testContainerNetworkProvider.network)
                 .withExposedPorts(*allExposedPorts.toTypedArray())
                 .withEnv(envConfig)
+                .withLogConsumer(logConsumer)
                 .withStartupTimeout(Duration.ofSeconds(testableContainerProperties.startupTimeout))
 
         if (testableContainerProperties.jacoco.enabled) {

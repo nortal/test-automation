@@ -4,7 +4,7 @@
 
 	<appender name="REPORT" class="com.nortal.test.core.logs.TestExecutionLogAppender">
 		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+			<pattern>%d{HH:mm:ss.SS} [%-7.7thread]  %-5level %logger{50} - %msg%n</pattern>
 		</encoder>
 	</appender>
 
