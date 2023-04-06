@@ -30,6 +30,10 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty
 @ConfigurationProperties(prefix = "test-automation.report.allure")
 data class AllureReportProperties(
     /**
+     * Report base dir.
+     */
+    val baseDir: String,
+    /**
      * Report dir where generated report will be put in.
      */
     val reportDir: String,

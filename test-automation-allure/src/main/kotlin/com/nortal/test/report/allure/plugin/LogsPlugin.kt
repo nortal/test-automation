@@ -26,7 +26,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.nortal.test.core.logs.TestExecutionLogAppender
 import io.qameta.allure.Aggregator
 import io.qameta.allure.core.Configuration
 import io.qameta.allure.core.LaunchResults
@@ -46,6 +45,10 @@ class LogsPlugin : Aggregator {
         .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
         .configure(SerializationFeature.INDENT_OUTPUT, true)
 
+    companion object {
+        const val LOG_FILE = "test-automation-exec.log"
+    }
+
     @Throws(IOException::class)
     override fun aggregate(
         configuration: Configuration,
@@ -53,8 +56,14 @@ class LogsPlugin : Aggregator {
         outputDirectory: Path
     ) {
         val dataFolder = Files.createDirectories(outputDirectory.resolve("data"))
-        val dataFile = dataFolder.resolve("logs.json")
 
+        //move logs
+        Files.move(
+            outputDirectory.parent.resolve(LOG_FILE),
+            dataFolder.resolve("test-automation-exec.log")
+        )
+        //create mapping file
+        val dataFile = dataFolder.resolve("logs.json")
         Files.newOutputStream(dataFile).use { os -> objectMapper.writeValue(os, getData()) }
     }
 
@@ -62,14 +71,14 @@ class LogsPlugin : Aggregator {
         return listOf(
             LogDto(
                 name = "test framework",
-                content = TestExecutionLogAppender.getLogs()
+                filename = LOG_FILE
             )
         )
     }
 
     data class LogDto(
         val name: String,
-        val content: String
+        val filename: String
     )
 
 }

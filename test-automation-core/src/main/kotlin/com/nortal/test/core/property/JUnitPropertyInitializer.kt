@@ -62,6 +62,7 @@ object JUnitPropertyInitializer {
 
                 val env = propertyLoader.loadProperties()
 
+                applyGenericProperties(env)
                 applyHardCodedProperties()
                 applySystemProperties(env)
                 applyProviderSystemProperties(env)
@@ -72,6 +73,10 @@ object JUnitPropertyInitializer {
             }
         }
         return this
+    }
+
+    private fun applyGenericProperties(env: Environment) {
+        env.getProperty("test-automation.report.allure.base-dir")?.let { System.setProperty("testExecLogDir", it) }
     }
 
     private fun applyHardCodedProperties() {

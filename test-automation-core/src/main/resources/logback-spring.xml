@@ -2,7 +2,9 @@
 <configuration>
 	<include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-	<appender name="REPORT" class="com.nortal.test.core.logs.TestExecutionLogAppender">
+	<appender name="REPORT" class="ch.qos.logback.core.FileAppender">
+		<file>${testExecLogDir}/test-automation-exec.log</file>
+		<append>false</append>
 		<encoder>
 			<pattern>%d{HH:mm:ss.SS} [%-7.7thread]  %-5level %logger{50} - %msg%n</pattern>
 		</encoder>

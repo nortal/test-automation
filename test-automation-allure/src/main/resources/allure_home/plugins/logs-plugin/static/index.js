@@ -27,17 +27,13 @@ var LogsTabModel = Backbone.Collection.extend({
 })
 
 const template = function (data) {
-    console.log(data)
-    let content=data.items[0].attributes.content
+    //existing impl supports a single log file, but can be extended to support multiple files
+    const logFileName=data.items[0].attributes.filename;
 
     return `
     <div class="log-window">
         <h3 class="pane__title">Test Framework logs:</h3>
-        <div class="attachment log-text-block">
-            <div class="attachment__text-container">
-                <pre class="attachment__text ">${content}</pre>
-            </div>
-        </div>
+        <iframe src="data/${logFileName}"  class="log-window"></iframe>
     </div>
     `;
 }
