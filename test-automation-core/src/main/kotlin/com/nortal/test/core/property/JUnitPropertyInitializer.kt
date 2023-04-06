@@ -76,7 +76,12 @@ object JUnitPropertyInitializer {
     }
 
     private fun applyGenericProperties(env: Environment) {
-        env.getProperty("test-automation.report.allure.base-dir")?.let { System.setProperty("testExecLogDir", it) }
+        val baseDir = env.getProperty("test-automation.report.allure.base-dir")
+        if (StringUtils.isNotBlank(baseDir)) {
+            System.setProperty("testExecLogDir", baseDir)
+        } else {
+            System.setProperty("testExecLogDir", "build")
+        }
     }
 
     private fun applyHardCodedProperties() {
