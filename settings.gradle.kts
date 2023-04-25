@@ -14,7 +14,7 @@ include("test-automation-reportportal")
 include(":demos:demo-ui-test")
 
 plugins {
-    val kotlinVersion = "1.8.10"
+    val kotlinVersion = "1.8.20"
     kotlin("jvm") version kotlinVersion apply false
     kotlin("plugin.spring") version kotlinVersion apply false
     kotlin("kapt") version kotlinVersion apply false
@@ -22,7 +22,7 @@ plugins {
     id("io.gitlab.arturbosch.detekt").version("1.22.0") apply false
     id("com.github.hierynomus.license").version("0.16.1") apply false
     id("org.jetbrains.dokka") version "1.7.20" apply false
-    id("io.freefair.lombok") version "6.6.3" apply false
+    id("io.freefair.lombok") version "8.0.1" apply false
 }
 
 dependencyResolutionManagement {
@@ -30,17 +30,17 @@ dependencyResolutionManagement {
         create("libs") {
             version("kotlin", "1.8.20")
 
-            version("cucumber", "7.11.1")
-            version("spring-boot", "2.7.10")
+            version("cucumber", "7.11.2")
+            version("spring-boot", "2.7.11")
             version("spring-cloud", "3.1.6")
-            version("jackson", "2.14.2")
-            version("testcontainers", "1.17.6")
+            version("jackson", "2.15.0")
+            version("testcontainers", "1.18.0")
             version("rest-assured", "5.2.0")
-            version("feign", "12.2")
-            version("jacoco", "0.8.8")
+            version("feign", "12.3")
+            version("jacoco", "0.8.9")
             version("allure", "2.21.0")
             version("reportportal", "5.1.2")
-            version("selenide", "6.13.0")
+            version("selenide", "6.13.1")
             version("netty", "4.1.91.Final")
             version("browserup-proxy", "2.2.9")
 
