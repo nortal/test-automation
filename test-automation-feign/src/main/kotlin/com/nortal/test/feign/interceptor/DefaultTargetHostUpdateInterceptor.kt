@@ -29,8 +29,11 @@ import org.springframework.stereotype.Component
 import java.io.IOException
 import java.util.*
 
+/**
+ * Feign interceptor that updates target host,port to testable application host.
+ */
 @Component
-open class TargetHostUpdateInterceptor(
+open class DefaultTargetHostUpdateInterceptor(
     private val testableApplicationInfoProvider: Optional<TestableApplicationInfoProvider>
 ) : FeignClientInterceptor {
 

@@ -30,6 +30,13 @@ interface TestableApplicationInfoProvider {
 
     /**
      * Get open port to access the container.
+     *
+     * IMPORTANT: This returns first defined port in the container.
      */
     fun getPort(): Int
+
+    /**
+     * Get mapped port to access the container.
+     */
+    fun getMappedPort(internalPort: Int): Int
 }

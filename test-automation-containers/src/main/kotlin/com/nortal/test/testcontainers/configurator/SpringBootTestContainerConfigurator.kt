@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 Nortal AS
+ * Copyright (c) 2023 Nortal AS
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -20,33 +20,37 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.nortal.test.testcontainers
+package com.nortal.test.testcontainers.configurator
 
 import com.nortal.test.core.exception.TestConfigurationException
+import com.nortal.test.testcontainers.configuration.SpringBootTestContainerProperties
 import com.nortal.test.testcontainers.configuration.TestableContainerProperties
 import com.nortal.test.testcontainers.images.builder.ImageFromDockerfile
 import com.nortal.test.testcontainers.images.builder.ReusableImageFromDockerfile
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
+import org.testcontainers.containers.GenericContainer
 import org.testcontainers.images.builder.dockerfile.DockerfileBuilder
+import org.testcontainers.utility.LazyFuture
+import org.testcontainers.utility.MountableFile
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-/**
- * Base class for testable (under test) container setup.
- */
-@Component
-abstract class AbstractTestableContainerSetup : TestableContainerInitializer {
+open class SpringBootTestContainerConfigurator :
+    TestContainerConfigurator,
+    TestContainerConfigurator.TestContainerInitListener {
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
     @Autowired
-    protected lateinit var testableContainerProperties: TestableContainerProperties
+    private lateinit var testableContainerProperties: TestableContainerProperties
 
     @Autowired
-    protected lateinit var containerService: TestContainerService
+    private lateinit var containerProperties: SpringBootTestContainerProperties
+
+    @Autowired
+    private lateinit var containerCustomizer: TestContainerCustomizer
 
     companion object {
         private const val APP_JAR_PATH = "/app.jar"
@@ -54,42 +58,25 @@ abstract class AbstractTestableContainerSetup : TestableContainerInitializer {
         private const val JACOCO_AGENT_JAR_PATH = "/jacocoagent.jar"
     }
 
+    interface TestContainerCustomizer : TestContainerConfigurator.TestContainerCustomizer {
+        /**
+         * Customize Image definition.
+         */
+        fun customizeImageDefinition(reusableImageFromDockerfile: ImageFromDockerfile)
 
-    override fun initialize() {
-        containerService.startApplicationUnderTest(
-            build(),
-            getTargetContainerExposedPorts(),
-            getTargetContainerEnvConfig()
-        )
+        /**
+         * Additional commandParts which are added to dockerfile builder.
+         */
+        fun customizeCommandParts(): List<String>
 
-        onContainerStartupInitiated()
+        /**
+         * Customize DockerfileBuilder.
+         */
+        fun customizeDockerFileBuilder(builder: DockerfileBuilder)
     }
 
-    /**
-     * Environmental settings for the target container.
-     */
-    open fun getTargetContainerEnvConfig(): Map<String, String> {
-        return mapOf()
-    }
-
-    /**
-     * Defines ports that will be exposed to external access. Example: debug port.
-     */
-    open fun getTargetContainerExposedPorts(): IntArray {
-        val ports: MutableList<Int> = mutableListOf()
-        if (testableContainerProperties.jacoco.enabled) {
-            ports.add(testableContainerProperties.jacoco.port)
-        }
-        if (testableContainerProperties.jarDebugEnabled) {
-            ports.add(testableContainerProperties.debugPort)
-        }
-        return ports.toIntArray()
-    }
-
-    abstract fun onContainerStartupInitiated()
-
-    protected open fun build(): ImageFromDockerfile {
-        val appJarDir = Paths.get(testableContainerProperties.jarBuildDir)
+    override fun imageDefinition(): LazyFuture<String> {
+        val appJarDir = Paths.get(containerProperties.jarBuildDir)
         val appJarPath = Files.find(appJarDir, 1, { t, _ -> isMatchingJarFile(t) })
             .findFirst()
             .orElseThrow { TestConfigurationException("Failed to find jar in $testableContainerProperties.jarBuildDir") }
@@ -98,24 +85,63 @@ abstract class AbstractTestableContainerSetup : TestableContainerInitializer {
 
         val reusableImageFromDockerfile =
             ReusableImageFromDockerfile(
-                applicationName(),
+                testableContainerProperties.internalNetworkAlias,
                 false,
                 testableContainerProperties.reuseBetweenRuns
             )
                 .withFileFromPath(APP_JAR_PATH, appJarPath)
-                .withFileFromClasspath(JACOCO_AGENT_JAR_PATH, JACOCO_CLASSPATH_PATH)
+                .withFileFromClasspath(
+                    JACOCO_AGENT_JAR_PATH,
+                    JACOCO_CLASSPATH_PATH
+                )
 
-        additionalImageFromDockerfileConfiguration(reusableImageFromDockerfile)
+        containerCustomizer.customizeImageDefinition(reusableImageFromDockerfile)
+
         reusableImageFromDockerfile.withDockerfileFromBuilder { builder -> configure(builder).build() }
         return reusableImageFromDockerfile
     }
 
-    private fun isMatchingJarFile(path: Path): Boolean {
-        return path.fileName.toString().matches(Regex(testableContainerProperties.jarRegexMatcher))
+
+    override fun beforeStart(container: GenericContainer<*>) {
+        if (containerProperties.jacoco.enabled) {
+            val mountableFile = MountableFile.forClasspathResource("jacoco/org.jacoco.agent.jar")
+            container
+                .withCopyFileToContainer(mountableFile, "/jacocoagent.jar")
+        }
+    }
+
+    override fun afterStart(container: GenericContainer<*>) {
+        //do nothing
+    }
+
+    override fun fixedExposedPorts(): List<Int> {
+        val ports: MutableList<Int> = mutableListOf()
+
+        if (containerProperties.jarDebugEnabled) {
+            ports.add(containerProperties.debugPort)
+        }
+
+        return ports
+    }
+
+    override fun exposedPorts(): List<Int> {
+        val ports: MutableList<Int> = mutableListOf()
+        ports.addAll(containerCustomizer.additionalExposedPorts())
+
+        if (containerProperties.jacoco.enabled) {
+            ports.add(containerProperties.jacoco.port)
+        }
+        return ports
+    }
+
+    override fun environmentalVariables(): Map<String, String> {
+        return mapOf(
+            "spring.profiles.active" to containerProperties.springProfilesToActivate,
+        ) + containerCustomizer.additionalEnvironmentalVariables()
     }
 
     private fun configure(builder: DockerfileBuilder): DockerfileBuilder {
-        val baseImage = testableContainerProperties.baseImage
+        val baseImage = containerProperties.baseImage
         builder
             .from(baseImage)
             .copy(
@@ -124,56 +150,42 @@ abstract class AbstractTestableContainerSetup : TestableContainerInitializer {
             )
             .entryPoint(*getCommandParts())
 
-        if (testableContainerProperties.jacoco.enabled) {
+        if (containerProperties.jacoco.enabled) {
             builder.copy(
                 JACOCO_AGENT_JAR_PATH,
                 JACOCO_AGENT_JAR_PATH
             )
         }
-        additionalBuilderConfiguration(builder)
+
+        containerCustomizer.customizeDockerFileBuilder(builder)
+
         return builder
     }
 
-    abstract fun applicationName(): String
-
-    abstract fun additionalBuilderConfiguration(builder: DockerfileBuilder)
-
-    abstract fun additionalImageFromDockerfileConfiguration(reusableImageFromDockerfile: ImageFromDockerfile)
-
-    /**
-     * Additional commandParts which are added to dockerfile builder.
-     */
-    abstract fun additionalCommandParts(): List<String>
-
-    /**
-     * jvm -Xmx value. Value examples: 1G, 256M.
-     */
-    abstract fun maxMemory(): String
+    private fun isMatchingJarFile(path: Path): Boolean {
+        return path.fileName.toString().matches(Regex(containerProperties.jarRegexMatcher))
+    }
 
     private fun getCommandParts(): Array<String> {
         val commandParts: MutableList<String> = ArrayList()
         commandParts.add("java")
-        commandParts.add("-jar")
-        commandParts.add(getMaxMemoryPart())
-        commandParts.addAll(additionalCommandParts())
-        if (testableContainerProperties.jarDebugEnabled) {
+        commandParts.add(containerProperties.memorySettings)
+        commandParts.addAll(containerCustomizer.customizeCommandParts())
+        if (containerProperties.jarDebugEnabled) {
             commandParts.addAll(getDebugPart())
         }
-        if (testableContainerProperties.jacoco.enabled) {
+        if (containerProperties.jacoco.enabled) {
             commandParts.add(getJacocoPart())
         }
+        commandParts.add("-jar")
         commandParts.add(APP_JAR_PATH)
         return commandParts.toTypedArray()
-    }
-
-    private fun getMaxMemoryPart(): String {
-        return "-Xmx" + maxMemory()
     }
 
     private fun getJacocoPart(): String {
         return String.format(
             "-javaagent:/jacocoagent.jar=address=*,port=%d,output=tcpserver",
-            testableContainerProperties.jacoco.port
+            containerProperties.jacoco.port
         )
     }
 
@@ -182,9 +194,11 @@ abstract class AbstractTestableContainerSetup : TestableContainerInitializer {
             "-Xdebug",
             String.format(
                 "-Xrunjdwp:transport=dt_socket,address=*:%d,server=y,suspend=%s",
-                testableContainerProperties.debugPort,
-                if (testableContainerProperties.waitForDebugger) "y" else "n"
+                containerProperties.debugPort,
+                if (containerProperties.waitForDebugger) "y" else "n"
             )
         )
     }
+
+
 }

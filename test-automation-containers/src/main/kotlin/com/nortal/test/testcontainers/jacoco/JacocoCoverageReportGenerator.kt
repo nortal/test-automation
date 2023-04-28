@@ -23,6 +23,7 @@
 package com.nortal.test.testcontainers.jacoco
 
 import com.nortal.test.core.exception.TestAutomationException
+import com.nortal.test.core.services.TestableApplicationInfoProvider
 import com.nortal.test.core.services.hooks.AfterSuiteHook
 import com.nortal.test.testcontainers.configuration.TestableContainerJacocoProperties
 import org.apache.commons.lang3.time.StopWatch
@@ -52,7 +53,10 @@ import java.nio.file.attribute.BasicFileAttributes
 import java.util.concurrent.TimeUnit
 
 @Component
-open class JacocoCoverageReportGenerator(private val jacocoProperties: TestableContainerJacocoProperties) :
+open class JacocoCoverageReportGenerator(
+    private val jacocoProperties: TestableContainerJacocoProperties,
+    private val testableApplicationInfoProvider: TestableApplicationInfoProvider
+) :
     AfterSuiteHook {
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
@@ -161,7 +165,8 @@ open class JacocoCoverageReportGenerator(private val jacocoProperties: TestableC
     @Throws(IOException::class)
     private fun transferExecutionData() {
         createTargetDir()
-        Socket(InetAddress.getByName(jacocoProperties.host), jacocoProperties.port).use { socket ->
+        val mappedPort = testableApplicationInfoProvider.getMappedPort(jacocoProperties.port)
+        Socket(InetAddress.getByName(jacocoProperties.host), mappedPort).use { socket ->
             Files.newOutputStream(
                 getFileOnDestDirPath(FILE_EXEC)
             ).use { localFile ->

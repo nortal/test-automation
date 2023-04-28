@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 Nortal AS
+ * Copyright (c) 2023 Nortal AS
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -20,13 +20,32 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.nortal.test.testcontainers
+package com.nortal.test.testcontainers.configurator
 
-abstract class AbstractTestableSpringBootContainerSetup : AbstractTestableContainerSetup() {
+import org.testcontainers.containers.GenericContainer
+import org.testcontainers.utility.LazyFuture
 
-    override fun getTargetContainerEnvConfig(): Map<String, String> {
-        return mapOf(
-            "spring.profiles.active" to testableContainerProperties.springProfilesToActivate
-        )
+interface TestContainerConfigurator {
+
+    fun imageDefinition(): LazyFuture<String>
+
+    fun exposedPorts(): List<Int> = emptyList()
+
+    fun fixedExposedPorts(): List<Int> = emptyList()
+
+    fun environmentalVariables(): Map<String, String>
+
+    interface TestContainerInitListener {
+        fun beforeStart(container: GenericContainer<*>)
+
+        fun afterStart(container: GenericContainer<*>)
+    }
+
+    interface TestContainerCustomizer {
+
+        fun additionalEnvironmentalVariables(): Map<String, String> = emptyMap()
+
+        fun additionalExposedPorts(): List<Int> = emptyList()
+
     }
 }

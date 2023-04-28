@@ -44,7 +44,7 @@ open class TestContextContainerService(
         val timer = StopWatch.createStarted()
 
         contextContainers.parallelStream().forEach { startContainer(it) }
-        log.info("Context containers started in {}ms", timer.time)
+        log.info("Context containers started in {} ms", timer.time)
     }
 
     protected open fun startContainer(auxiliaryContainer: AuxiliaryContainer<*>){

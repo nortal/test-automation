@@ -25,7 +25,7 @@ package com.nortal.test.testcontainers
 import com.github.dockerjava.api.model.Container
 import com.nortal.test.core.services.TestableApplicationInfoProvider
 import com.nortal.test.testcontainers.configuration.TestableContainerProperties
-import com.nortal.test.testcontainers.images.builder.ImageFromDockerfile
+import com.nortal.test.testcontainers.configurator.TestContainerConfigurator
 import org.apache.commons.lang3.time.StopWatch
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -34,7 +34,6 @@ import org.testcontainers.DockerClientFactory
 import org.testcontainers.containers.CustomFixedHostPortGenericContainer
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
-import org.testcontainers.utility.MountableFile
 import java.time.Duration
 import java.util.*
 
@@ -44,57 +43,50 @@ import java.util.*
 @Service
 open class TestContainerService(
     private val testContainerNetworkProvider: TestContainerNetworkProvider,
-    private val testableContainerProperties: TestableContainerProperties
-) : TestableApplicationInfoProvider {
+    private val testableContainerProperties: TestableContainerProperties,
+    private val testContainerConfigurator: TestContainerConfigurator,
+    private val initListeners: List<TestContainerConfigurator.TestContainerInitListener>
+) : TestableApplicationInfoProvider, TestableApplicationContainerProvider, TestableContainerInitializer {
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
     private var exposedContainerHost: String? = null
     private var exposedContainerPort: Int? = null
 
-    @JvmOverloads
-    fun startApplicationUnderTest(
-        image: ImageFromDockerfile, fixedExposedPort: IntArray = IntArray(0), envConfig: Map<String, String> = mapOf()
-    ) {
-        val customFixedHostPortGenericContainer = CustomFixedHostPortGenericContainer(image)
-        val allExposedPorts: MutableList<Int> = ArrayList()
-        allExposedPorts.add(testableContainerProperties.internalHttpPort)
-        for (fixedPort in fixedExposedPort) {
-            customFixedHostPortGenericContainer.withFixedExposedPort(fixedPort, fixedPort)
-            allExposedPorts.add(fixedPort)
-        }
+    private var runningContainer: GenericContainer<*>? = null
 
+    companion object {
+        private const val ERROR_NOT_INITIALIZED = "Testable container was not initialized. Check execution order."
+    }
+
+    override fun initialize() {
         val logger = LoggerFactory.getLogger(testableContainerProperties.internalNetworkAlias)
         val logConsumer = Slf4jLogConsumer(logger).withSeparateOutputStreams()
-        val applicationContainer =
-            customFixedHostPortGenericContainer.withNetwork(testContainerNetworkProvider.network)
-                .withExposedPorts(*allExposedPorts.toTypedArray())
-                .withEnv(envConfig)
+
+        val container =
+            CustomFixedHostPortGenericContainer(testContainerConfigurator.imageDefinition())
+                .withNetwork(testContainerNetworkProvider.network)
+                .withExposedPorts(*testContainerConfigurator.exposedPorts().toTypedArray())
+                .withEnv(testContainerConfigurator.environmentalVariables())
                 .withLogConsumer(logConsumer)
                 .withNetworkAliases(testableContainerProperties.internalNetworkAlias)
                 .withStartupTimeout(Duration.ofSeconds(testableContainerProperties.startupTimeout))
 
-        if (testableContainerProperties.jacoco.enabled) {
-            val mountableFile = MountableFile.forClasspathResource("jacoco/org.jacoco.agent.jar")
-            applicationContainer
-                .withCommand(getJacocoPort())
-                .withCopyFileToContainer(mountableFile, "/jacocoagent.jar")
+        testContainerConfigurator.fixedExposedPorts().forEach {
+            container.withFixedExposedPort(it, it)
         }
+        initListeners.forEach { it.beforeStart(container) }
 
-        stopContainersOfOlderImage(image)
-        startContainer(applicationContainer)
+        stopContainersOfOlderImage(container.dockerImageName)
+        startContainer(container)
+
+        initListeners.forEach { it.afterStart(container) }
+
+        runningContainer = container
     }
 
-    private fun getJacocoPort(): String {
-        return String.format(
-            "-javaagent:/jacocoagent.jar=address=*,port=%d,output=tcpserver",
-            testableContainerProperties.jacoco.port
-        )
-    }
-
-    private fun stopContainersOfOlderImage(image: ImageFromDockerfile) {
-        val imageNameWithVersion = image.dockerImageName
-        if (imageNameWithVersion.contains(":")) {
-            val split: Array<String> = imageNameWithVersion.split(":").toTypedArray()
+    private fun stopContainersOfOlderImage(dockerImageName: String) {
+        if (dockerImageName.contains(":")) {
+            val split: Array<String> = dockerImageName.split(":").toTypedArray()
             val imageName = split[0]
             val version = split[1]
             val containersRunning = DockerClientFactory.instance().client().listContainersCmd().exec()
@@ -120,23 +112,30 @@ open class TestContainerService(
         } else {
             applicationContainer.start()
         }
-        log.info("Application container started in {}ms", timer.time)
-        exposedContainerPort = applicationContainer.getMappedPort(testableContainerProperties.internalHttpPort)
+        log.info("Application container started in {} ms", timer.time)
+        val firstPort = testContainerConfigurator.exposedPorts().first()
+        exposedContainerPort = applicationContainer.getMappedPort(firstPort)
         exposedContainerHost = applicationContainer.host
+
         log.info(
             "Mapping the exposed internal application on {} port of {} to {}", exposedContainerHost,
-            testableContainerProperties.internalHttpPort, exposedContainerPort
+            firstPort, exposedContainerPort
         )
     }
 
     override fun getHost(): String {
-        return exposedContainerHost
-            ?: throw AssertionError("Testable container was not initialized. Check execution order.")
+        return exposedContainerHost ?: throw AssertionError(ERROR_NOT_INITIALIZED)
     }
 
     override fun getPort(): Int {
-        return exposedContainerPort
-            ?: throw AssertionError("Testable container was not initialized. Check execution order.")
+        return exposedContainerPort ?: throw AssertionError(ERROR_NOT_INITIALIZED)
     }
 
+    override fun getMappedPort(internalPort: Int): Int {
+        return runningContainer?.getMappedPort(internalPort) ?: throw AssertionError(ERROR_NOT_INITIALIZED)
+    }
+
+    override fun getContainer(): GenericContainer<*> {
+        return runningContainer ?: throw AssertionError(ERROR_NOT_INITIALIZED)
+    }
 }

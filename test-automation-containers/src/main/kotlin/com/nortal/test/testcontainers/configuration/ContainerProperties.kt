@@ -46,6 +46,32 @@ data class ContainerProperties(
 @ConstructorBinding
 @ConfigurationProperties(prefix = "test-automation.containers.testable-container")
 class TestableContainerProperties(
+
+    /**
+     * container alias that will be registered under its network. This is also used for container name.
+     */
+    var internalNetworkAlias: String = "container-under-test",
+
+    /**
+     * Application startup timeout.
+     */
+    var startupTimeout: Long = 120,
+
+    /**
+     * Reuse testable container between runs. It will be redeployed if container jar war rebuilt. Eventually container has to be manually closed.
+    NOTE: must be disabled for shared docker instances like CI runners.
+     */
+    val reuseBetweenRuns: Boolean = false,
+    /**
+     * Spring Boot testable container configuration.
+     */
+    @NestedConfigurationProperty
+    val springBoot: SpringBootTestContainerProperties = SpringBootTestContainerProperties(),
+)
+
+@ConstructorBinding
+@ConfigurationProperties(prefix = "test-automation.containers.testable-container.spring-boot")
+class SpringBootTestContainerProperties(
     /**
      * Base image for docker container.
      */
@@ -68,17 +94,9 @@ class TestableContainerProperties(
      */
     var debugPort: Int = 9000,
     /**
-     * Internal Http port that has to be exposed
+     * memory settings that will be applied on container
      */
-    var internalHttpPort: Int = 8080,
-    /**
-     * container alias that will be registered under its network.
-     */
-    var internalNetworkAlias: String = "container-under-test",
-    /**
-     * Application startup timeout.
-     */
-    var startupTimeout: Long = 120,
+    val memorySettings: String = "-Xmx512m",
     /**
      * Should container wait before debugger is attached?
      */
@@ -88,11 +106,6 @@ class TestableContainerProperties(
      */
     val springProfilesToActivate: String = "cucumber",
     /**
-     * Reuse testable container between runs. It will be redeployed if container jar war rebuilt. Eventually container has to be manually closed.
-    NOTE: must be disabled for shared docker instances like CI runners.
-     */
-    val reuseBetweenRuns: Boolean = false,
-    /**
      * Jacoco test coverage configuration.
      */
     @NestedConfigurationProperty
@@ -100,7 +113,7 @@ class TestableContainerProperties(
 )
 
 @ConstructorBinding
-@ConfigurationProperties(prefix = "test-automation.containers.testable-container.jacoco")
+@ConfigurationProperties(prefix = "test-automation.containers.testable-container.spring-boot.jacoco")
 class TestableContainerJacocoProperties(
     /**
      * Control jacoco execution during test run.

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 Nortal AS
+ * Copyright (c) 2023 Nortal AS
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -20,17 +20,17 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.nortal.test.testcontainers.configuration
+package com.nortal.test.testcontainers
 
-import org.springframework.boot.context.properties.EnableConfigurationProperties
-import org.springframework.context.annotation.Configuration
+import org.testcontainers.containers.GenericContainer
 
+/**
+ * This service is responsible for initializing and maintaining the black box testing setup.
+ */
+interface TestableApplicationContainerProvider {
 
-@Configuration
-@EnableConfigurationProperties(
-    ContainerProperties::class,
-    TestableContainerProperties::class,
-    TestableContainerJacocoProperties::class,
-    SpringBootTestContainerProperties::class
-)
-class TestContainerConfiguration
+    /**
+     * Returns the container that is running the application under test.
+     */
+    fun getContainer(): GenericContainer<*>
+}
