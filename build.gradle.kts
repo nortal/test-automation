@@ -26,6 +26,10 @@ scmVersion {
     checks {
         aheadOfRemote.set(false)
     }
+    nextVersion {
+        suffix.set("beta")
+        separator.set("-")
+    }
 }
 
 version = scmVersion.version
