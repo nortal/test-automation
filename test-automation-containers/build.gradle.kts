@@ -1,6 +1,3 @@
-plugins {
-    id("org.jetbrains.kotlin.kapt")
-}
 
 dependencies {
     kapt(libs.springboot.configuration.processor)
@@ -9,7 +6,7 @@ dependencies {
 
     api(libs.testcontainers.core)
     api(libs.testcontainers.mockserver)
-    api("org.mock-server:mockserver-client-java:5.14.0")
+    api("org.mock-server:mockserver-client-java:5.15.0")
     api(libs.bundles.springboot)
 
     implementation(libs.bundles.jacoco)

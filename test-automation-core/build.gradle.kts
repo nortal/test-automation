@@ -1,6 +1,3 @@
-plugins {
-    id("org.jetbrains.kotlin.kapt")
-}
 
 dependencies {
     kapt(libs.springboot.configuration.processor)

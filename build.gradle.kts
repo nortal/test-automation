@@ -1,8 +1,7 @@
-import java.util.Calendar
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.util.Properties
+import java.util.*
 
 plugins {
     `java-library`
@@ -46,6 +45,10 @@ val props = Properties()
 rootProject.file("gradle-local.properties").takeIf { it.exists() }?.inputStream()?.use { props.load(it) }
 
 allprojects {
+    apply {
+        plugin("java-library")
+    }
+
     repositories {
         mavenLocal()
         mavenCentral()
@@ -59,14 +62,10 @@ allprojects {
 
 subprojects {
     apply {
-        plugin("java-library")
-        plugin("maven-publish")
         plugin("org.jetbrains.kotlin.jvm")
         plugin("org.jetbrains.kotlin.plugin.spring")
         plugin("io.gitlab.arturbosch.detekt")
         plugin("com.github.hierynomus.license")
-        plugin("org.jetbrains.dokka")
-        plugin("signing")
     }
 
     group = "com.nortal.test"
@@ -75,10 +74,6 @@ subprojects {
     configure<JavaPluginExtension> {
         sourceCompatibility = targetJavaVersion
         targetCompatibility = targetJavaVersion
-    }
-
-    tasks.withType<Jar> {
-        archiveBaseName.set(project.name)
     }
 
     val implementation by configurations
@@ -115,6 +110,44 @@ subprojects {
         }
     }
 
+    detekt {
+        config = files("${project.rootDir}/detekt-config.yml")
+    }
+
+    license {
+        header = file("${project.rootDir}/LICENSE_HEADER")
+        isStrictCheck = true
+        isSkipExistingHeaders = true
+
+        excludes(
+            listOf(
+                "**/*.jar",
+                "**/*.xml",
+                "**/*.yml",
+                "**/*.yaml",
+                "**/*.properties",
+                "**/*.html",
+                "**/*.css",
+                "**/*.feature",
+                "**/*.txt",
+            )
+        )
+        ext["year"] = Calendar.getInstance().get(Calendar.YEAR).toString()
+    }
+}
+
+configure(subprojects.filter { it.name !in setOf("demos", "demo-ui-test") }) {
+    apply {
+        plugin("maven-publish")
+        plugin("org.jetbrains.kotlin.kapt")
+        plugin("org.jetbrains.dokka")
+        plugin("signing")
+    }
+
+    tasks.withType<Jar> {
+        archiveBaseName.set(project.name)
+    }
+
     val props = Properties()
     rootProject.file("gradle-local.properties").takeIf { it.exists() }?.inputStream()?.use { props.load(it) }
 
@@ -126,6 +159,8 @@ subprojects {
         }
         //Generate javadoc
         val dokkaHtml by tasks.getting(org.jetbrains.dokka.gradle.DokkaTask::class)
+        dokkaHtml.dependsOn("kaptKotlin")
+
         val javadocJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
             dependsOn(dokkaHtml)
             archiveClassifier.set("javadoc")
@@ -202,30 +237,5 @@ subprojects {
 
     signing {
         sign(publishing.publications[project.name])
-    }
-
-    detekt {
-        config = files("${project.rootDir}/detekt-config.yml")
-    }
-
-    license {
-        header = file("${project.rootDir}/LICENSE_HEADER")
-        isStrictCheck = true
-        isSkipExistingHeaders = true
-
-        excludes(
-            listOf(
-                "**/*.jar",
-                "**/*.xml",
-                "**/*.yml",
-                "**/*.yaml",
-                "**/*.properties",
-                "**/*.html",
-                "**/*.css",
-                "**/*.feature",
-                "**/*.txt",
-            )
-        )
-        ext["year"] = Calendar.getInstance().get(Calendar.YEAR).toString()
     }
 }
