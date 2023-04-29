@@ -32,7 +32,7 @@ dependencyResolutionManagement {
 
             version("cucumber", "7.11.2")
             version("spring-boot", "2.7.11")
-            version("spring-cloud", "3.1.6")
+            version("spring-cloud", "3.1.7")
             version("jackson", "2.15.0")
             version("testcontainers", "1.18.0")
             version("rest-assured", "5.2.0")
