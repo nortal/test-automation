@@ -38,10 +38,10 @@ dependencyResolutionManagement {
             version("rest-assured", "5.2.0")
             version("feign", "12.3")
             version("jacoco", "0.8.9")
-            version("allure", "2.21.0")
+            version("allure", "2.22.0")
             version("reportportal", "5.1.2")
-            version("selenide", "6.13.1")
-            version("netty", "4.1.91.Final")
+            version("selenide", "6.14.0")
+            version("netty", "4.1.92.Final")
             version("browserup-proxy", "2.2.9")
 
             library("kotlin-stdlib-jdk8", "org.jetbrains.kotlin", "kotlin-stdlib-jdk8").versionRef("kotlin")
