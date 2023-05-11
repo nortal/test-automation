@@ -75,7 +75,7 @@ class SpringBootTestContainerProperties(
     /**
      * Base image for docker container.
      */
-    val baseImage: String = "openjdk:11-slim",
+    val baseImage: String = "azul/zulu-openjdk:11",
     /**
      * directory where testable jar will be created. Picks first jar in dir.
      */

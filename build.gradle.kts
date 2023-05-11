@@ -34,7 +34,7 @@ scmVersion {
 
 version = scmVersion.version
 
-val targetJavaVersion = JavaVersion.VERSION_1_8
+ val targetJavaVersion = JavaVersion.VERSION_11
 
 class MissingRequiredPropertyException(envVarName: String, propName: String) : GradleException(
     "No '$envVarName' environment variable nor '$propName' in 'gradle-local.properties' are configured"
