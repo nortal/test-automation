@@ -88,7 +88,7 @@ class SpringBootTestContainerProperties(
     /**
      * If enabled exposes [debugPort] as remote debug port.
      */
-    val jarDebugEnabled: Boolean = true,
+    val jarDebugEnabled: Boolean = false,
     /**
      * Debug port for container debugging
      */

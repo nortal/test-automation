@@ -10,6 +10,10 @@ logging:
     org.springframework: INFO
     org.springframework.jdbc: DEBUG
     org.springframework.boot.test.context: WARN
+    org:
+      testcontainers:
+        utility:
+          RyukResourceReaper: ERROR
 
 test-automation:
   report-name: default-report-name

@@ -67,7 +67,7 @@ open class SpringBootTestContainerConfigurator :
         /**
          * Additional commandParts which are added to dockerfile builder.
          */
-        fun customizeCommandParts(): List<String>
+        fun customizeCommandParts(): List<String> = emptyList()
 
         /**
          * Customize DockerfileBuilder.
@@ -76,10 +76,11 @@ open class SpringBootTestContainerConfigurator :
     }
 
     override fun imageDefinition(): LazyFuture<String> {
-        val appJarDir = Paths.get(containerProperties.jarBuildDir)
+        var jarBuildDir = containerProperties.jarBuildDir
+        val appJarDir = Paths.get(jarBuildDir)
         val appJarPath = Files.find(appJarDir, 1, { t, _ -> isMatchingJarFile(t) })
             .findFirst()
-            .orElseThrow { TestConfigurationException("Failed to find jar in $testableContainerProperties.jarBuildDir") }
+            .orElseThrow { TestConfigurationException("Failed to find jar in $jarBuildDir") }
 
         log.info("Will use {} jar for container creation", appJarPath.toString())
 
