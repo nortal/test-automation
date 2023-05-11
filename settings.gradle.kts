@@ -12,6 +12,7 @@ include("test-automation-aws")
 include("test-automation-reportportal")
 
 include(":demos:demo-ui-test")
+include(":demos:demo-testcontainers-api-test")
 
 plugins {
     val kotlinVersion = "1.8.20"
@@ -23,6 +24,7 @@ plugins {
     id("com.github.hierynomus.license").version("0.16.1") apply false
     id("org.jetbrains.dokka") version "1.7.20" apply false
     id("io.freefair.lombok") version "8.0.1" apply false
+    id("org.springframework.boot") version "2.7.11" apply false
 }
 
 dependencyResolutionManagement {
