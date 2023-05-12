@@ -90,6 +90,7 @@ dependencyResolutionManagement {
 
             library("testcontainers-core", "org.testcontainers", "testcontainers").versionRef("testcontainers")
             library("testcontainers-mockserver", "org.testcontainers", "mockserver").versionRef("testcontainers")
+            library("testcontainers-postgresql", "org.testcontainers", "postgresql").versionRef("testcontainers")
 
             library("jackson-databind", "com.fasterxml.jackson.core", "jackson-databind").versionRef("jackson")
             library("jackson-module-kotlin", "com.fasterxml.jackson.module", "jackson-module-kotlin").versionRef("jackson")

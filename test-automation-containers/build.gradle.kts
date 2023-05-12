@@ -5,6 +5,7 @@ dependencies {
 
     api(libs.testcontainers.core)
     api(libs.testcontainers.mockserver)
+    api(libs.testcontainers.postgresql)
     api("org.mock-server:mockserver-client-java:5.15.0") {
         exclude(group = "org.slf4j", module = "slf4j-api")
     }
