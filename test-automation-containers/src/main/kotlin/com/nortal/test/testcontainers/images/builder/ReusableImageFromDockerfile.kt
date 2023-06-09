@@ -23,6 +23,8 @@
 package com.nortal.test.testcontainers.images.builder
 
 import com.github.dockerjava.api.command.BuildImageCmd
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.testcontainers.DockerClientFactory
 
 class ReusableImageFromDockerfile(
@@ -30,6 +32,7 @@ class ReusableImageFromDockerfile(
     deleteOnExit: Boolean,
     private val reusableContainer: Boolean,
 ) : ImageFromDockerfile(dockerImageName, deleteOnExit) {
+    private val log: Logger = LoggerFactory.getLogger(javaClass)
 
     override fun addApplicableLabels(buildImageCmd: BuildImageCmd?) {
         val labels: MutableMap<String, String> = HashMap()
@@ -43,6 +46,15 @@ class ReusableImageFromDockerfile(
             labels.putAll(DockerClientFactory.DEFAULT_LABELS)
 
         buildImageCmd.withLabels(labels)
+    }
+
+    override fun get(): String {
+        if (reusableContainer) {
+            log.warn("Skipping DockerFile build as reusable container is enabled! Tests will fail if image is not yet built.")
+            return "$dockerImageName:latest"
+        } else {
+            return super.get()
+        }
     }
 
     private fun removeSessionIdLabel(labels: Map<String, String>): Map<String, String> {

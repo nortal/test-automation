@@ -22,7 +22,6 @@
  */
 package com.nortal.test.testcontainers
 
-import com.github.dockerjava.api.model.Container
 import com.nortal.test.core.services.TestableApplicationInfoProvider
 import com.nortal.test.testcontainers.configuration.TestableContainerProperties
 import com.nortal.test.testcontainers.configurator.TestContainerConfigurator
@@ -30,7 +29,6 @@ import org.apache.commons.lang3.time.StopWatch
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import org.testcontainers.DockerClientFactory
 import org.testcontainers.containers.CustomFixedHostPortGenericContainer
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
@@ -69,6 +67,7 @@ open class TestContainerService(
                 .withEnv(testContainerConfigurator.environmentalVariables())
                 .withLogConsumer(logConsumer)
                 .withNetworkAliases(testableContainerProperties.internalNetworkAlias)
+                .withReuse(testableContainerProperties.reuseBetweenRuns)
                 .withStartupTimeout(Duration.ofSeconds(testableContainerProperties.startupTimeout))
 
         testContainerConfigurator.fixedExposedPorts().forEach {
@@ -76,7 +75,6 @@ open class TestContainerService(
         }
         initListeners.forEach { it.beforeStart(container) }
 
-        stopContainersOfOlderImage(container.dockerImageName)
         startContainer(container)
 
         initListeners.forEach { it.afterStart(container) }
@@ -84,34 +82,15 @@ open class TestContainerService(
         runningContainer = container
     }
 
-    private fun stopContainersOfOlderImage(dockerImageName: String) {
-        if (dockerImageName.contains(":")) {
-            val split: Array<String> = dockerImageName.split(":").toTypedArray()
-            val imageName = split[0]
-            val version = split[1]
-            val containersRunning = DockerClientFactory.instance().client().listContainersCmd().exec()
-
-            containersRunning.stream()
-                .filter { container: Container -> container.image.contains(imageName) }
-                .filter { container: Container -> !container.image.contains(version) }
-                .forEach { containerToKill: Container ->
-                    run {
-                        log.info("Killing container {}", containerToKill.image)
-                        DockerClientFactory.instance().client().stopContainerCmd(containerToKill.id).exec()
-                    }
-                }
-        }
-    }
-
     protected open fun startContainer(applicationContainer: GenericContainer<*>) {
-        log.info("Starting application container")
+        log.info("Starting application container..")
         val timer = StopWatch.createStarted()
         if (testableContainerProperties.reuseBetweenRuns) {
             ContainerUtils.overrideNetworkAliases(applicationContainer, Collections.emptyList())
-            applicationContainer.withReuse(true).start()
-        } else {
-            applicationContainer.start()
         }
+        applicationContainer.start()
+
+
         log.info("Application container started in {} ms", timer.time)
         val firstPort = testContainerConfigurator.exposedPorts().first()
         exposedContainerPort = applicationContainer.getMappedPort(firstPort)
