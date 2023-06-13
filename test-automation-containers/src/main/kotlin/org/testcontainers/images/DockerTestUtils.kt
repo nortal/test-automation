@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2023 Nortal AS
+ * Copyright (c) 2022 Nortal AS
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -20,32 +20,22 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.nortal.test.testcontainers.configurator
+package org.testcontainers.images
 
-import com.nortal.test.testcontainers.images.builder.ImageFromDockerfile
-import org.testcontainers.containers.GenericContainer
+import com.nortal.test.testcontainers.TestContainerService.Companion.TESTCONTAINERS_IMAGE_LABEL
+import org.testcontainers.DockerClientFactory
 
-interface TestContainerConfigurator {
+object DockerTestUtils {
 
-    fun imageDefinition(): ImageFromDockerfile
-
-    fun exposedPorts(): List<Int> = emptyList()
-
-    fun fixedExposedPorts(): List<Int> = emptyList()
-
-    fun environmentalVariables(): Map<String, String>
-
-    interface TestContainerInitListener {
-        fun beforeStart(container: GenericContainer<*>)
-
-        fun afterStart(container: GenericContainer<*>)
+    fun isContainerOfImageRunning(imageName: String): Boolean {
+        val filter = mapOf(TESTCONTAINERS_IMAGE_LABEL to imageName)
+        return DockerClientFactory.instance().client()
+            .listContainersCmd()
+            .withLabelFilter(filter)
+            .withLimit(1)
+            .withStatusFilter(listOf("running"))
+            .exec()
+            .isNotEmpty()
     }
 
-    interface TestContainerCustomizer {
-
-        fun additionalEnvironmentalVariables(): Map<String, String> = emptyMap()
-
-        fun additionalExposedPorts(): List<Int> = emptyList()
-
-    }
 }

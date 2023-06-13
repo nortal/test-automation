@@ -53,21 +53,24 @@ open class TestContainerService(
     private var runningContainer: GenericContainer<*>? = null
 
     companion object {
+        const val TESTCONTAINERS_IMAGE_LABEL = "test-automation.image"
         private const val ERROR_NOT_INITIALIZED = "Testable container was not initialized. Check execution order."
+
     }
 
     override fun initialize() {
         val logger = LoggerFactory.getLogger(testableContainerProperties.internalNetworkAlias)
         val logConsumer = Slf4jLogConsumer(logger).withSeparateOutputStreams()
-
+        val imageDefinition = testContainerConfigurator.imageDefinition()
         val container =
-            CustomFixedHostPortGenericContainer(testContainerConfigurator.imageDefinition())
+            CustomFixedHostPortGenericContainer(imageDefinition)
                 .withNetwork(testContainerNetworkProvider.network)
                 .withExposedPorts(*testContainerConfigurator.exposedPorts().toTypedArray())
                 .withEnv(testContainerConfigurator.environmentalVariables())
                 .withLogConsumer(logConsumer)
                 .withNetworkAliases(testableContainerProperties.internalNetworkAlias)
                 .withReuse(testableContainerProperties.reuseBetweenRuns)
+                .withLabel(TESTCONTAINERS_IMAGE_LABEL, imageDefinition.dockerImageNameWithVersion)
                 .withStartupTimeout(Duration.ofSeconds(testableContainerProperties.startupTimeout))
 
         testContainerConfigurator.fixedExposedPorts().forEach {

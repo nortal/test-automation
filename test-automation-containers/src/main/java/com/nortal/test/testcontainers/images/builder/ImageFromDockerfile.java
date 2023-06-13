@@ -239,6 +239,10 @@ public class ImageFromDockerfile extends LazyFuture<String>
         return dockerImageName;
     }
 
+    public String getDockerImageNameWithVersion() {
+        return dockerImageName + ":latest";
+    }
+
     private Logger logger() {
         return DockerLoggerFactory.getLogger(dockerImageName);
     }

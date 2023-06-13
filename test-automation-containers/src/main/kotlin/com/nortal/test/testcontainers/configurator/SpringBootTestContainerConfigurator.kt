@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.images.builder.dockerfile.DockerfileBuilder
-import org.testcontainers.utility.LazyFuture
 import org.testcontainers.utility.MountableFile
 import java.nio.file.Files
 import java.nio.file.Path
@@ -75,7 +74,7 @@ open class SpringBootTestContainerConfigurator :
         fun customizeDockerFileBuilder(builder: DockerfileBuilder)
     }
 
-    override fun imageDefinition(): LazyFuture<String> {
+    override fun imageDefinition(): ImageFromDockerfile {
         var jarBuildDir = containerProperties.jarBuildDir
         val appJarDir = Paths.get(jarBuildDir)
         val appJarPath = Files.find(appJarDir, 1, { t, _ -> isMatchingJarFile(t) })

@@ -23,11 +23,11 @@
 package com.nortal.test.testcontainers.configurator
 
 import com.nortal.test.testcontainers.configuration.TestableContainerProperties
+import com.nortal.test.testcontainers.images.builder.ImageFromDockerfile
 import com.nortal.test.testcontainers.images.builder.ReusableImageFromDockerfile
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.testcontainers.utility.LazyFuture
 
 open class GenericTestContainerConfigurator(private val dockerImage: String) : TestContainerConfigurator {
     private val log: Logger = LoggerFactory.getLogger(javaClass)
@@ -38,7 +38,7 @@ open class GenericTestContainerConfigurator(private val dockerImage: String) : T
     @Autowired
     private lateinit var containerCustomizer: TestContainerConfigurator.TestContainerCustomizer
 
-    override fun imageDefinition(): LazyFuture<String> {
+    override fun imageDefinition(): ImageFromDockerfile {
         log.info("Will run tests against container with image $dockerImage")
 
         return ReusableImageFromDockerfile(

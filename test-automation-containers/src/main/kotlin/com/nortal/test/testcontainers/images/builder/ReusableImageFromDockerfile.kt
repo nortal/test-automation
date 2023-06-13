@@ -26,6 +26,7 @@ import com.github.dockerjava.api.command.BuildImageCmd
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.testcontainers.DockerClientFactory
+import org.testcontainers.images.DockerTestUtils
 
 class ReusableImageFromDockerfile(
     dockerImageName: String,
@@ -50,11 +51,12 @@ class ReusableImageFromDockerfile(
 
     override fun get(): String {
         if (reusableContainer) {
-            log.warn("Skipping DockerFile build as reusable container is enabled! Tests will fail if image is not yet built.")
-            return "$dockerImageName:latest"
-        } else {
-            return super.get()
+            if (DockerTestUtils.isContainerOfImageRunning(dockerImageNameWithVersion)) {
+                log.warn("Skipping DockerFile build as reusable container is enabled and container is running!")
+                return dockerImageNameWithVersion
+            }
         }
+        return super.get()
     }
 
     private fun removeSessionIdLabel(labels: Map<String, String>): Map<String, String> {
