@@ -22,6 +22,7 @@
  */
 package com.nortal.test.feign
 
+import com.nortal.test.feign.configuration.FeignProperties
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import java.security.SecureRandom
@@ -30,8 +31,9 @@ import java.time.Duration
 import java.util.function.Consumer
 import javax.net.ssl.*
 
-class OkHttpClientFactory {
-    private val httpTimeout: Int = 30 //TODO move to config
+class OkHttpClientFactory(
+        private val feignProperties: FeignProperties
+) {
 
     fun withInterceptors(interceptors: List<Interceptor>): OkHttpClient.Builder {
         val builder = preBakedHttpClient
@@ -43,20 +45,19 @@ class OkHttpClientFactory {
         return builder
     }
 
-    //I know these numbers are huge, but sometimes http calls like to take their sweet time responding with 10+ seconds of read being
-    // not uncommon
     private val preBakedHttpClient: OkHttpClient.Builder
         get() {
             val trustManager = trustManager
             return OkHttpClient.Builder()
                 .sslSocketFactory(getSSLSocketFactory(trustManager), trustManager)
                 .hostnameVerifier { _: String?, _: SSLSession? -> true }
-                //I know these numbers are huge, but sometimes http calls like to take their sweet time responding with 10+ seconds of read being
-                // not uncommon
-                .readTimeout(Duration.ofSeconds(httpTimeout.toLong()))
-                .connectTimeout(Duration.ofSeconds(httpTimeout.toLong()))
-                .writeTimeout(Duration.ofSeconds(httpTimeout.toLong()))
-                .callTimeout(Duration.ofSeconds(httpTimeout.toLong()))
+                .readTimeout(Duration.ofSeconds(feignProperties.readTimeout))
+                .connectTimeout(Duration.ofSeconds(feignProperties.connectTimeout))
+                .writeTimeout(Duration.ofSeconds(feignProperties.writeTimeout))
+                .callTimeout(Duration.ofSeconds(feignProperties.callTimeout))
+                .retryOnConnectionFailure(feignProperties.retryOnConnectionFailure)
+                .followRedirects(feignProperties.followRedirects)
+                .followSslRedirects(feignProperties.followSslRedirects)
         }
 
     private fun getSSLSocketFactory(trustManager: X509TrustManager): SSLSocketFactory {

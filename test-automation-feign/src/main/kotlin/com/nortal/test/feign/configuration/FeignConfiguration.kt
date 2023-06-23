@@ -46,6 +46,7 @@ import javax.net.ssl.*
  */
 @Configuration
 @EnableConfigurationProperties(
+    FeignProperties::class,
     FeignClientProperties::class,
     FeignHttpClientProperties::class,
     FeignEncoderProperties::class
@@ -66,9 +67,10 @@ open class FeignConfiguration {
 
     @Bean
     open fun feignClient(
-        feignClientInterceptors: List<FeignClientInterceptor>
+        feignClientInterceptors: List<FeignClientInterceptor>,
+        feignProperties: FeignProperties
     ): Client {
-        val client = OkHttpClientFactory()
+        val client = OkHttpClientFactory(feignProperties)
             .withInterceptors(feignClientInterceptors.sortedBy { it.order })
             .build()
 
