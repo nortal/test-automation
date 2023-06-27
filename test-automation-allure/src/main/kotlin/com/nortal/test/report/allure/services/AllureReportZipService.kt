@@ -43,12 +43,14 @@ class AllureReportZipService {
         val zipName = String.format("%s.zip", reportToZip.name)
         val zipFile = File(zipOutputDir, zipName)
         zipFile.parentFile.mkdirs()
-        val fos = FileOutputStream(zipFile)
-        val zipOut = ZipOutputStream(fos)
 
-        zipFile(reportToZip, reportToZip.name, zipOut)
-        zipOut.close()
-        fos.close()
+        FileOutputStream(zipFile).use { fos ->
+            ZipOutputStream(fos).use { zipOut ->
+                zipFile(reportToZip, reportToZip.name, zipOut)
+                zipOut.close()
+            }
+            fos.close()
+        }
     }
 
     @Throws(IOException::class)
