@@ -18,8 +18,8 @@ jobs:
     env:
       MAVEN_SNAPSHOTS_REPOSITORY_URL: https://oss.sonatype.org/content/repositories/snapshots/
       MAVEN_RELEASES_REPOSITORY_URL: https://oss.sonatype.org/service/local/staging/deploy/maven2/
-      OSS_USERNAME: ${{ secrets.OSS_USERNAME }}
-      OSS_PASSWORD: ${{ secrets.OSS_PASSWORD }}
+      OSS_USERNAME: username_placeholder
+      OSS_PASSWORD: password_placeholder
 
     steps:
       - name: Checkout project
