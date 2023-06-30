@@ -70,14 +70,15 @@ class AllureReportZipService {
             }
             return
         }
-        val fis = FileInputStream(fileToZip)
-        val zipEntry = ZipEntry(fileName)
-        zipOut.putNextEntry(zipEntry)
-        val bytes = ByteArray(1024)
-        var length: Int
-        while (fis.read(bytes).also { length = it } >= 0) {
-            zipOut.write(bytes, 0, length)
+
+        FileInputStream(fileToZip).use { fis ->
+            val zipEntry = ZipEntry(fileName)
+            zipOut.putNextEntry(zipEntry)
+            val bytes = ByteArray(1024)
+            var length: Int
+            while (fis.read(bytes).also { length = it } >= 0) {
+                zipOut.write(bytes, 0, length)
+            }
         }
-        fis.close()
     }
 }
