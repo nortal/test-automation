@@ -47,9 +47,7 @@ class AllureReportZipService {
         FileOutputStream(zipFile).use { fos ->
             ZipOutputStream(fos).use { zipOut ->
                 zipFile(reportToZip, reportToZip.name, zipOut)
-                zipOut.close()
             }
-            fos.close()
         }
     }
 
