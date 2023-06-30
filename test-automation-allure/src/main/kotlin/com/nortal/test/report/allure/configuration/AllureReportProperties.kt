@@ -41,8 +41,16 @@ data class AllureReportProperties(
      * Cucumber result dir in raw allure format.
      */
     val resultDir: String,
+    /**
+     * Allure serve report configuration.
+     */
     @NestedConfigurationProperty
     val serveReport: AllureServeReportProperties = AllureServeReportProperties(),
+    /**
+     * Configuration for zipping generated report.
+     */
+    @NestedConfigurationProperty
+    val zipReport: AllureZipReportProperties = AllureZipReportProperties(),
     /**
      * Path to custom logo.
      */
@@ -68,4 +76,19 @@ class AllureServeReportProperties(
      * Port.
      */
     var port: Int = 9898,
+)
+
+@ConstructorBinding
+@ConfigurationProperties(prefix = "test-automation.report.allure.zip-report")
+class AllureZipReportProperties(
+    /**
+     * Zip the generated report.
+     * The default value is false.
+     */
+    val enabled: Boolean = false,
+    /**
+     * Directory where zipped report will be stored.
+     * The default directory is set to build.
+     */
+    val zipDir: String = "build",
 )

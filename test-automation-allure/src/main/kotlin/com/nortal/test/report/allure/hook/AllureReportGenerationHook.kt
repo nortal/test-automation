@@ -26,6 +26,7 @@ import com.nortal.test.core.exception.TestAutomationException
 import com.nortal.test.core.report.ReportPublisher
 import com.nortal.test.core.services.hooks.AfterSuiteHook
 import com.nortal.test.report.allure.configuration.AllureReportProperties
+import com.nortal.test.report.allure.services.AllureReportZipService
 import io.qameta.allure.Commands
 import io.qameta.allure.option.ConfigOptions
 import org.apache.commons.io.function.IOConsumer
@@ -45,7 +46,8 @@ import java.nio.file.Paths
 @Component
 class AllureReportGenerationHook(
     private val allureReportProperties: AllureReportProperties,
-    private val reportPublisher: ReportPublisher
+    private val reportPublisher: ReportPublisher,
+    private val allureReportZipService: AllureReportZipService
 ) : AfterSuiteHook {
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
@@ -69,6 +71,7 @@ class AllureReportGenerationHook(
 
             reportPublisher.publish(reportDir, entryFileName)
             tryServeReport(commands, executionResultDir)
+            tryZipReport(reportDir)
         }
     }
 
@@ -81,6 +84,14 @@ class AllureReportGenerationHook(
                 allureReportProperties.serveReport.port,
                 ConfigOptions()
             )
+        }
+    }
+
+
+    private fun tryZipReport(reportDir: Path) {
+        if (allureReportProperties.zipReport.enabled) {
+            val zipOutputDir = allureReportProperties.zipReport.zipDir
+            allureReportZipService.zipReport(reportDir.toString(), zipOutputDir)
         }
     }
 

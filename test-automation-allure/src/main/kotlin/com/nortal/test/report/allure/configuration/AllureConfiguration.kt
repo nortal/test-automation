@@ -30,7 +30,8 @@ import org.springframework.context.annotation.Configuration
  */
 @EnableConfigurationProperties(
     AllureReportProperties::class,
-    AllureServeReportProperties::class
+    AllureServeReportProperties::class,
+    AllureZipReportProperties::class
 )
 @Configuration
 open class AllureConfiguration
