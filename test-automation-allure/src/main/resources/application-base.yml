@@ -4,6 +4,3 @@ test-automation:
       base-dir: build
       report-dir: build/allure-report
       result-dir: build/allure-results
-      zip-report:
-        enabled: true
-        zip-dir: build/zipped-report
