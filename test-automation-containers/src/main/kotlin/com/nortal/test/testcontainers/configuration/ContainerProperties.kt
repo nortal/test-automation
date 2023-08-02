@@ -63,6 +63,11 @@ class TestableContainerProperties(
      */
     val reuseBetweenRuns: Boolean = false,
     /**
+     * A directory mounting mapping. The idea is to mount relevant container directories to host system. A good example would be log directory.
+     * example: "/var/log/:build/container-logs/" This will mount var/log directory to build/container-logs dir.
+     */
+    val directoryMounts: List<String> = listOf(),
+    /**
      * Spring Boot testable container configuration.
      */
     @NestedConfigurationProperty

@@ -25,14 +25,19 @@ package com.nortal.test.testcontainers
 import com.nortal.test.core.services.TestableApplicationInfoProvider
 import com.nortal.test.testcontainers.configuration.TestableContainerProperties
 import com.nortal.test.testcontainers.configurator.TestContainerConfigurator
+import org.apache.commons.lang3.SystemUtils
 import org.apache.commons.lang3.time.StopWatch
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.testcontainers.containers.BindMode
 import org.testcontainers.containers.ContainerLaunchException
 import org.testcontainers.containers.CustomFixedHostPortGenericContainer
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.attribute.PosixFilePermissions
 import java.time.Duration
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -79,6 +84,9 @@ open class TestContainerService(
         testContainerConfigurator.fixedExposedPorts().forEach {
             container.withFixedExposedPort(it, it)
         }
+
+        mountDirectories(container)
+
         initListeners.forEach { it.beforeStart(container) }
 
         startContainer(container)
@@ -115,6 +123,25 @@ open class TestContainerService(
                 "Mapping the exposed internal application on {} port of {} to {}", exposedContainerHost,
                 firstPort, exposedContainerPort
             )
+        }
+    }
+
+    private fun mountDirectories(applicationContainer: GenericContainer<*>) {
+        testableContainerProperties.directoryMounts.forEach {
+            val mappingSplit = it.split(":")
+            val containerDir = mappingSplit[0]
+            val hostDir = mappingSplit[1]
+
+            val logDirPath = Paths.get(hostDir)
+            val logDir = logDirPath.toFile()
+            logDir.mkdirs()
+
+            if (SystemUtils.IS_OS_UNIX) {
+                Files.setPosixFilePermissions(logDirPath, PosixFilePermissions.fromString("rwxrwxrwx"))
+            }
+
+            applicationContainer.withFileSystemBind(logDir.absolutePath, containerDir, BindMode.READ_WRITE)
+            log.info("Mounting container dir {} to {}", containerDir, hostDir)
         }
     }
 
