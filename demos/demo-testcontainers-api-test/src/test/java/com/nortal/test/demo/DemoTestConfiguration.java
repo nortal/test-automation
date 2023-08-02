@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.images.builder.dockerfile.DockerfileBuilder;
 
 import java.util.ArrayList;
@@ -67,6 +68,22 @@ public class DemoTestConfiguration {
             @Override
             public List<Integer> additionalExposedPorts() {
                 return Collections.singletonList(8080);
+            }
+        };
+    }
+
+    @Bean
+    public TestContainerConfigurator.TestContainerInitListener testContainerInitListener() {
+        return new TestContainerConfigurator.TestContainerInitListener() {
+
+            @Override
+            public void afterStart(@NotNull GenericContainer<?> container) {
+                //do nothing
+            }
+
+            @Override
+            public void beforeStart(@NotNull GenericContainer<?> container) {
+                //do nothing
             }
         };
     }

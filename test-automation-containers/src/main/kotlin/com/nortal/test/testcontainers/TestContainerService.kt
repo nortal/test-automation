@@ -29,11 +29,13 @@ import org.apache.commons.lang3.time.StopWatch
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.testcontainers.containers.ContainerLaunchException
 import org.testcontainers.containers.CustomFixedHostPortGenericContainer
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import java.time.Duration
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * This service is responsible for initializing and maintaining the black box testing setup.
@@ -53,9 +55,10 @@ open class TestContainerService(
     private var runningContainer: GenericContainer<*>? = null
 
     companion object {
+        val INIT_FAILED = AtomicBoolean(false)
+
         const val TESTCONTAINERS_IMAGE_LABEL = "test-automation.image"
         private const val ERROR_NOT_INITIALIZED = "Testable container was not initialized. Check execution order."
-
     }
 
     override fun initialize() {
@@ -86,23 +89,33 @@ open class TestContainerService(
     }
 
     protected open fun startContainer(applicationContainer: GenericContainer<*>) {
-        log.info("Starting application container..")
-        val timer = StopWatch.createStarted()
-        if (testableContainerProperties.reuseBetweenRuns) {
-            ContainerUtils.overrideNetworkAliases(applicationContainer, Collections.emptyList())
+        if (INIT_FAILED.get()) {
+            log.warn("Previous attempt to initialize container has failed. Disabling any subsequent tries.")
+
+        } else {
+            log.info("Starting application container..")
+            val timer = StopWatch.createStarted()
+            if (testableContainerProperties.reuseBetweenRuns) {
+                ContainerUtils.overrideNetworkAliases(applicationContainer, Collections.emptyList())
+            }
+
+            try {
+                applicationContainer.start()
+            } catch (exception: ContainerLaunchException) {
+                INIT_FAILED.set(true)
+                throw exception
+            }
+
+            log.info("Application container started in {} ms", timer.time)
+            val firstPort = testContainerConfigurator.exposedPorts().first()
+            exposedContainerPort = applicationContainer.getMappedPort(firstPort)
+            exposedContainerHost = applicationContainer.host
+
+            log.info(
+                "Mapping the exposed internal application on {} port of {} to {}", exposedContainerHost,
+                firstPort, exposedContainerPort
+            )
         }
-        applicationContainer.start()
-
-
-        log.info("Application container started in {} ms", timer.time)
-        val firstPort = testContainerConfigurator.exposedPorts().first()
-        exposedContainerPort = applicationContainer.getMappedPort(firstPort)
-        exposedContainerHost = applicationContainer.host
-
-        log.info(
-            "Mapping the exposed internal application on {} port of {} to {}", exposedContainerHost,
-            firstPort, exposedContainerPort
-        )
     }
 
     override fun getHost(): String {

@@ -23,7 +23,10 @@
 package com.nortal.test.testcontainers.hook
 
 import com.nortal.test.core.exception.TestAutomationException
+import com.nortal.test.core.services.ScenarioExecutionContext
+import com.nortal.test.core.services.hooks.BeforeScenarioHook
 import com.nortal.test.core.services.hooks.BeforeSuiteHook
+import com.nortal.test.testcontainers.TestContainerService
 import com.nortal.test.testcontainers.TestContextContainerService
 import com.nortal.test.testcontainers.TestableContainerInitializer
 import org.slf4j.Logger
@@ -31,10 +34,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
-class ContainerStartupBeforeSuiteHook(
+class ContainerHealthCheckHook(
     private val testContextContainerService: TestContextContainerService,
     private val testableContainerInitializer: TestableContainerInitializer
-) : BeforeSuiteHook {
+) : BeforeSuiteHook, BeforeScenarioHook {
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
     override fun beforeSuiteOrder(): Int {
@@ -49,5 +52,15 @@ class ContainerStartupBeforeSuiteHook(
             log.error("Container startup has failed.", exception)
             throw TestAutomationException("Container startup has failed.", exception)
         }
+    }
+
+    override fun before(scenario: ScenarioExecutionContext) {
+        if (TestContainerService.INIT_FAILED.get()) {
+            throw TestAutomationException("Stopping scenario execution as test container is in failed state")
+        }
+    }
+
+    override fun beforeScenarioOrder(): Int {
+        return 0
     }
 }
