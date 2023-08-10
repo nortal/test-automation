@@ -42,7 +42,7 @@ dependencyResolutionManagement {
             version("jacoco", "0.8.9")
             version("allure", "2.22.0")
             version("reportportal", "5.1.2")
-            version("selenide", "6.14.0")
+            version("selenide", "6.16.1")
             version("netty", "4.1.92.Final")
             version("browserup-proxy", "2.2.9")
 
