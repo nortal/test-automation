@@ -23,9 +23,7 @@
 package com.nortal.test.jdbc.configuration
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.ConstructorBinding
 
-@ConstructorBinding
 @ConfigurationProperties("test-automation.integration.jdbc")
 data class JdbcDataSourceProperties(
     val driverClassName: String,

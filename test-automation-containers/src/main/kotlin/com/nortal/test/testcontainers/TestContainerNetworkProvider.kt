@@ -26,13 +26,13 @@ import com.github.dockerjava.api.command.CreateNetworkCmd
 import com.nortal.test.core.configuration.TestAutomationProperties
 import com.nortal.test.testcontainers.configuration.ContainerProperties
 import com.nortal.test.testcontainers.model.ReusedNetwork
+import jakarta.annotation.PostConstruct
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.testcontainers.DockerClientFactory
 import org.testcontainers.containers.Network
 import java.util.*
-import javax.annotation.PostConstruct
 
 @Component
 class TestContainerNetworkProvider(

@@ -23,12 +23,8 @@
 package com.nortal.test.aws.configuration
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.ConstructorBinding
 
-/**
- * AWS module configuration.
- */
-@ConstructorBinding
+
 @ConfigurationProperties(prefix = "test-automation.aws")
 data class AwsProperties(
     /**

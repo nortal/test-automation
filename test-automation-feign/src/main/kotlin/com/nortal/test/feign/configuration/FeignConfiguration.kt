@@ -29,8 +29,8 @@ import feign.Client
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters
 import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.cloud.openfeign.FeignClientFactory
 import org.springframework.cloud.openfeign.FeignClientProperties
-import org.springframework.cloud.openfeign.FeignContext
 import org.springframework.cloud.openfeign.Targeter
 import org.springframework.cloud.openfeign.support.FeignEncoderProperties
 import org.springframework.cloud.openfeign.support.FeignHttpClientProperties
@@ -61,8 +61,8 @@ open class FeignConfiguration {
     }
 
     @Bean
-    open fun feignContext(): FeignContext {
-        return FeignContext()
+    open fun feignContext(): FeignClientFactory {
+        return FeignClientFactory()
     }
 
     @Bean

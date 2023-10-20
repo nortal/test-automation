@@ -33,7 +33,7 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class TestPageStepDefs {
-	private static final String PAGE_HEADER_XPATH = "//h1[normalize-space()='Test Pages For Automating']";
+	private static final String PAGE_HEADER_XPATH = "//h1[normalize-space()='Practice Applications and Pages For Automating and Testing']";
 	@Autowired
 	private UiMediator uiMediator;
 

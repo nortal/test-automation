@@ -23,10 +23,8 @@
 package com.nortal.test.testcontainers.configuration
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.ConstructorBinding
 import org.springframework.boot.context.properties.NestedConfigurationProperty
 
-@ConstructorBinding
 @ConfigurationProperties(prefix = "test-automation.containers")
 data class ContainerProperties(
     /**
@@ -43,7 +41,6 @@ data class ContainerProperties(
     val contextContainers: Map<String, ContextContainerProperties> = hashMapOf()
 )
 
-@ConstructorBinding
 @ConfigurationProperties(prefix = "test-automation.containers.testable-container")
 class TestableContainerProperties(
 
@@ -74,13 +71,12 @@ class TestableContainerProperties(
     val springBoot: SpringBootTestContainerProperties = SpringBootTestContainerProperties(),
 )
 
-@ConstructorBinding
 @ConfigurationProperties(prefix = "test-automation.containers.testable-container.spring-boot")
 class SpringBootTestContainerProperties(
     /**
      * Base image for docker container.
      */
-    val baseImage: String = "azul/zulu-openjdk:11",
+    val baseImage: String = "azul/zulu-openjdk:17",
     /**
      * directory where testable jar will be created. Picks first jar in dir.
      */
@@ -117,7 +113,6 @@ class SpringBootTestContainerProperties(
     val jacoco: TestableContainerJacocoProperties = TestableContainerJacocoProperties(),
 )
 
-@ConstructorBinding
 @ConfigurationProperties(prefix = "test-automation.containers.testable-container.spring-boot.jacoco")
 class TestableContainerJacocoProperties(
     /**
@@ -150,7 +145,6 @@ class TestableContainerJacocoProperties(
     val sourceCodeLookupRegex: String = ".+src[\\\\,/]main[\\\\,/](kotlin|java)"
 )
 
-@ConstructorBinding
 class ContextContainerProperties(
     /**
      * If this container is enabled

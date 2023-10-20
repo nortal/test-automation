@@ -26,12 +26,8 @@ import com.codeborne.selenide.AssertionMode
 import com.codeborne.selenide.FileDownloadMode
 import com.codeborne.selenide.SelectorMode
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.ConstructorBinding
 
-/**
- * Selenide configuration.
- */
-@ConstructorBinding
+
 @ConfigurationProperties(prefix = "test-automation.selenide")
 data class SelenideProperties(
     /**
@@ -291,18 +287,6 @@ data class SelenideProperties(
      * Default: 0 (meaning that Selenide will choose a random free port on current machine)
      */
     val proxyPort: Int = 0,
-
-    /**
-     * Controls Selenide and WebDriverManager integration.
-     * When integration is enabled you don't need to download and setup any browser driver executables.
-     * See https://github.com/bonigarcia/webdrivermanager for WebDriverManager configuration details.
-     * Can be configured either programmatically, via selenide.properties file
-     * or by system property "-Dselenide.driverManagerEnabled=false"
-     * <br></br>
-     *
-     * Default: true
-     */
-    val driverManagerEnabled: Boolean = true,
 
     /**
      *

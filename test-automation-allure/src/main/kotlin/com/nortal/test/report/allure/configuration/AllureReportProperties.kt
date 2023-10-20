@@ -23,10 +23,8 @@
 package com.nortal.test.report.allure.configuration
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.ConstructorBinding
 import org.springframework.boot.context.properties.NestedConfigurationProperty
 
-@ConstructorBinding
 @ConfigurationProperties(prefix = "test-automation.report.allure")
 data class AllureReportProperties(
     /**
@@ -61,7 +59,6 @@ data class AllureReportProperties(
     val customCollapsedLogo: String? = null,
 )
 
-@ConstructorBinding
 @ConfigurationProperties(prefix = "test-automation.report.allure.serve-report")
 class AllureServeReportProperties(
     /**
@@ -78,7 +75,6 @@ class AllureServeReportProperties(
     var port: Int = 9898,
 )
 
-@ConstructorBinding
 @ConfigurationProperties(prefix = "test-automation.report.allure.zip-report")
 class AllureZipReportProperties(
     /**

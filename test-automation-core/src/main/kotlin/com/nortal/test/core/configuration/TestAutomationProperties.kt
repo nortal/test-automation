@@ -23,13 +23,9 @@
 package com.nortal.test.core.configuration
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.ConstructorBinding
 import org.springframework.boot.context.properties.NestedConfigurationProperty
 
-/**
- * Root configuration class for test automation.
- */
-@ConstructorBinding
+
 @ConfigurationProperties(prefix = "test-automation")
 data class TestAutomationProperties(
     /**
@@ -52,7 +48,6 @@ data class TestAutomationProperties(
     val cucumber: TestAutomationCucumberProperties = TestAutomationCucumberProperties(),
 )
 
-@ConstructorBinding
 @ConfigurationProperties(prefix = "test-automation.cucumber")
 class TestAutomationCucumberProperties(
     /**
@@ -66,7 +61,6 @@ class TestAutomationCucumberProperties(
     val glueAppend: String = "",
 )
 
-@ConstructorBinding
 @ConfigurationProperties(prefix = "test-automation.cucumber.filter")
 class TestAutomationCucumberFilterProperties(
     /**
@@ -85,7 +79,6 @@ class TestAutomationCucumberFilterProperties(
     val tags: String = "",
 )
 
-@ConstructorBinding
 @ConfigurationProperties(prefix = "test-automation.cucumber.execution")
 class TestAutomationCucumberExecutionProperties(
     /**
@@ -107,7 +100,6 @@ class TestAutomationCucumberExecutionProperties(
     val order: String = "",
 )
 
-@ConstructorBinding
 @Suppress("UnusedPrivateMember")
 @ConfigurationProperties(prefix = "test-automation.cucumber.execution.parallel")
 class TestAutomationCucumberExecutionParallelProperties(

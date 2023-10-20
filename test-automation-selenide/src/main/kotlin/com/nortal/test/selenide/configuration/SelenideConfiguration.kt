@@ -24,11 +24,11 @@ package com.nortal.test.selenide.configuration
 
 import com.codeborne.selenide.logevents.SelenideLogger
 import io.qameta.allure.selenide.AllureSelenide
+import jakarta.annotation.PostConstruct
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration
-import javax.annotation.PostConstruct
 
 
 /**
@@ -73,7 +73,6 @@ open class SelenideConfiguration(private val selenideProperties: SelenidePropert
         com.codeborne.selenide.Configuration.proxyEnabled = selenideProperties.proxyEnabled
         com.codeborne.selenide.Configuration.proxyHost = selenideProperties.proxyHost
         com.codeborne.selenide.Configuration.proxyPort = selenideProperties.proxyPort
-        com.codeborne.selenide.Configuration.driverManagerEnabled = selenideProperties.driverManagerEnabled
         com.codeborne.selenide.Configuration.webdriverLogsEnabled = selenideProperties.webdriverLogsEnabled
         com.codeborne.selenide.Configuration.headless = selenideProperties.headless
         com.codeborne.selenide.Configuration.browserBinary = selenideProperties.browserBinary

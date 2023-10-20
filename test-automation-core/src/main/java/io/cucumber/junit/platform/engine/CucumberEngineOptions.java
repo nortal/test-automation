@@ -24,11 +24,13 @@ package io.cucumber.junit.platform.engine;
 
 import com.nortal.test.core.cucumber.TestReportProvider;
 import io.cucumber.core.backend.ObjectFactory;
+import io.cucumber.core.eventbus.UuidGenerator;
 import io.cucumber.core.feature.FeatureWithLines;
 import io.cucumber.core.feature.GluePath;
 import io.cucumber.core.options.ObjectFactoryParser;
 import io.cucumber.core.options.PluginOption;
 import io.cucumber.core.options.SnippetTypeParser;
+import io.cucumber.core.options.UuidGeneratorParser;
 import io.cucumber.core.plugin.NoPublishFormatter;
 import io.cucumber.core.plugin.PublishFormatter;
 import io.cucumber.core.snippets.SnippetType;
@@ -178,6 +180,13 @@ class CucumberEngineOptions implements
     public Class<? extends ObjectFactory> getObjectFactoryClass() {
         return configurationParameters
                 .get(OBJECT_FACTORY_PROPERTY_NAME, ObjectFactoryParser::parseObjectFactory)
+                .orElse(null);
+    }
+
+    @Override
+    public Class<? extends UuidGenerator> getUuidGeneratorClass() {
+        return configurationParameters
+                .get(UUID_GENERATOR_PROPERTY_NAME, UuidGeneratorParser::parseUuidGenerator)
                 .orElse(null);
     }
 

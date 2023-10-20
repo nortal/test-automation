@@ -32,12 +32,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.images.ParsedDockerfile;
+import org.testcontainers.images.RemoteDockerImage;
 import org.testcontainers.images.builder.Transferable;
 import org.testcontainers.images.builder.traits.*;
-import org.testcontainers.utility.Base58;
-import org.testcontainers.utility.DockerLoggerFactory;
-import org.testcontainers.utility.LazyFuture;
-import org.testcontainers.utility.ResourceReaper;
+import org.testcontainers.utility.*;
 
 import java.io.IOException;
 import java.io.PipedInputStream;
@@ -47,7 +45,8 @@ import java.util.*;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * This is a direct copy of 1.16.2 version testcontainers. We're changing method visibility so for {@link  ReusableImageFromDockerfile}
+ * This is a based on 1.19.0 version testcontainers.
+ * We're changing method visibility so for {@link  ReusableImageFromDockerfile} and adding other quality of life features.
  * implementation.
  */
 public class ImageFromDockerfile extends LazyFuture<String>
@@ -61,6 +60,8 @@ public class ImageFromDockerfile extends LazyFuture<String>
     private final Map<String, String> buildArgs = new HashMap<>();
     private Optional<String> dockerFilePath = Optional.empty();
     private Optional<Path> dockerfile = Optional.empty();
+    private Optional<String> target = Optional.empty();
+    private Optional<String> platform = Optional.empty();
     private Set<String> dependencyImageNames = Collections.emptySet();
 
     public ImageFromDockerfile() {
@@ -81,7 +82,7 @@ public class ImageFromDockerfile extends LazyFuture<String>
         Transferable oldValue = transferables.put(path, transferable);
 
         if (oldValue != null) {
-			logger().warn("overriding previous mapping for '{}'", path);
+            logger().warn("overriding previous mapping for '{}'", path);
         }
 
         return this;
@@ -89,7 +90,7 @@ public class ImageFromDockerfile extends LazyFuture<String>
 
     @Override
     protected final String resolve() {
-		Logger logger = logger();
+        Logger logger = logger();
         DockerClient dockerClient = DockerClientFactory.instance().client();
 
         try (PipedInputStream in = new PipedInputStream();
@@ -183,16 +184,18 @@ public class ImageFromDockerfile extends LazyFuture<String>
         });
 
         this.buildArgs.forEach(buildImageCmd::withBuildArg);
+        this.target.ifPresent(buildImageCmd::withTarget);
+        this.platform.ifPresent(buildImageCmd::withPlatform);
     }
 
     private void prePullDependencyImages(Set<String> imagesToPull) {
-        final DockerClient dockerClient = DockerClientFactory.instance().client();
-
         imagesToPull.forEach(imageName -> {
             try {
-				logger().info("Pre-emptively checking local images for '{}', referenced via a Dockerfile. If not available, it will be pulled.",
+                logger().info("Pre-emptively checking local images for '{}', referenced via a Dockerfile. If not available, it will be pulled.",
                         imageName);
-                DockerClientFactory.instance().checkAndPullImage(dockerClient, imageName);
+                new RemoteDockerImage(DockerImageName.parse(imageName))
+                        .withImageNameSubstitutor(ImageNameSubstitutor.noop())
+                        .get();
             } catch (Exception e) {
                 logger().warn("Unable to pre-fetch an image ({}) depended upon by Dockerfile - image build will continue but may fail. Exception message "
                         + "was: {}", imageName, e.getMessage());
@@ -221,6 +224,26 @@ public class ImageFromDockerfile extends LazyFuture<String>
     @Deprecated
     public ImageFromDockerfile withDockerfilePath(String relativePathFromBuildContextDirectory) {
         this.dockerFilePath = Optional.of(relativePathFromBuildContextDirectory);
+        return this;
+    }
+
+    /**
+     * Sets the target build stage to use.
+     *
+     * @param target the target build stage
+     */
+    public ImageFromDockerfile withTarget(String target) {
+        this.target = Optional.of(target);
+        return this;
+    }
+
+    /**
+     * Sets the target platform to build for.
+     *
+     * @param platform the target platform
+     */
+    public ImageFromDockerfile withPlatform(String platform) {
+        this.platform = Optional.of(platform);
         return this;
     }
 

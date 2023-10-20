@@ -22,8 +22,6 @@
  */
 package com.nortal.test.core.cucumber.glue;
 
-import static java.util.Comparator.comparingInt;
-
 import com.nortal.test.core.services.hooks.AfterSuiteHook;
 import io.cucumber.java.AfterAll;
 import io.cucumber.java.Before;
@@ -32,33 +30,39 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import static java.util.Comparator.comparingInt;
+
 /**
  * Triggering {@link  AfterSuiteHook} beans before spring context is closed.
  * Note: we can't do the same for {@link  com.nortal.test.core.services.hooks.BeforeSuiteHook} due to the way cucumber initializes it.
  */
 public class AfterSuiteHookGlue {
-	private static final Logger log = LoggerFactory.getLogger(AfterSuiteHookGlue.class);
+    private static final Logger log = LoggerFactory.getLogger(AfterSuiteHookGlue.class);
 
-	private static ApplicationContext context;
+    private static ApplicationContext context;
 
-	@Autowired
-	public AfterSuiteHookGlue(final ApplicationContext appContext) {
-		context = appContext;
-	}
+    @Autowired
+    public AfterSuiteHookGlue(final ApplicationContext appContext) {
+        context = appContext;
+    }
 
-	@Before
-	public void before() {
-		//dummy, just to trigger initialization.
-	}
+    @Before
+    public void before() {
+        //dummy, just to trigger initialization.
+    }
 
-	@AfterAll
-	public static void afterSuite() {
-		context.getBeansOfType(AfterSuiteHook.class).values().stream()
-				.sorted(comparingInt(AfterSuiteHook::afterSuitOrder))
-				.forEach(afterSuiteHook -> {
-					log.info("Running after suite hook for: {}", afterSuiteHook.getClass().getName());
-					afterSuiteHook.afterSuite();
-				});
-	}
+    @AfterAll
+    public static void afterSuite() {
+        if (context != null) {
+            context.getBeansOfType(AfterSuiteHook.class).values().stream()
+                    .sorted(comparingInt(AfterSuiteHook::afterSuitOrder))
+                    .forEach(afterSuiteHook -> {
+                        log.info("Running after suite hook for: {}", afterSuiteHook.getClass().getName());
+                        afterSuiteHook.afterSuite();
+                    });
+        } else {
+            log.warn("Spring Context was not initialized! Skipping after suite hooks");
+        }
+    }
 
 }
