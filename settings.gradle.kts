@@ -22,28 +22,28 @@ plugins {
     id("pl.allegro.tech.build.axion-release") version "1.14.4" apply false
     id("io.gitlab.arturbosch.detekt").version("1.22.0") apply false
     id("com.github.hierynomus.license").version("0.16.1") apply false
-    id("org.jetbrains.dokka") version "1.7.20" apply false
-    id("io.freefair.lombok") version "8.0.1" apply false
-    id("org.springframework.boot") version "2.7.11" apply false
+    id("org.jetbrains.dokka") version "1.9.10" apply false
+    id("io.freefair.lombok") version "8.4" apply false
+    id("org.springframework.boot") version "3.1.5" apply false
 }
 
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            version("kotlin", "1.9.10")
+            version("kotlin", "1.9.20")
 
             version("cucumber", "7.14.0")
             version("spring-boot", "3.1.5")
             version("spring-cloud", "4.0.4")
             version("jackson", "2.15.3")
-            version("testcontainers", "1.19.1")
+            version("testcontainers", "1.19.2")
             version("rest-assured", "5.3.2")
             version("feign", "12.5")
             version("jacoco", "0.8.11")
             version("allure", "2.22.0")
             version("reportportal", "5.1.2")
-            version("selenide", "6.19.1")
-            version("netty", "4.1.100.Final")
+            version("selenide", "7.0.2")
+            version("netty", "4.1.101.Final")
             version("browserup-proxy", "2.2.14")
 
             library("kotlin-stdlib-jdk8", "org.jetbrains.kotlin", "kotlin-stdlib-jdk8").versionRef("kotlin")
