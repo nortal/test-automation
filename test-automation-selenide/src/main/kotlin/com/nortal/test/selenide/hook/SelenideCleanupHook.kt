@@ -23,6 +23,7 @@
 package com.nortal.test.selenide.hook
 
 import com.codeborne.selenide.Selenide
+import com.codeborne.selenide.WebDriverRunner
 import com.nortal.test.core.services.CucumberScenarioProvider
 import com.nortal.test.core.services.hooks.AfterScenarioHook
 import com.nortal.test.selenide.configuration.SelenideCleanupMode
@@ -36,12 +37,16 @@ class SelenideCleanupHook(val selenideProperties: SelenideProperties) : AfterSce
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
     override fun after(scenario: CucumberScenarioProvider?) {
+        if (!WebDriverRunner.hasWebDriverStarted()) {
+            log.trace("Selenide is not started yet, skipping..")
+            return
+        }
         if (selenideProperties.scenarioCleanupMode == SelenideCleanupMode.CLEAR_BROWSER_DATA) {
-            log.info("Clearing Selenide browser cookies and storage..")
+            log.trace("Clearing Selenide browser cookies and storage..")
             Selenide.clearBrowserCookies()
             Selenide.clearBrowserLocalStorage()
         } else {
-            log.info("Closing Selenide controller WebDriver..")
+            log.trace("Closing Selenide controller WebDriver..")
             Selenide.closeWebDriver()
         }
     }
