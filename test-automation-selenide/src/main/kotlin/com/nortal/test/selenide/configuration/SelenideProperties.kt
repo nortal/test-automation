@@ -118,13 +118,10 @@ data class SelenideProperties(
      */
     val browserPosition: String? = null,
 
-//    /**
-//     * Browser capabilities.
-//     * Warning: this capabilities will override capabilities were set by system properties.
-//     * <br></br>
-//     * Default value: new MutableCapabilities()
-//     */
-//    val browserCapabilities: MutableCapabilities? = Configuration.defaults.browserCapabilities()
+    /**
+     * Chrome options that are set on chrome based driver factory
+     */
+    val chromeOptionsArgs:String = "--disable-features=OptimizationHints",
 
     /**
      * Should webdriver wait until page is completely loaded.

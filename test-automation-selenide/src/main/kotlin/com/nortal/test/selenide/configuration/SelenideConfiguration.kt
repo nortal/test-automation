@@ -46,6 +46,8 @@ open class SelenideConfiguration(private val selenideProperties: SelenidePropert
      */
     @PostConstruct
     open fun initSelenide() {
+        System.setProperty("chromeoptions.args", selenideProperties.chromeOptionsArgs)
+
         log.info("Setting up Selenide with config: {}", selenideProperties)
 
         com.codeborne.selenide.Configuration.baseUrl = selenideProperties.baseUrl
@@ -78,8 +80,10 @@ open class SelenideConfiguration(private val selenideProperties: SelenidePropert
         com.codeborne.selenide.Configuration.browserBinary = selenideProperties.browserBinary
 
         //TODO: make this optional.
-        SelenideLogger.addListener("AllureSelenide", AllureSelenide()
-            .screenshots(true)
-            .savePageSource(true))
+        SelenideLogger.addListener(
+            "AllureSelenide", AllureSelenide()
+                .screenshots(true)
+                .savePageSource(true)
+        )
     }
 }
