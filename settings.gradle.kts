@@ -36,7 +36,7 @@ dependencyResolutionManagement {
             version("spring-boot", "3.1.5")
             version("spring-cloud", "4.0.4")
             version("jackson", "2.15.3")
-            version("testcontainers", "1.19.2")
+            version("testcontainers", "1.19.3")
             version("rest-assured", "5.3.2")
             version("feign", "12.5")
             version("jacoco", "0.8.11")
@@ -52,7 +52,7 @@ dependencyResolutionManagement {
             library("cucumber-junit-platform-engine", "io.cucumber", "cucumber-junit-platform-engine").versionRef("cucumber")
             library("cucumber-spring", "io.cucumber", "cucumber-spring").versionRef("cucumber")
 
-            library("junit-platform-suite", "org.junit.platform", "junit-platform-suite").version("1.10.0")
+            library("junit-platform-suite", "org.junit.platform", "junit-platform-suite").version("1.10.1")
 
             //Spring Boot
             library("springboot-starter_", "org.springframework.boot", "spring-boot-starter").versionRef("spring-boot")
