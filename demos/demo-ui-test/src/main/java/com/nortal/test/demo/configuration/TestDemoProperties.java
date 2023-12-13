@@ -22,27 +22,20 @@
  */
 package com.nortal.test.demo.configuration;
 
-import lombok.Getter;
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@Getter
+@Data
 @ConfigurationProperties(prefix = "test-automation.custom")
 public class TestDemoProperties {
     /**
      * Enable demo mode which highlights elements.
      */
-    private final boolean demoMode;
+    private boolean demoMode;
     /**
      * Add sleep between Selenide actions.
      */
-    private final boolean lazyExecution;
-    private final Long lazyExecutionTime;
-    private final boolean screenshotsSteps;
-
-    public TestDemoProperties(boolean demoMode, boolean lazyExecution, Long lazyExecutionTime, boolean screenshotsSteps) {
-        this.demoMode = demoMode;
-        this.lazyExecution = lazyExecution;
-        this.lazyExecutionTime = lazyExecutionTime;
-        this.screenshotsSteps = screenshotsSteps;
-    }
+    private boolean lazyExecution;
+    private Long lazyExecutionTime;
+    private boolean screenshotsSteps;
 }

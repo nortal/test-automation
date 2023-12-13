@@ -34,11 +34,11 @@ dependencyResolutionManagement {
 
             version("cucumber", "7.15.0")
             version("spring-boot", "3.2.0")
-            version("spring-cloud", "4.0.4")
+            version("spring-cloud", "4.1.0")
             version("jackson", "2.15.3")
             version("testcontainers", "1.19.3")
             version("rest-assured", "5.3.2")
-            version("feign", "12.5")
+            version("feign", "13.1")
             version("jacoco", "0.8.11")
             version("allure", "2.22.0")
             version("reportportal", "5.1.2")
