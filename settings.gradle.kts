@@ -32,8 +32,8 @@ dependencyResolutionManagement {
         create("libs") {
             version("kotlin", "1.9.20")
 
-            version("cucumber", "7.14.0")
-            version("spring-boot", "3.1.5")
+            version("cucumber", "7.15.0")
+            version("spring-boot", "3.2.0")
             version("spring-cloud", "4.0.4")
             version("jackson", "2.15.3")
             version("testcontainers", "1.19.3")
@@ -42,9 +42,9 @@ dependencyResolutionManagement {
             version("jacoco", "0.8.11")
             version("allure", "2.22.0")
             version("reportportal", "5.1.2")
-            version("selenide", "7.0.2")
+            version("selenide", "7.0.4")
             version("netty", "4.1.101.Final")
-            version("browserup-proxy", "2.2.14")
+            version("browserup-proxy", "2.2.15")
 
             library("kotlin-stdlib-jdk8", "org.jetbrains.kotlin", "kotlin-stdlib-jdk8").versionRef("kotlin")
             library("kotlin-reflect", "org.jetbrains.kotlin", "kotlin-reflect").versionRef("kotlin")
