@@ -103,9 +103,6 @@ open class TestContainerService(
         } else {
             log.info("Starting application container..")
             val timer = StopWatch.createStarted()
-            if (testableContainerProperties.reuseBetweenRuns) {
-                ContainerUtils.overrideNetworkAliases(applicationContainer, Collections.emptyList())
-            }
 
             try {
                 applicationContainer.start()
