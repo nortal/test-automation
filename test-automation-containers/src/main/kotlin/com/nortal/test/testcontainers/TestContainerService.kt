@@ -78,7 +78,7 @@ open class TestContainerService(
                 .withLogConsumer(logConsumer)
                 .withNetworkAliases(testableContainerProperties.internalNetworkAlias)
                 .withReuse(testableContainerProperties.reuseBetweenRuns)
-                .withLabel(TESTCONTAINERS_IMAGE_LABEL, imageDefinition.dockerImageNameWithVersion)
+                .withLabel(TESTCONTAINERS_IMAGE_LABEL, imageDefinition.get())
                 .withStartupTimeout(Duration.ofSeconds(testableContainerProperties.startupTimeout))
 
         testContainerConfigurator.fixedExposedPorts().forEach {

@@ -22,12 +22,12 @@
  */
 package com.nortal.test.testcontainers.configurator
 
-import com.nortal.test.testcontainers.images.builder.ImageFromDockerfile
 import org.testcontainers.containers.GenericContainer
+import org.testcontainers.utility.LazyFuture
 
 interface TestContainerConfigurator {
 
-    fun imageDefinition(): ImageFromDockerfile
+    fun imageDefinition(): LazyFuture<String>
 
     fun exposedPorts(): List<Int> = emptyList()
 

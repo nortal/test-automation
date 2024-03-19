@@ -75,7 +75,7 @@ open class SpringBootTestContainerConfigurator :
     }
 
     override fun imageDefinition(): ImageFromDockerfile {
-        var jarBuildDir = containerProperties.jarBuildDir
+        val jarBuildDir = containerProperties.jarBuildDir
         val appJarDir = Paths.get(jarBuildDir)
         val appJarPath = Files.find(appJarDir, 1, { t, _ -> isMatchingJarFile(t) })
             .findFirst()
