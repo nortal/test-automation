@@ -35,15 +35,15 @@ dependencyResolutionManagement {
             version("cucumber", "7.15.0")
             version("spring-boot", "3.2.3")
             version("spring-cloud", "4.1.0")
-            version("jackson", "2.16.1")
-            version("testcontainers", "1.19.6")
-            version("rest-assured", "5.3.2")
-            version("feign", "13.1")
+            version("jackson", "2.17.0")
+            version("testcontainers", "1.19.7")
+            version("rest-assured", "5.4.0")
+            version("feign", "13.2.1")
             version("jacoco", "0.8.11")
             version("allure", "2.22.0")
             version("reportportal", "5.1.2")
-            version("selenide", "7.1.0")
-            version("netty", "4.1.101.Final")
+            version("selenide", "7.2.1")
+            version("netty", "4.1.107.Final")
             version("browserup-proxy", "2.2.15")
 
             library("kotlin-stdlib-jdk8", "org.jetbrains.kotlin", "kotlin-stdlib-jdk8").versionRef("kotlin")
@@ -52,7 +52,7 @@ dependencyResolutionManagement {
             library("cucumber-junit-platform-engine", "io.cucumber", "cucumber-junit-platform-engine").versionRef("cucumber")
             library("cucumber-spring", "io.cucumber", "cucumber-spring").versionRef("cucumber")
 
-            library("junit-platform-suite", "org.junit.platform", "junit-platform-suite").version("1.10.1")
+            library("junit-platform-suite", "org.junit.platform", "junit-platform-suite").version("1.10.2")
 
             //Spring Boot
             library("springboot-starter_", "org.springframework.boot", "spring-boot-starter").versionRef("spring-boot")
