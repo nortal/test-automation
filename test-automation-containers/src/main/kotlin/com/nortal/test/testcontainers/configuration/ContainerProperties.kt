@@ -45,6 +45,11 @@ data class ContainerProperties(
 class TestableContainerProperties(
 
     /**
+     * Testable container can be disabled if a different setup is used. For example docker compose.
+     */
+    var enabled: Boolean = true,
+
+    /**
      * container alias that will be registered under its network. This is also used for container name.
      */
     var internalNetworkAlias: String = "container-under-test",

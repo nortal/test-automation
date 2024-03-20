@@ -29,6 +29,7 @@ import org.apache.commons.lang3.SystemUtils
 import org.apache.commons.lang3.time.StopWatch
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Service
 import org.testcontainers.containers.BindMode
 import org.testcontainers.containers.ContainerLaunchException
@@ -39,13 +40,17 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.attribute.PosixFilePermissions
 import java.time.Duration
-import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * This service is responsible for initializing and maintaining the black box testing setup.
  */
 @Service
+@ConditionalOnProperty(
+    "test-automation.containers.testable-container.enabled",
+    havingValue = "true",
+    matchIfMissing = true
+)
 open class TestContainerService(
     private val testContainerNetworkProvider: TestContainerNetworkProvider,
     private val testableContainerProperties: TestableContainerProperties,

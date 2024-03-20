@@ -41,6 +41,7 @@ import org.jacoco.report.html.HTMLFormatter
 import org.jacoco.report.xml.XMLFormatter
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
 import org.springframework.stereotype.Component
 import java.io.File
 import java.io.IOException
@@ -53,6 +54,7 @@ import java.nio.file.attribute.BasicFileAttributes
 import java.util.concurrent.TimeUnit
 
 @Component
+@ConditionalOnBean(TestableApplicationInfoProvider::class)
 open class JacocoCoverageReportGenerator(
     private val jacocoProperties: TestableContainerJacocoProperties,
     private val testableApplicationInfoProvider: TestableApplicationInfoProvider
