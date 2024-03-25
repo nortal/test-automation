@@ -60,7 +60,11 @@ open class RequestResponseReportFormatter(
         formatter.formatAndAddToReport(attachment)
     }
 
-    open fun addAdditionalSections(request: HttpRequest, response: HttpResponse, attachment: ReportFormatter.Attachment) {
+    open fun addAdditionalSections(
+        request: HttpRequest,
+        response: HttpResponse,
+        attachment: ReportFormatter.Attachment
+    ) {
         //do nothing by default.
     }
 
@@ -91,11 +95,11 @@ open class RequestResponseReportFormatter(
         if (StringUtils.isNotBlank(bodyStr)) {
             if (isJsonContentType(contentType)) {
                 responseMap["body"] = resolveJsonBody(bodyStr!!)
+            } else if (HttpContentTypeUtils.isXmlContentType(contentType)) {
+                responseMap["body"] = resolveXmlBody(bodyStr!!)
+            } else {
+                responseMap["body"] = "Endpoint returned unknown content type, not putting it to the report"
             }
-        } else if (HttpContentTypeUtils.isXmlContentType(contentType)) {
-            responseMap["body"] = resolveXmlBody(bodyStr!!)
-        }else{
-            responseMap["body"]= "Endpoint returned unknown content type, not putting it to the report"
         }
         return JsonFormattingUtils.prettyPrintHtml(responseMap)
     }

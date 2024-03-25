@@ -26,7 +26,11 @@ import org.springframework.http.MediaType
 
 object HttpContentTypeUtils {
     fun isXmlContentType(contentType: String?): Boolean {
-        return contentType?.contains(MediaType.APPLICATION_XML_VALUE) ?: false
+        if(contentType == null) {
+            return false
+        }
+        return contentType.contains(MediaType.APPLICATION_XML_VALUE)
+                || contentType.contains(MediaType.TEXT_XML_VALUE)
     }
 
     fun isJsonContentType(contentType: String?): Boolean {
