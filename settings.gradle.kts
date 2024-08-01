@@ -32,19 +32,19 @@ dependencyResolutionManagement {
         create("libs") {
             version("kotlin", "1.9.20")
 
-            version("cucumber", "7.15.0")
-            version("spring-boot", "3.2.3")
-            version("spring-cloud", "4.1.0")
-            version("jackson", "2.17.0")
-            version("testcontainers", "1.19.7")
-            version("rest-assured", "5.4.0")
-            version("feign", "13.2.1")
-            version("jacoco", "0.8.11")
+            version("cucumber", "7.18.1")
+            version("spring-boot", "3.3.2")
+            version("spring-cloud", "4.1.3")
+            version("jackson", "2.17.2")
+            version("testcontainers", "1.20.1")
+            version("rest-assured", "5.5.0")
+            version("feign", "13.3")
+            version("jacoco", "0.8.12")
             version("allure", "2.22.0")
             version("reportportal", "5.1.2")
-            version("selenide", "7.2.1")
-            version("netty", "4.1.107.Final")
-            version("browserup-proxy", "2.2.15")
+            version("selenide", "7.4.0")
+            version("netty", "4.1.112.Final")
+            version("browserup-proxy", "2.2.18")
 
             library("kotlin-stdlib-jdk8", "org.jetbrains.kotlin", "kotlin-stdlib-jdk8").versionRef("kotlin")
             library("kotlin-reflect", "org.jetbrains.kotlin", "kotlin-reflect").versionRef("kotlin")
@@ -52,7 +52,7 @@ dependencyResolutionManagement {
             library("cucumber-junit-platform-engine", "io.cucumber", "cucumber-junit-platform-engine").versionRef("cucumber")
             library("cucumber-spring", "io.cucumber", "cucumber-spring").versionRef("cucumber")
 
-            library("junit-platform-suite", "org.junit.platform", "junit-platform-suite").version("1.10.2")
+            library("junit-platform-suite", "org.junit.platform", "junit-platform-suite").version("1.10.3")
 
             //Spring Boot
             library("springboot-starter_", "org.springframework.boot", "spring-boot-starter").versionRef("spring-boot")
@@ -75,18 +75,17 @@ dependencyResolutionManagement {
             library("openfeign-okhttp", "io.github.openfeign", "feign-okhttp").versionRef("feign")
             library("openfeign-jackson", "io.github.openfeign", "feign-jackson").versionRef("feign")
 
-            library("guava", "com.google.guava", "guava").version("32.1.3-jre")
-            library("snakeyaml", "org.yaml", "snakeyaml").version("1.33")
+            library("guava", "com.google.guava", "guava").version("33.2.1-jre")
 
-            library("opencsv", "com.opencsv", "opencsv").version("5.7.1")
+            library("opencsv", "com.opencsv", "opencsv").version("5.9")
 
-            library("commons-lang3", "org.apache.commons", "commons-lang3").version("3.13.0")
-            library("commons-codec", "commons-codec", "commons-codec").version("1.16.0")
-            library("commons-io", "commons-io", "commons-io").version("2.14.0")
+            library("commons-lang3", "org.apache.commons", "commons-lang3").version("3.15.0")
+//            library("commons-codec", "commons-codec", "commons-codec").version("1.17.1")
+            library("commons-io", "commons-io", "commons-io").version("2.16.1")
 
             library("swagger_request_validator_core", "com.atlassian.oai", "swagger-request-validator-core").version("2.18.0")
             library("org.eclipse.jgit", "org.eclipse.jgit", "org.eclipse.jgit").version("6.2.0.202206071550-r")
-            library("jsonpath", "com.jayway.jsonpath", "json-path").version("2.7.0")
+            library("jsonpath", "com.jayway.jsonpath", "json-path").version("2.9.0")
 
             library("testcontainers-core", "org.testcontainers", "testcontainers").versionRef("testcontainers")
             library("testcontainers-mockserver", "org.testcontainers", "mockserver").versionRef("testcontainers")

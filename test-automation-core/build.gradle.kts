@@ -11,6 +11,5 @@ dependencies {
     api(libs.commons.lang3)
     api(libs.commons.io)
 
-    implementation(libs.snakeyaml)
     implementation(libs.guava)
 }
