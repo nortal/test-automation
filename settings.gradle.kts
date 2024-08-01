@@ -40,7 +40,7 @@ dependencyResolutionManagement {
             version("rest-assured", "5.5.0")
             version("feign", "13.3")
             version("jacoco", "0.8.12")
-            version("allure", "2.22.0")
+            version("allure", "2.28.0")
             version("reportportal", "5.1.2")
             version("selenide", "7.4.0")
             version("netty", "4.1.112.Final")

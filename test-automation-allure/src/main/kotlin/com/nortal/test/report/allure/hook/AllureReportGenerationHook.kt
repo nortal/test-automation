@@ -29,6 +29,8 @@ import com.nortal.test.report.allure.configuration.AllureReportProperties
 import com.nortal.test.report.allure.services.AllureReportZipService
 import io.qameta.allure.Commands
 import io.qameta.allure.option.ConfigOptions
+import io.qameta.allure.option.ReportLanguageOptions
+import io.qameta.allure.option.ReportNameOptions
 import org.apache.commons.io.function.IOConsumer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -67,7 +69,15 @@ class AllureReportGenerationHook(
 
         processResource(resource.toURI()) { allureHome ->
             val commands = Commands(allureHome)
-            commands.generate(reportDir, listOf(executionResultDir), true, ConfigOptions())
+            commands.generate(
+                reportDir,
+                listOf(executionResultDir),
+                true,
+                false,
+                ConfigOptions(),
+                ReportNameOptions(),
+                ReportLanguageOptions()
+            )
 
             reportPublisher.publish(reportDir, entryFileName)
             tryServeReport(commands, executionResultDir)
@@ -82,7 +92,9 @@ class AllureReportGenerationHook(
                 listOf(outputDir),
                 allureReportProperties.serveReport.hostname,
                 allureReportProperties.serveReport.port,
-                ConfigOptions()
+                ConfigOptions(),
+                ReportNameOptions(),
+                ReportLanguageOptions()
             )
         }
     }

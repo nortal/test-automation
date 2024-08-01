@@ -23,10 +23,10 @@
 package com.nortal.test.report.allure.plugin
 
 import com.nortal.test.core.exception.TestAutomationException
-import io.qameta.allure.Aggregator
+import io.qameta.allure.Aggregator2
+import io.qameta.allure.ReportStorage
 import io.qameta.allure.core.Configuration
 import io.qameta.allure.core.LaunchResults
-import java.io.File
 import java.nio.file.Path
 
 /**
@@ -37,23 +37,25 @@ import java.nio.file.Path
  * logo from `custom-logo` will be used with both expanded and collapsed navigation.
  *
  */
-class CustomLogoPlugin : Aggregator {
+class CustomLogoPlugin : Aggregator2 {
 
-    override fun aggregate(configuration: Configuration?, launchesResults: List<LaunchResults>, outputDirectory: Path) {
+    override fun aggregate(
+        configuration: Configuration?,
+        launchesResults: MutableList<LaunchResults>?,
+        storage: ReportStorage
+    ) {
         val fullLogoProperty = System.getProperty("allure.custom-logo") ?: return
         val collapsedLogoProperty = System.getProperty("allure.custom-collapsed-logo") ?: fullLogoProperty
 
-        val newFullLogoPath = this.javaClass.getResource(fullLogoProperty) ?:
-            throw TestAutomationException("Unable to find custom logo in resource path $fullLogoProperty")
-        val newCollapsedLogoPath = this.javaClass.getResource(collapsedLogoProperty) ?:
-            throw TestAutomationException("Unable to find custom logo in resource path $collapsedLogoProperty")
+        val newFullLogoPath = this.javaClass.getResource(fullLogoProperty)
+            ?: throw TestAutomationException("Unable to find custom logo in resource path $fullLogoProperty")
+        val newCollapsedLogoPath = this.javaClass.getResource(collapsedLogoProperty)
+            ?: throw TestAutomationException("Unable to find custom logo in resource path $collapsedLogoProperty")
 
-        val newFullLogo = File(newFullLogoPath.toURI())
-        val newCollapsedLogo = File(newCollapsedLogoPath.toURI())
-        val defaultFullLogo = File(outputDirectory.resolve("plugins/custom-logo/custom-logo.svg").toUri())
-        val defaultCollapsedLogo = File(outputDirectory.resolve("plugins/custom-logo/custom-logo-collapsed.svg").toUri())
-
-        newFullLogo.copyTo(defaultFullLogo, true)
-        newCollapsedLogo.copyTo(defaultCollapsedLogo, true)
+        val newFullLogo = Path.of(newFullLogoPath.toURI())
+        val newCollapsedLogo = Path.of(newCollapsedLogoPath.toURI())
+        storage.addDataFile("plugins/custom-logo/custom-logo.svg", newFullLogo)
+        storage.addDataFile("plugins/custom-logo/custom-logo-collapsed.svg", newCollapsedLogo)
     }
+
 }
