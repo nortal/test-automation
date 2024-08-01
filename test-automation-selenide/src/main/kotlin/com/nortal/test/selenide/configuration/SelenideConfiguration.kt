@@ -53,7 +53,6 @@ open class SelenideConfiguration(private val selenideProperties: SelenidePropert
         com.codeborne.selenide.Configuration.baseUrl = selenideProperties.baseUrl
         com.codeborne.selenide.Configuration.timeout = selenideProperties.timeout
         com.codeborne.selenide.Configuration.pollingInterval = selenideProperties.pollingInterval
-        com.codeborne.selenide.Configuration.holdBrowserOpen = selenideProperties.holdBrowserOpen
         com.codeborne.selenide.Configuration.reopenBrowserOnFail = selenideProperties.reopenBrowserOnFail
         com.codeborne.selenide.Configuration.browser = selenideProperties.browser.name
         com.codeborne.selenide.Configuration.browserVersion = selenideProperties.browserVersion

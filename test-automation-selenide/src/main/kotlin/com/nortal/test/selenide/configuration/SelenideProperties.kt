@@ -55,14 +55,6 @@ data class SelenideProperties(
      * Default value: 200 (milliseconds)
      */
     val pollingInterval: Long = 200,
-    /**
-     * If holdBrowserOpen is true, browser window stays open after running tests. It may be useful for debugging.
-     * Can be configured either programmatically, via selenide.properties file or by system property "-Dselenide.holdBrowserOpen=true".
-     * <br></br>
-     * Default value: false.
-     */
-    val holdBrowserOpen: Boolean = false,
-
 
     /**
      * Should Selenide re-spawn browser if it's disappeared (hangs, broken, unexpectedly closed).
