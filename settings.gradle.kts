@@ -30,21 +30,21 @@ plugins {
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            version("kotlin", "1.9.20")
+            version("kotlin", "1.9.25")
 
             version("cucumber", "7.18.1")
-            version("spring-boot", "3.3.2")
-            version("spring-cloud", "4.1.3")
-            version("jackson", "2.17.2")
-            version("testcontainers", "1.20.1")
+            version("spring-boot", "3.4.1")
+            version("spring-cloud", "4.2.0")
+            version("jackson", "2.18.2")
+            version("testcontainers", "1.20.4")
             version("rest-assured", "5.5.0")
-            version("feign", "13.3")
+            version("feign", "13.5")
             version("jacoco", "0.8.12")
             version("allure", "2.28.0")
             version("reportportal", "5.1.2")
-            version("selenide", "7.4.0")
-            version("netty", "4.1.112.Final")
-            version("browserup-proxy", "2.2.18")
+            version("selenide", "7.7.1")
+            version("netty", "4.1.117.Final")
+            version("browserup-proxy", "3.0.1")
 
             library("kotlin-stdlib-jdk8", "org.jetbrains.kotlin", "kotlin-stdlib-jdk8").versionRef("kotlin")
             library("kotlin-reflect", "org.jetbrains.kotlin", "kotlin-reflect").versionRef("kotlin")
@@ -75,13 +75,13 @@ dependencyResolutionManagement {
             library("openfeign-okhttp", "io.github.openfeign", "feign-okhttp").versionRef("feign")
             library("openfeign-jackson", "io.github.openfeign", "feign-jackson").versionRef("feign")
 
-            library("guava", "com.google.guava", "guava").version("33.2.1-jre")
+            library("guava", "com.google.guava", "guava").version("33.4.0-jre")
 
-            library("opencsv", "com.opencsv", "opencsv").version("5.9")
+            library("opencsv", "com.opencsv", "opencsv").version("5.10")
 
-            library("commons-lang3", "org.apache.commons", "commons-lang3").version("3.15.0")
+            library("commons-lang3", "org.apache.commons", "commons-lang3").version("3.17.0")
 //            library("commons-codec", "commons-codec", "commons-codec").version("1.17.1")
-            library("commons-io", "commons-io", "commons-io").version("2.16.1")
+            library("commons-io", "commons-io", "commons-io").version("2.18.0")
 
             library("swagger_request_validator_core", "com.atlassian.oai", "swagger-request-validator-core").version("2.18.0")
             library("org.eclipse.jgit", "org.eclipse.jgit", "org.eclipse.jgit").version("6.2.0.202206071550-r")
