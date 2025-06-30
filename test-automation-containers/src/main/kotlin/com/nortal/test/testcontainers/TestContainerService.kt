@@ -25,6 +25,7 @@ package com.nortal.test.testcontainers
 import com.nortal.test.core.services.TestableApplicationInfoProvider
 import com.nortal.test.testcontainers.configuration.TestableContainerProperties
 import com.nortal.test.testcontainers.configurator.TestContainerConfigurator
+import com.nortal.test.testcontainers.logging.TestContainerLoggerFactory
 import org.apache.commons.lang3.SystemUtils
 import org.apache.commons.lang3.time.StopWatch
 import org.slf4j.Logger
@@ -72,7 +73,7 @@ open class TestContainerService(
     }
 
     override fun initialize() {
-        val logger = LoggerFactory.getLogger(testableContainerProperties.internalNetworkAlias)
+        val logger = TestContainerLoggerFactory.create(testableContainerProperties.internalNetworkAlias)
         val logConsumer = Slf4jLogConsumer(logger).withSeparateOutputStreams()
         val imageDefinition = testContainerConfigurator.imageDefinition()
         val container =
